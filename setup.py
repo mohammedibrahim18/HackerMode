@@ -24,7 +24,7 @@ PACKAGES = {
 }
 
 PYHTON3_MODULES = {
-    'N4Tools':'N4Tools',
+    'N4Tools==1.7.0':'N4Tools',
     'pyfiglet':'pyfiglet',
     'python-bidi':'bidi',
     'arabic_reshaper':'arabic_reshaper',
@@ -35,7 +35,8 @@ GREEN = '\033[1;32m'
 NORMAL = '\033[0m'
 
 from base.system import System
-import os
+from base.config import Config
+import os, shutil
 
 class Installer:
     InstalledSuccessfully = {
@@ -80,6 +81,27 @@ class Installer:
             elif System.PLATFORME == 'termux':
                 os.system(f'pip install {MODULES}')
 
+        # check:
+        print('\n# checking:')
+        self.check()
+        if Config.get('settings', 'IS_INSTALLED', cast=bool):
+            return
+
+        # Move the tool to "System.TOOL_PATH"
+        if all(self.InstalledSuccessfully['base']):
+            if not Config.get('settings','DEBUG',cast=bool):
+                if os.path.isdir(f'/{System.TOOL_NAME}'):
+                    to = System.TOOL_PATH
+                    shutil.move(f'/{System.TOOL_NAME}',to)
+                    Config.set('settings', 'IS_INSTALLED', 'True')
+                else:
+                    print(f'{RED}# Error: the tool path not found!')
+                    print(f'# try to run tool using {GREEN}"python3 HakcerMode install"{NORMAL}')
+            else:
+                print(f'{RED}# In DEBUG mode can"t move the tool\n# to "System.TOOL_PATH"!{NORMAL}')
+        else:
+            print(f'# {RED}Error:{NORMAL} some of the basics package not installed!')
+
     def check(self):
         '''To check if the packages has been
            installed successfully. '''
@@ -106,8 +128,6 @@ class Installer:
 
     def update(self):
         os.system(f'cd {os.path.join(System.TOOL_PATH,System.TOOL_NAME)} && git pull')
-        os.system('HackerMode install')
-        exit()
 
 Installer = Installer()
 

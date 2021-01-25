@@ -1,7 +1,7 @@
 import sys
 from setup import Installer
 from base.config import Config
-
+from base.shell import BaseCommands
 
 class HackerMode:
     argv = [
@@ -18,12 +18,10 @@ class HackerMode:
                 except AttributeError:
                     print ('help msg')
         else:
-            print('# Starting the tool...')
+            BaseCommands().cmdloop()
 
     def install(self):
         Installer.install()
-        print('\n# checking:')
-        Installer.check()
         if all(Installer.InstalledSuccessfully['base']):
             pass
 
