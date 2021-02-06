@@ -68,8 +68,8 @@ class BaseShell(cmd.Cmd):
 class BinCommands(BaseShell):
     for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
         exec(f'''
-    \rdef do_{package[0:-3]}(self,arg):
-        os.system(\'{"python3 -B "+os.path.join(os.path.join(System.BASE_PATH,'bin'),package)}\')
+        \rdef do_{package[0:-3]}(self,arg):
+        os.system('python3 {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
 ''')
 
 class BaseCommands(BinCommands):
