@@ -20,10 +20,12 @@ terminal = terminal()
 # ╰─>>>$
 # ├
 
+'''
 PROMPT = lambda path,ToolName:Color.reader(f'\
 [$LGREEN]┌───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LRED]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
 [$LGREEN]│\n\
 [$LGREEN]└─>>>WL#$ W#')
+'''
 
 PROMPT = lambda path,ToolName:Color.reader(f'\
 [$LGREEN]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LRED]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
@@ -63,7 +65,14 @@ class BaseShell(cmd.Cmd):
             return None
         return cmd.Cmd.postcmd(self, stop, line)
 
-class BaseCommands(BaseShell):
+class BinCommands(BaseShell):
+    for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
+        exec(f'''
+    \rdef do_{package[0:-3]}(self,arg):
+        os.system(\'{"python3 -B "+os.path.join(os.path.join(System.BASE_PATH,'bin'),package)}\')
+''')
+
+class BaseCommands(BinCommands):
     def do_ls(self, arg):
         path = str(pathlib.Path.cwd())
         files = os.popen('ls').read()
@@ -100,8 +109,13 @@ class BaseCommands(BaseShell):
         print('# command: HackerMode '+line)
 
     def do_c(self, line):
-        #print ('')
         print(chr(27)+"[2J\x1b[H")
+
+    def do_clear(self, line):
+        print(chr(27)+"[2J\x1b[H")
+
+    def do_nano(self, line):
+        os.system('nano '+line)
 
     def do_EOF(self, line):
         "Exit"
@@ -111,4 +125,5 @@ class BaseCommands(BaseShell):
         exit()
 
 if __name__ == '__main__':
+    print(BaseCommands().__dir__())
     BaseCommands().cmdloop()

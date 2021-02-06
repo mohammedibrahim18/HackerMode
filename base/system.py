@@ -1,7 +1,8 @@
-import os, sys, tempfile
+import os, sys, tempfile, pathlib
 
 class System:
     TOOL_NAME = 'HackerMode'
+    BASE_PATH = pathlib.Path(os.path.abspath(__file__)).parent
 
     @property
     def BIN_PATH(self):
