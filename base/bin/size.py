@@ -6,7 +6,8 @@ class Size:
         self.namefile=namefile
     def sizenumFile(self):
         return[os.path.getsize(self.namefile),self.namefile]
-    def sizenumDir(self):                                                                                                                                                                if os.path.isfile(self.namefile):return self.sizenumFile()
+    def sizenumDir(self):
+        if os.path.isfile(self.namefile):return self.sizenumFile()
         elif os.path.isdir(self.namefile):
             s=0
             for d,i,r in  os.walk(self.namefile):
