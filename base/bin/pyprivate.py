@@ -32,7 +32,8 @@ parser.add_argument('-l','--layers',help='pyprivate -l file.py')
 args=parser.parse_args()
 @ThreadAnimation()
 def App(Thread):
-        out=[]                                                                                                                                                                           if args.marshal:
+        out=[]
+        if args.marshal:
                 pyprivate().Marshal(args.marshal)
                 out.append(f'\033[93mMarshal :\033[92m {args.marshal}\033[0m')
         if args.base64:
