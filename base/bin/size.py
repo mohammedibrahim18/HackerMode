@@ -1,6 +1,7 @@
 import os
 size=os.path
 import sys
+from N4Tools.Design import ThreadAnimation
 class Size:
     def __init__(self,namefile):
         self.namefile=namefile
@@ -13,8 +14,7 @@ class Size:
             for d,i,r in  os.walk(self.namefile):
                 for n in r:s+=os.path.getsize(os.path.join(d,n))
             return[s,self.namefile]
-        else:
-            print (f"[Errno 2] No such file or directory: '{os.path.join('/',*__file__.split('/')[:-1],self.namefile)}'");os.sys.exit()
+            
     def GetSize(self):
         F=self.sizenumDir()
         s=F[0]
@@ -28,5 +28,14 @@ class Size:
                 S='GB'
         G=str(G).split('.')
         return f'{F[1]} : \033[94m{G[0]}.{G[1][0:2]} {S}'
-for p in sys.argv[1:]:
-    print (f"\033[93m{Size(p).GetSize()}\033[0m")
+@ThreadAnimation()
+def App(Thread):
+	out=[]
+	for p in sys.argv[1:]:
+	    try:
+	   	 out.append(f"\033[93m{Size(p).GetSize()}\033[0m")
+	    except:out.append(f"[Errno 2] No such file or directory: '{os.path.join('/',*__file__.split('/')[:-1],p)}")
+	Thread.kill()
+	print('\n'.join(out))
+
+App()
