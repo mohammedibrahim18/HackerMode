@@ -67,12 +67,14 @@ class BaseShell(cmd.Cmd):
 
 class BinCommands(BaseShell):
     for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
-        exec(f'''
+	
+        exec (f'''
         \rdef do_{package[0:-3]}(self,arg):
         os.system('python3 {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
 ''')
 
 class BaseCommands(BinCommands):
+    Path=[x+'/' if os.path.isdir(os.path.join('.',x))else x+' ' for x in os.listdir('.')]
     def do_ls(self, arg):
         path = str(pathlib.Path.cwd())
         files = os.popen('ls').read()
@@ -92,19 +94,32 @@ class BaseCommands(BinCommands):
                 output += i
         output = output[0:-8].split(' ')
         self.columnize(output, displaywidth=terminal.size['width'])
-
+    def viewdir(self,path):
+        return [x+'/' if os.path.isdir(os.path.join(path,x)) else x+' ' for x in os.listdir(path)]
     def do_cd(self, arg):
         try:
             if arg in ['~', '$HOME', '']:
                 os.chdir(str(pathlib.Path.home()))
+                self.Path=self.viewdir(pathlib.PurePath())
             else:
                 os.chdir(os.path.join(os.getcwd(), arg))
+                self.Path=self.viewdir(pathlib.PurePath())
             self.prompt = PROMPT(pathlib.Path.cwd().name,'None')
         except FileNotFoundError as e:
             print(e)
         except NotADirectoryError as e:
             print(e)
-
+    def complete_cd(self,text,*args):
+        return self.propath(text,args[0])
+    def propath(self,text,args):
+        if not text:a=self.Path
+        else:a=[f for f in self.Path if f.startswith(text)]
+        e=args.strip().split(' ')[-1]
+#       print ('|'+e+'|')
+        if e in self.Path:return self.viewdir(e)
+        e=(e.split('/'))
+        if os.path.isdir('/'.join(e[:-1])):return [f+'/' if os.path.isdir('/'.join(e[:-1])+'/'+f) else f+' ' for f in os.listdir('/'.join(e[:-1])) if f.startswith(e[-1])]
+        return a
     def do_HackerMode(self, line):
         print('# command: HackerMode '+line)
 
@@ -117,6 +132,8 @@ class BaseCommands(BinCommands):
     def do_nano(self, line):
         os.system('nano '+line)
 
+    def complete_nano(self,text,*args):
+        return self.propath(text,args[0])
     def do_EOF(self, line):
         "Exit"
         return True
