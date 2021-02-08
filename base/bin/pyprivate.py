@@ -44,5 +44,5 @@ def App(Thread):
                 out.append(f'\033[93mLayers :\033[92m {args.layers}\033[0m')
         Thread.kill()
         print('\n'.join(out))
-try:App()
-except KeyboardInterrupt:pass
+
+App()

@@ -21,10 +21,15 @@ PACKAGES = {
         'linux': ['sudo apt install git'],
     },
     # -----------------------------------
+    'clang': {
+        'termux': ['pkg install clang'],
+        'linux': ['sudo apt install clang'],
+    },
+    # -----------------------------------
 }
 
 PYHTON3_MODULES = {
-    'N4Tools==1.7.0':'N4Tools',
+    'N4Tools==1.7.1':'N4Tools',
     'pyfiglet':'pyfiglet',
     'python-bidi':'bidi',
     'arabic_reshaper':'arabic_reshaper',

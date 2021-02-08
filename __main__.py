@@ -18,7 +18,12 @@ class HackerMode:
                 except AttributeError:
                     print ('help msg')
         else:
-            BaseCommands().cmdloop()
+            while True:
+                try:
+                    BaseCommands().cmdloop()
+                except KeyboardInterrupt:
+                    print('')
+
 
     def install(self):
         Installer.install()
