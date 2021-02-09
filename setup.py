@@ -12,8 +12,11 @@ PACKAGES = {
     },
     # -----------------------------------
     'pip3':{
-        'termux': [],
-        'linux': ['sudo apt install python3-pip'],
+        'termux': ['pip3 install --uprgade pip'],
+        'linux': [
+            'sudo apt install python3-pip',
+            'pip3 install --uprgade pip',
+        ],
     },
     # -----------------------------------
     'git':{
@@ -26,6 +29,11 @@ PACKAGES = {
         'linux': ['sudo apt install clang'],
     },
     # -----------------------------------
+    'namp': {
+        'termux': ['pkg install nmap'],
+        'linux': ['sudo apt install nmap'],
+    },
+    # -----------------------------------
 }
 
 PYHTON3_MODULES = {
@@ -33,6 +41,7 @@ PYHTON3_MODULES = {
     'pyfiglet':'pyfiglet',
     'python-bidi':'bidi',
     'arabic_reshaper':'arabic_reshaper',
+    'python-nmap':'nmap',
 }
 
 RED = '\033[1;31m'
@@ -95,9 +104,23 @@ class Installer:
         # Move the tool to "System.TOOL_PATH"
         if all(self.InstalledSuccessfully['base']):
             if not Config.get('settings','DEBUG',cast=bool):
-                if os.path.isdir(f'/{System.TOOL_NAME}'):
-                    to = System.TOOL_PATH
-                    shutil.move(f'/{System.TOOL_NAME}',to)
+                if os.path.isdir(System.TOOL_NAME):
+                    HackerMode =  '#!/usr/bin/python3\n'
+                    HackerMode += 'import sys,os\n'
+                    HackerMode += f'path=os.path.join({System.TOOL_PATH},{System.TOOL_NAME})\n'
+                    HackerMode += "os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))"
+                    try:
+                        with open(os.path.join(System.BIN_PATH,System.TOOL_NAME),'w') as f:
+                            f.write(HackerMode)
+                        chmod = 'chmod' if System.PLATFORME == 'termux' else 'sudo chmod'
+                        os.system(f'{chmod} 777 {os.path.join(System.TOOL_PATH,System.TOOL_NAME)}')
+                    except Exception as e:
+                        print(e)
+                        return
+                    try:
+                        shutil.move(System.TOOL_NAME,System.TOOL_PATH)
+                    except shutil.Error as e:
+                        print(e)
                     Config.set('settings', 'IS_INSTALLED', 'True')
                 else:
                     print(f'{RED}# Error: the tool path not found!')
@@ -132,7 +155,7 @@ class Installer:
                 self.InstalledSuccessfully['base'].append(False)
 
     def update(self):
-        os.system(f'cd {os.path.join(System.TOOL_PATH,System.TOOL_NAME)} && git pull')
+        os.system(f'cd {os.path.join(System.TOOL_PATH,System.TOOL_NAME)} && git fetch && git pull')
 
 Installer = Installer()
 

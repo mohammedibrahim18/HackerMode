@@ -11,14 +11,7 @@ class System:
     @property
     def TOOL_PATH(self):
         '''To get the tool path'''
-        path = os.path.abspath(tempfile.gettempdir())
-        if path.endswith('/tmp'):
-            if not os.path.isdir(path):
-                os.mkdir(path)
-            path = os.path.join(path,self.TOOL_NAME)
-            if not os.path.isdir(path):
-                os.mkdir(path)
-        return path
+        return os.path.abspath(tempfile.gettempdir())
 
     @property
     def PLATFORME(self):

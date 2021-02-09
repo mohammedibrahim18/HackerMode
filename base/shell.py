@@ -91,7 +91,15 @@ class BinCommands(BaseShell):
 
 class BaseCommands(BinCommands):
     def do_ls(self, arg):
-        path = str(pathlib.Path.cwd())
+        if System.PLATFORME == 'termux':
+            os.system('ls '+arg)
+            return
+
+        if arg:
+            os.system('ls '+arg)
+            return
+
+        path = str(pathlib.Path.cwd() if not os.path.exists(arg) else arg)
         files = os.popen('ls').read()
         files = files.split('\n')
         output = []
@@ -136,11 +144,8 @@ class BaseCommands(BinCommands):
         os.system('nano '+line)
 
     def do_EOF(self, line):
-        print ('\n# to exit write "quit" or "exit"')
+        print ('\n# to exit write "exit"')
         return True
-
-    def do_quit(self, line):
-        exit()
 
     def do_exit(self, line):
         exit()
