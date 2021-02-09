@@ -29,7 +29,7 @@ PACKAGES = {
         'linux': ['sudo apt install clang'],
     },
     # -----------------------------------
-    'namp': {
+    'nmap': {
         'termux': ['pkg install nmap'],
         'linux': ['sudo apt install nmap'],
     },
