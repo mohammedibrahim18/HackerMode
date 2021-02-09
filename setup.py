@@ -117,11 +117,11 @@ class Installer:
                     except Exception as e:
                         print(e)
                         return
+                    Config.set('settings', 'IS_INSTALLED', 'True')
                     try:
                         shutil.move(System.TOOL_NAME,System.TOOL_PATH)
                     except shutil.Error as e:
-                        print(e)
-                    Config.set('settings', 'IS_INSTALLED', 'True')
+                        pass
                 else:
                     print(f'{RED}# Error: the tool path not found!')
                     print(f'# try to run tool using {GREEN}"python3 HakcerMode install"{NORMAL}')
