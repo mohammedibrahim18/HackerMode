@@ -107,13 +107,13 @@ class Installer:
                 if os.path.isdir(System.TOOL_NAME):
                     HackerMode =  '#!/usr/bin/python3\n'
                     HackerMode += 'import sys,os\n'
-                    HackerMode += f'path=os.path.join({System.TOOL_PATH},{System.TOOL_NAME})\n'
+                    HackerMode += f'path=os.path.join("{System.TOOL_PATH}","{System.TOOL_NAME}")\n'
                     HackerMode += "os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))"
                     try:
                         with open(os.path.join(System.BIN_PATH,System.TOOL_NAME),'w') as f:
                             f.write(HackerMode)
                         chmod = 'chmod' if System.PLATFORME == 'termux' else 'sudo chmod'
-                        os.system(f'{chmod} 777 {os.path.join(System.TOOL_PATH,System.TOOL_NAME)}')
+                        os.system(f'{chmod} 777 {os.path.join(System.BIN_PATH,System.TOOL_NAME)}')
                     except Exception as e:
                         print(e)
                         return
