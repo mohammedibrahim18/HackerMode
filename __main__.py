@@ -1,7 +1,6 @@
 import sys
 from setup import Installer
 from base.config import Config
-from base.shell import BaseCommands
 
 class HackerMode:
     argv = [
@@ -18,6 +17,7 @@ class HackerMode:
                 except AttributeError:
                     print ('help msg')
         else:
+            from base.shell import BaseCommands
             Shell = BaseCommands()
             while True:
                 try:
@@ -27,15 +27,9 @@ class HackerMode:
 
     def install(self):
         Installer.install()
-        if all(Installer.InstalledSuccessfully['base']):
-            pass
 
     def update(self):
-        if not Config.get('settings','DEBUG',cast=bool):
-            pass
-            Installer.update()
-        else:
-            print ("# can't update in the DEUBG mode!")
+        Installer.update()
 
     def check(self):
         Installer.check()

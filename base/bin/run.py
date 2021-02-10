@@ -3,12 +3,12 @@ import sys
 class runfile:
         def __init__(self):
                 self.commands={
-                        'py':'python3',
-                        'pyc':'python3',
-                        'sh':'bash',
-                        'php':'php',
-                        'dart':'dart',
-                        'js':'node',
+                        '.py':'python3',
+                        '.pyc':'python3',
+                        '.sh':'bash',
+                        '.php':'php',
+                        '.dart':'dart',
+                        '.js':'node',
                 }
                 self.path='.'
         def isfile(self):

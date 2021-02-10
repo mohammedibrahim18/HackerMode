@@ -1,0 +1,6 @@
+{
+    "settings":{
+        "DEBUG":true,
+        "IS_INSTALLED":false
+    }
+}
