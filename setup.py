@@ -24,7 +24,7 @@ PACKAGES = {
         'linux': ['sudo apt install git'],
     },
     # -----------------------------------
-    'clang': {
+    'gcc': {
         'termux': ['pkg install clang'],
         'linux': ['sudo apt install clang'],
     },
@@ -106,11 +106,11 @@ class Installer:
             return
 
         # Move the tool to "System.TOOL_PATH"
-        if all(self.InstalledSuccessfully['base']):
+        if not all(self.InstalledSuccessfully['base']):
             print(f'# {RED}Error:{NORMAL} some of the basics package not installed!')
             return
 
-        if not Config.get('settings','DEBUG',cast=bool):
+        if Config.get('settings','DEBUG',cast=bool):
             print('# In DEBUG mode can"t move the tool\n# to "System.TOOL_PATH"!')
             return
 
@@ -135,8 +135,6 @@ class Installer:
         else:
             print(f'{RED}# Error: the tool path not found!')
             print(f'# try to run tool using\n# {GREEN}"python3 HakcerMode install"{NORMAL}')
-
-
 
     def check(self):
         '''To check if the packages has been
