@@ -24,7 +24,7 @@ class networkInfo:
 
     @property
     def IpInfo(self):
-        output = 'IP Info:\n'
+        output = '\nIP Info:\n'
         output += RULER()+'\n'
         output += f' [$LYELLOW]internal[$WIHTE]: [$LGREEN]{self.internal_ip}\n'
         for key,val in self.external_ip.items():
@@ -43,11 +43,13 @@ class networkInfo:
         output = '\nWIFI Users:\n'
         output += RULER()+'\n'
         for ip in Nmap.all_hosts():
-            output += f' [$LYELLOW]Unknow:[$WIHTE]\n'
-            output += f'  [$LYELLOW]IP [$WIHTE]: [$LGREEN]{ip}\n'
+            device_name = socket.getfqdn(ip)
+            device_name = 'Unknow' if device_name == ip else device_name
             mac = getmac.get_mac_address(ip=ip)
-            output += f'  [$LYELLOW]MAC[$WIHTE]: [$LGREEN]{mac if mac else "Unknow"}\n'
-        return output
+            output += f' [$LBLUE]{device_name}:[$WIHTE]\n'
+            output += f'  [$LYELLOW]IP [$WIHTE]: [$LGREEN]{ip}\n'
+            output += f'  [$LYELLOW]MAC[$WIHTE]: [$LGREEN]{mac if mac else "Unknow"}\n\n'
+        return output[:-1]
 
     def result(self,output):
         Sq = Square()
