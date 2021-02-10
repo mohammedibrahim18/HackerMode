@@ -6,6 +6,7 @@ class HackerMode:
     argv = [
         'install',
         'update',
+        'upgrade',
         'check'
     ]
 
@@ -30,6 +31,9 @@ class HackerMode:
 
     def update(self):
         Installer.update()
+
+    def upgrade(self):
+        Installer.install()
 
     def check(self):
         Installer.check()

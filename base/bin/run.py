@@ -22,7 +22,7 @@ class runfile:
                         print (f'# run not support this file "{self.path}"')
                         return
                 ext = self.path.split('.')[-1]
-                os.system(f'{self.commands[ext]} {self.path}')
+                os.system(f'{self.commands["."+ext]} {self.path}')
         def run_shell(self):
                 try:
                         self.path=sys.argv[1]

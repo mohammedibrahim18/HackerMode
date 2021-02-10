@@ -118,7 +118,8 @@ class Installer:
             HackerMode =  '#!/usr/bin/python3\n'
             HackerMode += 'import sys,os\n'
             HackerMode += f'path=os.path.join("{System.TOOL_PATH}","{System.TOOL_NAME}")\n'
-            HackerMode += "os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))"
+            HackerMode += "try:os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))"
+            HackerMode += "except:pass"
             try:
                 with open(os.path.join(System.BIN_PATH,System.TOOL_NAME),'w') as f:
                     f.write(HackerMode)
@@ -163,7 +164,6 @@ class Installer:
     def update(self):
         if not Config.get('settings','DEBUG'):
             os.system(f'cd {os.path.join(System.TOOL_PATH,System.TOOL_NAME)} && git fetch && git pull')
-            self.install()
         else:
             print ("# can't update in the DEUBG mode!")
 
