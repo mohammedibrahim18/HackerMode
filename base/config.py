@@ -1,10 +1,16 @@
 # coding: utf-8
 import os, json, __main__
 
-class Config(object):
-    file = os.path.join(
+class config(object):
+    default_file = os.path.join(
         os.path.dirname(os.path.abspath(__main__.__file__)),'settings.json'
     )
+
+    def __init__(self,file=None):
+        if file:
+            self.file = file
+        else:
+            self.file = self.default_file
 
     def set_file(self,file_path):
         if os.path.isfile(file_path):
@@ -18,7 +24,9 @@ class Config(object):
         option = option.upper()
         with open(self.file,'r') as f:
             data = json.loads(f.read())
-        data[section] = {option:value}
+
+        data[section][option] = value
+
         with open(self.file,'w') as f:
             f.write(json.dumps(data,indent=4))
 
@@ -31,12 +39,14 @@ class Config(object):
             return cast(data[section][option])
         return data[section][option]
 
-Config = Config()
+Config = config()
 
 if __name__ == '__main__':
     # tests:
     Config.set_file('file.json')
     # auto update and save
     Config.set('settings','HOME','/home/dir')
-    settings_home = Config.get('settings','HOME',cast=str)
-    print (settings_home)
+    Config.set('settings','DEBUG',True)
+    home = Config.get('settings','HOME',cast=str)
+    debug = Config.get('settings','DEBUG',cast=bool)
+    print (home,type(debug))
