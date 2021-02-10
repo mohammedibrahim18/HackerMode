@@ -68,9 +68,9 @@ class networkInfo:
             '─']
         return Sq.style([output])
 
-text_anim = AnimationTools.set_text_anim('Loading for Scanning...')
+text_anim = AnimationTools.set_text_anim('Network scan is in progress...')
 kwargs = (lambda **kwargs:kwargs)(text=text_anim)
-@ThreadAnimation(Animation=AN.Loading,kwargs=kwargs)
+@ThreadAnimation(Animation=AN.Loading,kwargs=kwargs,timer=.15)
 def result(Thread):
     obj = networkInfo()
     output = obj.result(obj.IpInfo+obj.wifiUsers)
