@@ -163,6 +163,7 @@ class Installer:
     def update(self):
         if not Config.get('settings','DEBUG'):
             os.system(f'cd {os.path.join(System.TOOL_PATH,System.TOOL_NAME)} && git fetch && git pull')
+            self.install()
         else:
             print ("# can't update in the DEUBG mode!")
 
