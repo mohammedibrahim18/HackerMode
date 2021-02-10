@@ -118,7 +118,7 @@ class Installer:
             HackerMode =  '#!/usr/bin/python3\n'
             HackerMode += 'import sys,os\n'
             HackerMode += f'path=os.path.join("{System.TOOL_PATH}","{System.TOOL_NAME}")\n'
-            HackerMode += "try:os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))"
+            HackerMode += "try:os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))\n"
             HackerMode += "except:pass"
             try:
                 with open(os.path.join(System.BIN_PATH,System.TOOL_NAME),'w') as f:
