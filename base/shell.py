@@ -1,4 +1,4 @@
-import cmd,os,pathlib
+import cmd,os,pathlib, threading, time
 from N4Tools.terminal import terminal
 from N4Tools.Design import Color
 if __name__ == '__main__':
@@ -132,16 +132,19 @@ class BaseCommands(BinCommands):
             print(e)
 
     def do_HackerMode(self, line):
-        print('# command: HackerMode '+line)
+        os.system('HackerMode '+line)
+        if line.strip() in ['install','update','upgrade']:
+            def refresh():
+                time.sleep(1)
+                os.system('HackerMode')
+            threading.Thread(target=refresh).start()
+            exit()
 
     def do_c(self, line):
         print(chr(27)+"[2J\x1b[H",end='')
 
     def do_clear(self, line):
         os.system('clear')
-
-    def do_nano(self, line):
-        os.system('nano '+line)
 
     def do_EOF(self, line):
         print ('\n# to exit write "exit"')
