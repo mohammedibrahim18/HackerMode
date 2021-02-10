@@ -132,7 +132,8 @@ class BaseCommands(BinCommands):
             print(e)
 
     def do_HackerMode(self, line):
-        os.system('HackerMode '+line)
+        if line:
+            os.system('HackerMode '+line)
         if line.strip() in ['install','update','upgrade']:
             def refresh():
                 time.sleep(1)
