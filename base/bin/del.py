@@ -18,7 +18,7 @@ Examples:
 	del -h -c
 	del -c
 \033[0m			'''
-		self.base = "/data/data/com.termux/files/home/.trash"
+		self.base = os.path.join(os.environ['HOME'],".trash")
 		if os.path.exists(self.base):pass
 		else:os.mkdir(self.base)
 		args= ['--help','-c','-h']
