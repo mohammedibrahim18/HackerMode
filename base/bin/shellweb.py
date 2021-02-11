@@ -1,4 +1,4 @@
-from N4Tools.Design import Color,ThreadAnimation,Text
+from N4Tools.Design import Color,ThreadAnimation
 from bs4 import BeautifulSoup as Soup
 from pygments import highlight
 from pygments.lexers import HtmlLexer,JsonLexer
@@ -9,7 +9,7 @@ import sys, os
 sys.path.append(os.path.abspath(__file__).split('/bin')[0])
 from shell import BaseShell
 
-url=Text().CInput(Color().reader('[$LYELLOW]URL[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
+url=input(Color().reader('[$LYELLOW]URL[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
 
 @ThreadAnimation()
 def GET(Thread):
