@@ -16,13 +16,13 @@ class runfile:
                         if self.path.endswith(x):return True
         def run(self):
                 if not os.path.isfile(self.path):
-                        print (f"[Errno 2] No such file or directory: '/{os.path.join(*__file__.split('/')[:-1],sys.argv[1])}'")
+                        print (f"[Errno 2] No such file or directory: '{os.path.join(*__file__.split('/')[:-1],sys.argv[1])}'")
                         return
                 if not self.isfile():
                         print (f'# run not support this file "{self.path}"')
                         return
                 ext = self.path.split('.')[-1]
-                os.system(f'{self.commands["."+ext]} {self.path}')
+                os.system(f'{self.commands["."+ext]} {" ".join(sys.argv[1:])}')
         def run_shell(self):
                 try:
                         self.path=sys.argv[1]

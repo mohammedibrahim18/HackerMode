@@ -80,16 +80,45 @@ class BaseShell(cmd.Cmd):
             return None
         return cmd.Cmd.postcmd(self, stop, line)
 
-class BinCommands(BaseShell):
+class HackerModeCommands(BaseShell):
     for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
+        function_name = package.split('.')[0]
         exec (f'''
-        \rdef do_{package[0:-3]}(self,arg):
+        \rdef do_{function_name}(self,arg):
+        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH,"bin"),"run.py")}'
         try:
-            os.system('python3 {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
+            os.system(run+' {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
         except:pass
 ''')
+    for tool_name in os.listdir(os.path.join(System.BASE_PATH,'tools')):
+        exec (f'''
+        \rdef do_{tool_name}(self,arg):
+        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH,"bin"),"run.py")}'
+        tool_path = "{os.path.join(os.path.join(System.BASE_PATH,"tools"),tool_name)}"
+        system_path = os.getcwd()
+        main = ''
+        for path,dirs,files in os.walk(tool_path):
+            for file in files:
+                if file.startswith('main'):
+                    main = os.path.join(path,file)
+                    break
+            break
+        if not main:
+            print ("# HackerMode can't find main file")
+            print ("# in {tool_name}.")
+            print ("# this is 'Developer Error'")
+            return
 
-class BaseCommands(BinCommands):
+        try:
+            os.chdir(tool_path)
+            os.system(run+' '+main+' '+arg)
+        except:pass
+        
+        finally:
+            os.chdir(system_path)
+''')
+
+class BaseCommands(HackerModeCommands):
     def do_ls(self, arg):
         if System.PLATFORME == 'termux':
             os.system('ls '+arg)
