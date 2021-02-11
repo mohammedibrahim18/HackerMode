@@ -1,6 +1,5 @@
 import sys
 from setup import Installer
-from base.config import Config
 
 class HackerMode:
     argv = [
@@ -18,8 +17,8 @@ class HackerMode:
                 except AttributeError:
                     print ('help msg')
         else:
-            from base.shell import BaseCommands
-            Shell = BaseCommands()
+            from base.shell import MainShell
+            Shell = MainShell()
             while True:
                 try:
                     Shell.cmdloop()

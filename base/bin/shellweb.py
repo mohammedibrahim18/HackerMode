@@ -1,15 +1,16 @@
-from N4Tools.Design import Color,ThreadAnimation
+from N4Tools.Design import Color,ThreadAnimation,Text
 from bs4 import BeautifulSoup as Soup
-from subprocess import Popen,PIPE
 from pygments import highlight
 from pygments.lexers import HtmlLexer,JsonLexer
 from pygments.formatters import TerminalFormatter
-import requests,os,cmd,json,re
+import requests,cmd,json,re
 
-url=input(Color().reader('[$LYELLOW]URL[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
-PROMPT=lambda url,CmdName,color:Color().reader(f'\r\
-[${color}]╭[$LRED][[$LBLUE]URL[$YELLOW]@[$LWIHTE]{url}[$LRED]][$YELLOW]@[$LRED][ [${color}]{CmdName} [$LRED]] \n\
-[${color}]╰>>>[$WIHTE]')
+import sys, os
+sys.path.append(os.path.abspath(__file__).split('/bin')[0])
+from shell import BaseShell
+
+url=Text().CInput(Color().reader('[$LYELLOW]URL[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
+
 @ThreadAnimation()
 def GET(Thread):
 	req=requests.get(url)
@@ -22,8 +23,8 @@ except Exception as e:print('\r'+str(e));exit()
 
 #header={k.replace('-','_'):v for k,v in HTML.headers.items()}
 soup=Soup(HTML.text,'html.parser')
-class HtmlCmd(cmd.Cmd):
-	prompt=PROMPT(url,"Html","LPINK")
+class HtmlCmd(BaseShell):
+	ToolName = "shellweb.[$LPINK]Html"
 	AllDag=['ins', 'frame', 'area', 'option', 'wbr', 'b', 'code', 'head', 'audio', 'main', 'optgroup', 'dialog', 'big', 'acronym', 'hr', 'dir', 'data', 'div', 'h5', 'h4', 'h6', 'h1', 'h3', 'h2', 'span', 'picture', 'output', 'link', 'video', 'pagh', 'section', 'map', 'em', 'small', 'nav', 's', 'object', 'noscript', 'cite', 'html', 'ul', 'mark', 'button', 'title', 'figure', 'ruby', 'font', 'br', 'aside', 'rp', 'ol', 'rt', 'progress', 'time', 'details', 'dfn', 'applet', 'summary', 'svg', 'samp', 'meta', 'p', 'li', 'track', 'script', 'style', 'table', 'del', 'figcaption', 'dd', 'basefont', 'colgroup', 'dl', 'strong', 'dt', 'input', 'base', 'tr', 'tt', 'footer', 'canvas', 'noframes', 'select', 'circle', 'td', 'embed', 'template', 'th', 'caption', 'bdi', 'bdo', 'i', 'a', 'thead', 'abbr', 'u', 'nobr', 'q', 'meter', 'stop', 'datalist', 'radialgradient', 'form', 'frameset', 'body', 'pre', 'col', 'blockquote', 'address', 'heada', 'label', 'param', 'tbody', 'img', 'sub', 'fieldset', 'article', 'sup', 'header', 'kbd', 'var', 'textarea', 'center', 'legend', 'strike', 'iframe', 'tfoot', 'source']
 	doc_header='Example Comments:'
 	for x in AllDag:
@@ -164,15 +165,15 @@ class HtmlCmd(cmd.Cmd):
 									totag=(re.findall('-[\w]*.',arg)[0][1:-1])
 									attrtotag=(re.findall('.[\w]*$',arg)[0][1:])
 									return ([tag,[totag,attrtotag],'tagtoatrall'])
-		
-			
-	
+
 	def default(self, line): #not in Code
 		self.stdout.write('Not Tag: "<%s>" in Code\n'%line)
-	def do__exit(self,arg):
+
+	def do_back(self,arg):
 		return True
-class InfoCmd(cmd.Cmd):
-	prompt=PROMPT(url,"Info","LGREEN")
+
+class InfoCmd(BaseShell):
+	ToolName = "shellweb.[$LGREEN]Info"
 	header={k.replace('-','_'):v for k,v in HTML.headers.items()}
 	AllCommentInfo=['encoding','reason','request','status_code','url','ok','links','history','is_permanent_redirect','is_redirect','apparent_encoding','cookies','elapsed']
 	for x in AllCommentInfo:
@@ -208,10 +209,11 @@ class InfoCmd(cmd.Cmd):
 		all=[k for k in self.header.keys()]
 		if not arg:return all
 		else:return [k+' ' for k in all if k.startswith(arg)]
-	def do__exit(self,arg):
+	def do_back(self,arg):
 		return True
-class LinkCmd(cmd.Cmd):
-	prompt=PROMPT(url,"Link","LCYAN")
+
+class LinkCmd(BaseShell):
+	ToolName = "shellweb.[$LCYAN]Link"
 	all=set(list(map((lambda t:t[0]),re.findall('"((http|ftp)s?://.*?)"', HTML.text))))
 	file=set([x for x in all if re.findall('[\w]*\.[\w]*$',x)])
 	ends=set([x[x.rfind('.'):] for x in file])
@@ -223,17 +225,19 @@ class LinkCmd(cmd.Cmd):
 		''')
 	def do_rest(self,arg):
 		print('\n'.join([x for x in self.all if  not x in self.file]))
-	def do__exit(self,arg):
+	def do_back(self,arg):
 		return True
-class MainCmd(cmd.Cmd):
-	prompt=PROMPT(url,"Main","LYELLOW")
+
+class MainCmd(BaseShell):
+	ToolName = "shellweb"
 	def do_html(self,arg):
 		HtmlCmd().cmdloop()
 	def do_info(self,arg):
 		InfoCmd().cmdloop()
 	def do_links(self,arg):
 		LinkCmd().cmdloop()
-	def do_exit(self,arg):
+	def do_main(self,arg):
 		return True
+
 MainCmd().cmdloop()
 		

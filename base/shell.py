@@ -1,10 +1,7 @@
-import cmd,os,pathlib, threading, time
+import cmd, os, pathlib, threading, time
 from N4Tools.terminal import terminal
 from N4Tools.Design import Color
-if __name__ == '__main__':
-    from system import System
-else:
-    from base.system import System
+from system import System
 
 Color = Color()
 terminal = terminal()
@@ -28,12 +25,12 @@ PROMPT = lambda path,ToolName:Color.reader(f'\
 '''
 
 PROMPT = lambda path,ToolName:Color.reader(f'\
-[$LGREEN]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LRED]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
+[$LGREEN]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
 [$LGREEN]│\n\
 [$LGREEN]╰─>>>[$LWIHTE]$ [$WIHTE]')
 
 class BaseShell(cmd.Cmd):
-    prompt = PROMPT(pathlib.Path.cwd().name,'None')
+    ToolName = 'Main'
     ruler = '='
     lastcmd = ''
     intro = None
@@ -45,6 +42,10 @@ class BaseShell(cmd.Cmd):
     use_rawinput = 1
 
     Path=[x+'/' if os.path.isdir(os.path.join('.',x))else x+' ' for x in os.listdir('.')]
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.prompt = PROMPT(pathlib.Path.cwd().name, self.ToolName)
 
     def propath(self,text,args):
         if not text:a=self.Path
@@ -79,6 +80,54 @@ class BaseShell(cmd.Cmd):
         if len(line) == 0:
             return None
         return cmd.Cmd.postcmd(self, stop, line)
+
+
+    def do_ls(self, arg):
+        if System.PLATFORME == 'termux':
+            os.system('ls '+arg)
+            return
+
+        if arg:
+            os.system('ls '+arg)
+            return
+
+        path = str(pathlib.Path.cwd() if not os.path.exists(arg) else arg)
+        files = os.popen('ls').read()
+        files = files.split('\n')
+        output = []
+        for i in files:
+            if os.path.isfile(os.path.join(path, i)):
+                if i.endswith('.png') or i.endswith('.jpg'):
+                    output.append('\033[1;95m' + i + '\033[0m')
+                else:
+                    output.append('\033[0;37m' + i + '\033[0m')
+                if ' ' in i:
+                    i = f"'{i}'"
+            elif os.path.isdir(os.path.join(path, i)):
+                output.append('\033[1;34m' + i + '\033[0m')
+            else:
+                output.append(i)
+        self.columnize(output, displaywidth=terminal.size['width'])
+
+    def do_cd(self, arg):
+        try:
+            if arg in ['~', '$HOME', '']:
+                os.chdir(str(pathlib.Path.home()))
+                self.Path=self.viewdir(pathlib.PurePath())
+            else:
+                os.chdir(os.path.join(os.getcwd(), arg))
+                self.Path=self.viewdir(pathlib.PurePath())
+            self.prompt = PROMPT(pathlib.Path.cwd().name,self.ToolName)
+        except FileNotFoundError as e:
+            print(e)
+        except NotADirectoryError as e:
+            print(e)
+
+    def do_c(self, line):
+        print(chr(27)+"[2J\x1b[H",end='')
+
+    def do_clear(self, line):
+        os.system('clear')
 
 class HackerModeCommands(BaseShell):
     for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
@@ -118,47 +167,7 @@ class HackerModeCommands(BaseShell):
             os.chdir(system_path)
 ''')
 
-class BaseCommands(HackerModeCommands):
-    def do_ls(self, arg):
-        if System.PLATFORME == 'termux':
-            os.system('ls '+arg)
-            return
-
-        if arg:
-            os.system('ls '+arg)
-            return
-
-        path = str(pathlib.Path.cwd() if not os.path.exists(arg) else arg)
-        files = os.popen('ls').read()
-        files = files.split('\n')
-        output = []
-        for i in files:
-            if os.path.isfile(os.path.join(path, i)):
-                if i.endswith('.png') or i.endswith('.jpg'):
-                    output.append('\033[1;95m' + i + '\033[0m')
-                else:
-                    output.append('\033[0;37m' + i + '\033[0m')
-                if ' ' in i:
-                    i = f"'{i}'"
-            elif os.path.isdir(os.path.join(path, i)):
-                output.append('\033[1;34m' + i + '\033[0m')
-            else:
-                output.append(i)
-        self.columnize(output, displaywidth=terminal.size['width'])
-
-    def do_cd(self, arg):
-        try:
-            if arg in ['~', '$HOME', '']:
-                os.chdir(str(pathlib.Path.home()))
-                self.Path=self.viewdir(pathlib.PurePath())
-            else:
-                os.chdir(os.path.join(os.getcwd(), arg))
-                self.Path=self.viewdir(pathlib.PurePath())
-            self.prompt = PROMPT(pathlib.Path.cwd().name,'None')
-        except FileNotFoundError as e:
-            print(e)
-        except NotADirectoryError as e:
-            print(e)
+class MainShell(HackerModeCommands):
 
     def do_HackerMode(self, line):
         if line:
@@ -170,12 +179,6 @@ class BaseCommands(HackerModeCommands):
             threading.Thread(target=refresh).start()
             exit()
 
-    def do_c(self, line):
-        print(chr(27)+"[2J\x1b[H",end='')
-
-    def do_clear(self, line):
-        os.system('clear')
-
     def do_EOF(self, line):
         print ('\n# to exit write "exit"')
         return True
@@ -184,5 +187,5 @@ class BaseCommands(HackerModeCommands):
         exit()
 
 if __name__ == '__main__':
-    print(BaseCommands().__dir__())
-    BaseCommands().cmdloop()
+    print(MainShell().__dir__())
+    MainShell().cmdloop()

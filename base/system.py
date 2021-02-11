@@ -1,5 +1,5 @@
 import os, sys, tempfile, pathlib
-
+sys.path.append('/'.join(os.path.abspath(__file__).split('/')[:-1]))
 class System:
     TOOL_NAME = 'HackerMode'
     BASE_PATH = pathlib.Path(os.path.abspath(__file__)).parent
