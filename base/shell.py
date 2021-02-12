@@ -2,6 +2,7 @@ import cmd, os, pathlib, threading, time
 from N4Tools.terminal import terminal
 from N4Tools.Design import Color
 from system import System
+from docsReader import DocsReader
 
 Color = Color()
 terminal = terminal()
@@ -139,6 +140,16 @@ class HackerModeCommands(BaseShell):
             os.system(run+' {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
         except:pass
 ''')
+
+        exec(f'''
+                \rdef help_{function_name}(self,*arg):
+                try:
+                    obj = DocsReader('{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), function_name)}.html')
+                    print (obj.style)
+                except FileNotFoundError:
+                    print ('Error: command not found')
+    ''')
+
     for tool_name in os.listdir(os.path.join(System.BASE_PATH,'tools')):
         exec (f'''
         \rdef do_{tool_name}(self,arg):
