@@ -3,7 +3,7 @@ import os,json,sys
 sys.path.append(os.path.abspath(__file__).split('/bin')[0])
 from shell import BaseShell
 path=input(Color().reader('[$LYELLOW]Path[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
-path=os.path.join("/",*__file__.split("/")[:-1],path)
+
 if not os.path.isdir(path):print(f"[Errno 20] Not a directory: '{path}'");exit()
 
 def getsize(num):
