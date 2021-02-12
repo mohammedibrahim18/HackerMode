@@ -12,8 +12,8 @@ class MacChanger():
 
 Examples:
 	\033[1;35m[default interface : eth0]\033[1;32m
-	chmac -m 64:A1::B7:44:22:63 -i wlan0
-	chmac -m 64:A1::B7:44:22:63
+	chmac -m 64:A1:B7:44:22:63 -i wlan0
+	chmac -m 64:A1:B7:44:22:63
 \033[0m					 ''' )
 
 		self.mp.add_option("-m","--mac",dest="maca",type="string",help="the mac address you want to change to")
@@ -54,4 +54,4 @@ Examples:
 if __name__ == '__main__':
 	if os.geteuid() == 0:
 		MacChanger().run()
-	else:print("\033[1;31m#[!] This Tool should be runing witj root privilege\033[0m")
+	else:print("\033[1;31m#[!] This Tool should be runing with root privilege\033[0m")
