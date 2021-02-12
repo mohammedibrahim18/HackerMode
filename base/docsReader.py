@@ -12,7 +12,7 @@ class DocsReader:
     def __init__(self,file):
         with open(file, 'r') as f:
             doc = f.read()
-        self.soup = BeautifulSoup(doc, 'lxml')
+        self.soup = BeautifulSoup(doc, 'html.parser')
 
     @property
     def title(self):
@@ -22,7 +22,7 @@ class DocsReader:
     def sections(self):
         data = {}
         for section in self.soup.find_all('section'):
-            data[section['title']] = {command['text']:command.text for command in section.find_all('command')}
+            data[section['title']] = {command['command']:command.text for command in section.find_all('line')}
         return data
 
     @property
@@ -72,4 +72,4 @@ class DocsReader:
             ' │',
             temp,
             '─']
-        return Square.base(style)
+        return Square.base(style[:-1])
