@@ -1,6 +1,7 @@
 {
     "settings":{
         "DEBUG":true,
-        "IS_INSTALLED":false
+        "IS_INSTALLED":false,
+        "ARABIC_RESHAPER":false
     }
 }

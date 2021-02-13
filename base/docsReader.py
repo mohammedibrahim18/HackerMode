@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from N4Tools.Design import Text,Square,Color
 from N4Tools.terminal import terminal
-from system import System
+from config import Config
 
 Text = Text()
 Square = Square()
@@ -16,23 +16,29 @@ class DocsReader:
 
     @property
     def title(self):
-        return self.soup.find('title').text
+        try:
+            return self.soup.find('title').text
+        except:
+            return None
 
     @property
     def sections(self):
         data = {}
         for section in self.soup.find_all('section'):
-            data[section['title']] = {command['command']:command.text for command in section.find_all('line')}
+            data[section['title']] = {}
+            for command in section.find_all('line'):
+                 data[section['title']][command['command']] = command.text
         return data
 
     @property
     def style(self):
-        title = '\n'
+        title = ''
         square_text = 6
         terminal_width = terminal.size['width']-square_text
         RULER = lambda : '[$WIHTE]' + '╌' * (terminal_width)
+
         if self.title:
-            title = f"<[ [$LCYAN]{self.title}[$NORMAL] ]>"
+            title = f"[$LBLUE]<<< [$LCYAN]{self.title}[$NORMAL] [$LBLUE]>>>"
             title = ' '*( (terminal_width//2)-(len(Color.del_colors(title))//2) )+title
             title = '\n'+title+'\n'
 
@@ -40,7 +46,7 @@ class DocsReader:
         temp = 0
         for section_title,commands in self.sections.items():
             sections.append('')
-            sections[temp] += ' '+section_title+':\n'+RULER()+'\n'
+            sections[temp] += '[$WIHTE][$BOLD][$LBLUEBG] '+section_title+': [$NORMAL]\n'+RULER()+'\n'
 
             # commands
             tempFixwidth = [key for key in commands.keys()]
@@ -49,11 +55,11 @@ class DocsReader:
 
             for command,helpMsg in commands.items():
                 command = tempFixwidth[tempCommands.index(command)]
-                if System.PLATFORME == 'termux':
+                if Config.get('settings','ARABIC_RESHAPER'):
                     helpMsg = Text.arabic(helpMsg)
-                sections[temp] += '  '+command+'  '+helpMsg+'\n'
+                sections[temp] += '  [$YELLOW]'+command+'  [$WIHTE]'+helpMsg+'\n'
 
-            sections[temp] += '\n'
+            sections[temp] += RULER()+'\n\n'
             temp += 1
 
         style = title+'\n'

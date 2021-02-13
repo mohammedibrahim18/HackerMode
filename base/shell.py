@@ -141,15 +141,6 @@ class HackerModeCommands(BaseShell):
         except:pass
 ''')
 
-        exec(f'''
-                \rdef help_{function_name}(self,*arg):
-                try:
-                    obj = DocsReader('{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), function_name)}.html')
-                    print (obj.style)
-                except FileNotFoundError:
-                    print ('Error: command not found')
-    ''')
-
     for tool_name in os.listdir(os.path.join(System.BASE_PATH,'tools')):
         exec (f'''
         \rdef do_{tool_name}(self,arg):
@@ -177,6 +168,17 @@ class HackerModeCommands(BaseShell):
         finally:
             os.chdir(system_path)
 ''')
+
+    def do_help(self, arg):
+        'List available commands with "help" or detailed help with "help cmd".'
+        if arg:
+            try:
+                obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), arg)}.html')
+                print (obj.style)
+                return
+            except FileNotFoundError:
+                pass
+        super().do_help(arg)
 
 class MainShell(HackerModeCommands):
 
