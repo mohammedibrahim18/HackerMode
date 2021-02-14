@@ -86,7 +86,9 @@ class BaseShell(cmd.Cmd):
         """
         cmd, arg, line = self.parseline(line)
         cmd = line.split(' ')[0]
-        arg = arg if not cmd.endswith(arg.split(' ')[0]) else ' '.join(arg.split(' ')[1:])
+        try:
+          arg = arg if not cmd.endswith(arg.split(' ')[0]) else ' '.join(arg.split(' ')[1:])
+        except:pass
 
         if not line:
             return self.emptyline()
