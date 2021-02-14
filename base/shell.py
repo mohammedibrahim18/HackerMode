@@ -28,7 +28,7 @@ PROMPT = lambda path,ToolName:Color.reader(f'\
 PROMPT = lambda path,ToolName:Color.reader(f'\
 [$LGREEN]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
 [$LGREEN]│\n\
-[$LGREEN]╰─>>>[$LWIHTE]$ [$WIHTE]')
+╰─>>>[$WIHTE]$ ')
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
@@ -67,6 +67,7 @@ class BaseShell(cmd.Cmd):
     def default(self, line):
         try:
             os.system(line)
+            self.Path = self.viewdir(pathlib.PurePath())
         except:pass
 #        return cmd.Cmd.default(self, line)
 

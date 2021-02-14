@@ -1,5 +1,7 @@
 import os
 import sys
+BinaryFiles = lambda file :os.path.join(os.path.join(os.path.abspath(__file__).split('/bin')[0],'BinaryFiles'),file)
+
 class runfile:
         def __init__(self):
                 self.commands={
@@ -9,6 +11,7 @@ class runfile:
                         '.php':'php',
                         '.dart':'dart',
                         '.js':'node',
+                        '.c':f'gcc [$FILE] -o {BinaryFiles("Cfile")} && {BinaryFiles("Cfile")}',
                 }
                 self.path='.'
         def isfile(self):
@@ -22,7 +25,11 @@ class runfile:
                         print (f'# run not support this file "{self.path}"')
                         return
                 ext = self.path.split('.')[-1]
-                os.system(f'{self.commands["."+ext]} {" ".join(sys.argv[1:])}')
+                if ext == 'c':
+                        file = (sys.argv[1])
+                        os.system(f'{self.commands["."+ext].replace("[$FILE]",file)} {" ".join(sys.argv[2:])}')
+                else:
+                        os.system(f'{self.commands["."+ext]} {" ".join(sys.argv[1:])}')
         def run_shell(self):
                 try:
                         self.path=sys.argv[1]
