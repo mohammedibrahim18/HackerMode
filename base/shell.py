@@ -64,10 +64,6 @@ class BaseShell(cmd.Cmd):
         #print ('cmdloop(%s)' % intro)
         return cmd.Cmd.cmdloop(self, intro)
 
-    def postloop(self):
-        #print ('postloop()')
-        pass
-
     def default(self, line):
         try:
             os.system(line)
@@ -77,11 +73,65 @@ class BaseShell(cmd.Cmd):
     def completedefault(self, text, *args):
         return self.propath(text,args[0])
 
-    def postcmd(self, stop, line):
-        if len(line) == 0:
-            return None
-        return cmd.Cmd.postcmd(self, stop, line)
+    def onecmd(self, line):
+        """Interpret the argument as though it had been typed in response
+        to the prompt.
 
+        This may be overridden, but should not normally need to be;
+        see the precmd() and postcmd() methods for useful execution hooks.
+        The return value is a flag indicating whether interpretation of
+        commands by the interpreter should stop.
+
+        """
+        cmd, arg, line = self.parseline(line)
+        cmd = line.split(' ')[0]
+        arg = arg if not cmd.endswith(arg.split(' ')[0]) else ' '.join(arg.split(' ')[1:])
+
+        if not line:
+            return self.emptyline()
+        if cmd is None:
+            return self.default(line)
+        self.lastcmd = line
+        if line == 'EOF':
+            self.lastcmd = ''
+        if cmd == '':
+            return self.default(line)
+        else:
+            try:
+                func = getattr(self, 'do_' + cmd.replace('-','_'))
+            except AttributeError:
+                return self.default(line)
+            return func(arg)
+
+    def complete(self, text, state):
+        """Return the next possible completion for 'text'.
+
+        If a command has not been entered, then complete against command list.
+        Otherwise try to call complete_<command> to get list of completions.
+        """
+        if state == 0:
+            import readline
+            origline = readline.get_line_buffer()
+            line = origline.lstrip()
+            stripped = len(origline) - len(line)
+            begidx = readline.get_begidx() - stripped
+            endidx = readline.get_endidx() - stripped
+            if begidx > 0:
+                cmd, args, foo = self.parseline(line)
+                if cmd == '':
+                    compfunc = self.completedefault
+                else:
+                    try:
+                        compfunc = getattr(self, 'complete_' + cmd)
+                    except AttributeError:
+                        compfunc = self.completedefault
+            else:
+                compfunc = self.completenames
+            self.completion_matches = compfunc(text, line, begidx, endidx)
+        try:
+            return self.completion_matches[state].replace('_','-')
+        except IndexError:
+            return None
 
     def do_ls(self, arg):
         if System.PLATFORME == 'termux':
@@ -134,7 +184,7 @@ class HackerModeCommands(BaseShell):
     for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
         function_name = package.split('.')[0]
         exec (f'''
-        \rdef do_{function_name}(self,arg):
+        \rdef do_{function_name.replace('-','_')}(self,arg):
         run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH,"bin"),"run.py")}'
         try:
             os.system(run+' {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
@@ -143,7 +193,7 @@ class HackerModeCommands(BaseShell):
 
     for tool_name in os.listdir(os.path.join(System.BASE_PATH,'tools')):
         exec (f'''
-        \rdef do_{tool_name}(self,arg):
+        \rdef do_{tool_name.replace('-','_')}(self,arg):
         run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH,"bin"),"run.py")}'
         tool_path = "{os.path.join(os.path.join(System.BASE_PATH,"tools"),tool_name)}"
         system_path = os.getcwd()

@@ -76,4 +76,7 @@ def result(Thread):
     output = obj.result(obj.IpInfo+obj.wifiUsers)
     Thread.set_end(output)
 
+import sys
+print (sys.argv)
+
 result()

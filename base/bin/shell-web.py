@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath(__file__).split('/bin')[0])
 from shell import BaseShell
 
 url=input(Color().reader('[$LYELLOW]URL[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
+TOOL_NAME = __file__.split('/')[-1].split('.')[0]
 
 @ThreadAnimation()
 def GET(Thread):
@@ -24,7 +25,7 @@ except Exception as e:print('\r'+str(e));exit()
 #header={k.replace('-','_'):v for k,v in HTML.headers.items()}
 soup=Soup(HTML.text,'html.parser')
 class HtmlCmd(BaseShell):
-	ToolName = "shellweb.[$LPINK]Html"
+	ToolName = f"{TOOL_NAME}.[$LPINK]Html"
 	AllDag=['ins', 'frame', 'area', 'option', 'wbr', 'b', 'code', 'head', 'audio', 'main', 'optgroup', 'dialog', 'big', 'acronym', 'hr', 'dir', 'data', 'div', 'h5', 'h4', 'h6', 'h1', 'h3', 'h2', 'span', 'picture', 'output', 'link', 'video', 'pagh', 'section', 'map', 'em', 'small', 'nav', 's', 'object', 'noscript', 'cite', 'html', 'ul', 'mark', 'button', 'title', 'figure', 'ruby', 'font', 'br', 'aside', 'rp', 'ol', 'rt', 'progress', 'time', 'details', 'dfn', 'applet', 'summary', 'svg', 'samp', 'meta', 'p', 'li', 'track', 'script', 'style', 'table', 'del', 'figcaption', 'dd', 'basefont', 'colgroup', 'dl', 'strong', 'dt', 'input', 'base', 'tr', 'tt', 'footer', 'canvas', 'noframes', 'select', 'circle', 'td', 'embed', 'template', 'th', 'caption', 'bdi', 'bdo', 'i', 'a', 'thead', 'abbr', 'u', 'nobr', 'q', 'meter', 'stop', 'datalist', 'radialgradient', 'form', 'frameset', 'body', 'pre', 'col', 'blockquote', 'address', 'heada', 'label', 'param', 'tbody', 'img', 'sub', 'fieldset', 'article', 'sup', 'header', 'kbd', 'var', 'textarea', 'center', 'legend', 'strike', 'iframe', 'tfoot', 'source']
 	doc_header='Example Comments:'
 	for x in AllDag:
@@ -173,7 +174,7 @@ class HtmlCmd(BaseShell):
 		return True
 
 class InfoCmd(BaseShell):
-	ToolName = "shellweb.[$LGREEN]Info"
+	ToolName = f"{TOOL_NAME}.[$LGREEN]Info"
 	header={k.replace('-','_'):v for k,v in HTML.headers.items()}
 	AllCommentInfo=['encoding','reason','request','status_code','url','ok','links','history','is_permanent_redirect','is_redirect','apparent_encoding','cookies','elapsed']
 	for x in AllCommentInfo:
@@ -213,7 +214,7 @@ class InfoCmd(BaseShell):
 		return True
 
 class LinkCmd(BaseShell):
-	ToolName = "shellweb.[$LCYAN]Link"
+	ToolName = f"{TOOL_NAME}.[$LCYAN]Link"
 	all=set(list(map((lambda t:t[0]),re.findall('"((http|ftp)s?://.*?)"', HTML.text))))
 	file=set([x for x in all if re.findall('[\w]*\.[\w]*$',x)])
 	ends=set([x[x.rfind('.'):] for x in file])
@@ -229,7 +230,7 @@ class LinkCmd(BaseShell):
 		return True
 
 class MainCmd(BaseShell):
-	ToolName = "shellweb"
+	ToolName = TOOL_NAME
 	def do_html(self,arg):
 		HtmlCmd().cmdloop()
 	def do_info(self,arg):

@@ -1,8 +1,8 @@
-import requests,cmd,os,sys
-from shutil import which
+import requests,os,sys
 from N4Tools.Design import ThreadAnimation,Color,Text,Square
 from bs4 import BeautifulSoup as Soup
 sys.path.append(os.path.abspath(__file__).split('/bin')[0])
+TOOL_NAME = __file__.split('/')[-1].split('.')[0]
 from shell import BaseShell
 Namelib=input(Color().reader('[$LYELLOW]SearchLib[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
 
@@ -28,13 +28,13 @@ class Search_in_Pypi:
 		index=0
 		options={}
 		sq=Square()
-		sq.SETTINGS['square']=['╭', '┝', '╰', '━', '╯', '┥', '╮', '━']
+		sq.SETTINGS['square']=['╭─', '┝[$CYAN]─', '╰─', '─', '╯', '┥', '╮', '─']
 		sq.SETTINGS['color']="[$LCYAN]"
 		M=max([len(k+v['verison'])for k,v in data.items()])
 		for k,v in data.items():
 			Num='0'+str(index+1) if index+1<=9 else str(index+1)
-			out+=f"[$LRED]([$NORMAL]{Num}[$LRED])[$LYELLOW]{k}:[$LGREEN]{v['verison']}[$LCYAN]{'━'*(M-len(k+v['verison']))}\n"
-			options[Num]=v['href']
+			out+=f"[$LRED]([$NORMAL]{Num}[$LRED])[$LYELLOW]{k}:[$LGREEN]{v['verison']}[$CYAN]{'─'*(M-len(k+v['verison']))}\n"
+			options[int(Num)]=v['href']
 			index+=1
 		return([sq.base(Color().reader(out[:-1])),options])
 	def Choices(self):
@@ -50,15 +50,18 @@ Choices=get[0]
 options=get[1]
 print(Choices)
 class BaseCmd(BaseShell):
-	ToolName='Installlib'
+	ToolName=TOOL_NAME
 	def do_choices(self,arg):
 		print(Choices)
 	def do_install(self,arg):
-		if arg in options:
-			command=(self.GetComand(options[arg]))
+		try:
+			command=(self.GetComand(options[int(arg)]))
 			print(Color().reader('[$YELLOW]@[$LBLUE]Installing...[$NORMAL]'))
 			os.system(command)
-		else:print(f'Not Lib {arg}')
+		except KeyError:
+			print(f'Not Lib {arg}')
+		except ValueError:
+			print(f'Not Lib {arg}')
 	def complete_install(self,arg,*args):
 		all=list(options.keys())
 		if not arg:return all

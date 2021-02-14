@@ -10,9 +10,10 @@ Color = Color()
 
 class DocsReader:
     def __init__(self,file):
+        self.file = file
         with open(file, 'r') as f:
             doc = f.read()
-        self.soup = BeautifulSoup(doc, 'html.parser')
+        self.soup = BeautifulSoup(self.ValuesReader(doc), 'html.parser')
 
     @property
     def title(self):
@@ -29,6 +30,10 @@ class DocsReader:
             for command in section.find_all('line'):
                  data[section['title']][command['command']] = command.text
         return data
+
+    def ValuesReader(self,text):
+        text = text.replace('{{ TOOL_NAME }}',self.file.split('/')[-1].split('.')[0])
+        return text
 
     @property
     def style(self):

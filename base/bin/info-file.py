@@ -5,7 +5,7 @@ from shell import BaseShell
 path=input(Color().reader('[$LYELLOW]Path[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
 
 if not os.path.isdir(path):print(f"[Errno 20] Not a directory: '{path}'");exit()
-
+TOOL_NAME = __file__.split('/')[-1].split('.')[0]
 def getsize(num):
 	G=num/1024
 	tmp="KB"
@@ -31,7 +31,7 @@ def getnumpers(Thread):
 
 
 class NumFile(BaseShell):
-	ToolName="infofile"
+	ToolName=TOOL_NAME
 	all=getnumpers()
 	DoneSearch={}
 	for x in all.keys():
