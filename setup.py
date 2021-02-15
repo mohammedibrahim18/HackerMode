@@ -48,13 +48,14 @@ PYHTON3_MODULES = {
     'getmac':'getmac',
 }
 
-RED = '\033[1;31m'
-GREEN = '\033[1;32m'
-NORMAL = '\033[0m'
-
 from base.system import System
 from base.config import Config
 import os, shutil
+
+RED = '\033[1;31m'
+GREEN = '\033[1;32m'
+NORMAL = '\033[0m'
+HACKERMODE_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
 
 class Installer:
     InstalledSuccessfully = {
@@ -98,6 +99,19 @@ class Installer:
                 os.system(f'sudo pip3 install {MODULES}')
             elif System.PLATFORME == 'termux':
                 os.system(f'pip install {MODULES}')
+
+        # Install tools packages:
+        tempPath = os.getcwd()
+        run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH,'base/bin/run.py'))}"
+        TOOLS_PATH = os.path.abspath(os.path.join(HACKERMODE_PATH,'base/tools'))
+        print (run)
+        print (TOOLS_PATH)
+        try:
+            for tool in  os.listdir(TOOLS_PATH):
+                os.chdir(os.path.join(TOOLS_PATH,tool))
+                os.system(f'{run} setup.sh')
+        finally:
+            os.chdir(tempPath)
 
         # check:
         print('\n# checking:')
