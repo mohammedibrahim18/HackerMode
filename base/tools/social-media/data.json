@@ -1,0 +1,842 @@
+{
+  "2Dimensions": {
+    "type": "statusCode",
+    "url": "https://2Dimensions.com/a/%s"
+  },
+
+  "7Cups": {
+    "type": "statusCode",
+    "url": "https://www.7cups.com/@%s"
+  },
+
+  "9GAG": {
+    "type": "statusCode",
+    "url": "https://www.9gag.com/u/%s"
+  },
+
+  "About.me": {
+    "type": "statusCode",
+    "url": "https://about.me/%s"
+  },
+
+  "Alik.cz": {
+    "type": "statusCode",
+    "url": "https://www.alik.cz/u/%s"
+  },
+
+  "Asciinema": {
+    "type": "statusCode",
+    "url": "https://asciinema.org/~%s"
+  },
+
+  "Ask Fedora": {
+    "type": "statusCode",
+    "url": "https://ask.fedoraproject.org/u/%s"
+  },
+
+  "Bandcamp": {
+    "type": "statusCode",
+    "url": "https://www.bandcamp.com/%s"
+  },
+
+  "Behance": {
+    "type": "statusCode",
+    "url": "https://www.behance.net/%s"
+  },
+
+  "Bookcrossing": {
+    "type": "statusCode",
+    "url": "https://www.bookcrossing.com/mybookshelf/%s/"
+  },
+
+  "BuyMeACoffee": {
+    "type": "statusCode",
+    "url": "https://buymeacoff.ee/%s"
+  },
+
+  "BuzzFeed": {
+    "type": "statusCode",
+    "url": "https://buzzfeed.com/%s"
+  },
+
+  "CNET": {
+    "type": "statusCode",
+    "url": "https://www.cnet.com/profiles/%s/"
+  },
+
+  "Championat": {
+    "type": "statusCode",
+    "url": "https://www.championat.com/user/%s"
+  },
+
+  "Cloob": {
+    "type": "statusCode",
+    "url": "https://www.cloob.com/name/%s"
+  },
+
+  "CloudflareCommunity": {
+    "type": "statusCode",
+    "url": "https://community.cloudflare.com/u/%s"
+  },
+
+  "Codecademy": {
+    "type": "statusCode",
+    "url": "https://www.codecademy.com/profiles/%s"
+  },
+
+  "Codepen": {
+    "type": "statusCode",
+    "url": "https://codepen.io/%s"
+  },
+
+  "Codewars": {
+    "type": "statusCode",
+    "url": "https://www.codewars.com/users/%s"
+  },
+
+  "ColourLovers": {
+    "type": "statusCode",
+    "url": "https://www.colourlovers.com/lover/%s"
+  },
+
+  "Coroflot": {
+    "type": "statusCode",
+    "url": "https://www.coroflot.com/%s"
+  },
+
+  "Countable": {
+    "type": "statusCode",
+    "url": "https://www.countable.us/%s"
+  },
+
+  "Crevado": {
+    "type": "statusCode",
+    "url": "https://%s.crevado.com"
+  },
+
+  "DailyMotion": {
+    "type": "statusCode",
+    "url": "https://www.dailymotion.com/%s"
+  },
+
+  "Designspiration": {
+    "type": "statusCode",
+    "url": "https://www.designspiration.net/%s/"
+  },
+
+  "Discogs": {
+    "type": "statusCode",
+    "url": "https://www.discogs.com/user/%s"
+  },
+
+  "Discuss.Elastic.co": {
+    "type": "statusCode",
+    "url": "https://discuss.elastic.co/u/%s"
+  },
+
+  "Disqus": {
+    "type": "statusCode",
+    "url": "https://disqus.com/%s"
+  },
+
+  "Docker Hub": {
+    "type": "statusCode",
+    "url": "https://hub.docker.com/u/%s/"
+  },
+
+  "Etsy": {
+    "type": "statusCode",
+    "url": "https://www.etsy.com/shop/%s"
+  },
+
+  "EyeEm": {
+    "type": "statusCode",
+    "url": "https://www.eyeem.com/u/%s"
+  },
+
+  "F3.cool": {
+    "type": "statusCode",
+    "url": "https://f3.cool/%s/"
+  },
+
+  "Fandom": {
+    "type": "statusCode",
+    "url": "https://www.fandom.com/u/%s"
+  },
+
+  "Flickr": {
+    "type": "statusCode",
+    "url": "https://www.flickr.com/people/%s"
+  },
+
+  "FortniteTracker": {
+    "type": "statusCode",
+    "url": "https://fortnitetracker.com/profile/all/%s"
+  },
+
+  "Freesound": {
+    "type": "statusCode",
+    "url": "https://freesound.org/people/%s/"
+  },
+
+  "GDProfiles": {
+    "type": "statusCode",
+    "url": "https://gdprofiles.com/%s"
+  },
+
+  "Gamespot": {
+    "type": "statusCode",
+    "url": "https://www.gamespot.com/profile/%s/"
+  },
+
+  "GetMyUni": {
+    "type": "statusCode",
+    "url": "https://www.getmyuni.com/user/%s"
+  },
+
+  "Giphy": {
+    "type": "statusCode",
+    "url": "https://giphy.com/%s"
+  },
+
+  "Github": {
+    "type": "statusCode",
+    "url": "https://github.com/%s"
+  },
+
+  "Gitee": {
+    "type": "statusCode",
+    "url": "https://gitee.com/%s"
+  },
+
+  "GoodReads": {
+    "type": "statusCode",
+    "url": "https://www.goodreads.com/%s"
+  },
+
+  "GunsAndAmmo": {
+    "type": "statusCode",
+    "url": "https://forums.gunsandammo.com/profile/%s"
+  },
+
+  "GuruShots": {
+    "type": "statusCode",
+    "url": "https://gurushots.com/%s/photos"
+  },
+
+  "HackTheBox": {
+    "type": "statusCode",
+    "url": "https://forum.hackthebox.eu/profile/%s"
+  },
+
+  "Hackaday": {
+    "type": "statusCode",
+    "url": "https://hackaday.io/%s"
+  },
+
+  "HubPages": {
+    "type": "statusCode",
+    "url": "https://hubpages.com/@%s"
+  },
+
+  "ImgUp.cz": {
+    "type": "statusCode",
+    "url": "https://imgup.cz/%s"
+  },
+
+  "Imgur": {
+    "type": "statusCode",
+    "url": "https://imgur.com/user/%s"
+  },
+
+  "Instructables": {
+    "type": "statusCode",
+    "url": "https://www.instructables.com/member/%s"
+  },
+
+  "Instagram": {
+    "type": "statusCode",
+    "url": "https://www.instagram.com/%s"
+  },
+
+  "Issuu": {
+    "type": "statusCode",
+    "url": "https://issuu.com/%s"
+  },
+
+  "Itch.io": {
+    "type": "statusCode",
+    "url": "https://%s.itch.io/"
+  },
+
+  "Kaggle": {
+    "type": "statusCode",
+    "url": "https://www.kaggle.com/%s"
+  },
+
+  "Keybase": {
+    "type": "statusCode",
+    "url": "https://keybase.io/%s"
+  },
+
+  "LOR": {
+    "type": "statusCode",
+    "url": "https://www.linux.org.ru/people/%s/profile"
+  },
+
+  "Launchpad": {
+    "type": "statusCode",
+    "url": "https://launchpad.net/~%s"
+  },
+
+  "LeetCode": {
+      "type": "statusCode",
+  "url": "https://leetcode.com/%s"
+  },
+
+  "Memrise": {
+    "type": "statusCode",
+    "url": "https://www.memrise.com/user/%s/"
+  },
+
+  "MixCloud": {
+    "type": "statusCode",
+    "url": "https://www.mixcloud.com/%s/"
+  },
+
+  "Munzee": {
+    "type": "statusCode",
+    "url": "https://www.munzee.com/m/%s"
+  },
+
+  "MyAnimeList": {
+    "type": "statusCode",
+    "url": "https://myanimelist.net/profile/%s"
+  },
+
+  "MyMiniFactory": {
+    "type": "statusCode",
+    "url": "https://www.myminifactory.com/users/%s"
+  },
+
+  "Myspace": {
+    "type": "statusCode",
+    "url": "https://myspace.com/%s"
+  },
+
+  "Naver": {
+    "type": "statusCode",
+    "url": "https://blog.naver.com/%s"
+  },
+
+  "Nightbot": {
+    "type": "statusCode",
+    "url": "https://nightbot.tv/t/%s/commands"
+  },
+
+  "NotABug.org": {
+    "type": "statusCode",
+    "url": "https://notabug.org/%s"
+  },
+
+  "OpenStreetMap": {
+    "type": "statusCode",
+    "url": "https://www.openstreetmap.org/user/%s"
+  },
+
+  "Opensource": {
+    "type": "statusCode",
+    "url": "https://opensource.com/users/%s"
+  },
+
+  "Oracle Community": {
+    "type": "statusCode",
+    "url": "https://community.oracle.com/people/%s"
+  },
+
+  "Otzovik": {
+    "type": "statusCode",
+    "url": "https://otzovik.com/profile/%s"
+  },
+
+  "PCPartPicker": {
+    "type": "statusCode",
+    "url": "https://pcpartpicker.com/user/%s"
+  },
+
+  "Patreon": {
+    "type": "statusCode",
+    "url": "https://www.patreon.com/%s"
+  },
+
+  "Periscope": {
+    "type": "statusCode",
+    "url": "https://www.periscope.tv/%s/"
+  },
+
+  "Pinkbike": {
+    "type": "statusCode",
+    "url": "https://www.pinkbike.com/u/%s/"
+  },
+
+  "Pinterest": {
+    "type": "statusCode",
+    "url": "https://www.pinterest.com/%s/"
+  },
+
+  "PlayStore": {
+    "type": "statusCode",
+    "url": "https://play.google.com/store/apps/developer?id=%s"
+  },
+
+  "Plug.DJ": {
+    "type": "statusCode",
+    "url": "https://plug.dj/@/%s"
+  },
+
+  "Pokemon Showdown": {
+    "type": "statusCode",
+    "url": "https://pokemonshowdown.com/users/%s"
+  },
+
+  "Polarsteps": {
+    "type": "statusCode",
+    "url": "https://polarsteps.com/%s"
+  },
+
+  "Polygon": {
+    "type": "statusCode",
+    "url": "https://www.polygon.com/users/%s"
+  },
+
+  "PromoDJ": {
+    "type": "statusCode",
+    "url": "http://promodj.com/%s"
+  },
+
+  "PyPi": {
+    "type": "statusCode",
+    "url": "https://pypi.org/user/%s"
+  },
+
+  "Raidforums": {
+    "type": "statusCode",
+    "url": "https://raidforums.com/User-%s"
+  },
+
+  "Rajce.net": {
+    "type": "statusCode",
+    "url": "https://%s.rajce.idnes.cz/"
+  },
+
+  "Rate Your Music": {
+    "type": "statusCode",
+    "url": "https://rateyourmusic.com/~%s"
+  },
+
+  "Redbubble": {
+    "type": "statusCode",
+    "url": "https://www.redbubble.com/people/%s"
+  },
+
+  "Reddit": {
+    "type": "statusCode",
+    "url": "https://www.reddit.com/r/%s"
+  },
+
+  "Repl.it": {
+    "type": "statusCode",
+    "url": "https://repl.it/@%s"
+  },
+
+  "Sbazar.cz": {
+    "type": "statusCode",
+    "url": "https://www.sbazar.cz/%s"
+  },
+
+  "Scratch": {
+    "type": "statusCode",
+    "url": "https://scratch.mit.edu/users/%s"
+  },
+
+  "ShitpostBot5000": {
+    "type": "statusCode",
+    "url": "https://www.shitpostbot.com/user/%s"
+  },
+
+  "SlideShare": {
+    "type": "statusCode",
+    "url": "https://slideshare.net/%s"
+  },
+
+  "Smashcast": {
+    "type": "statusCode",
+    "url": "https://www.smashcast.tv/api/media/live/%s"
+  },
+
+  "Smule": {
+    "type": "statusCode",
+    "url": "https://www.smule.com/%s"
+  },
+
+  "SoundCloud": {
+    "type": "statusCode",
+    "url": "https://soundcloud.com/%s"
+  },
+
+  "SourceForge": {
+    "type": "statusCode",
+    "url": "https://sourceforge.net/u/%s"
+  },
+
+  "Splits.io": {
+    "type": "statusCode",
+    "url": "https://splits.io/users/%s"
+  },
+
+  "Sporcle": {
+    "type": "statusCode",
+    "url": "https://www.sporcle.com/user/%s/people"
+  },
+
+  "SportsRU": {
+    "type": "statusCode",
+    "url": "https://www.sports.ru/profile/%s/"
+  },
+
+  "Spotify": {
+    "type": "statusCode",
+    "url": "https://open.spotify.com/user/%s"
+  },
+
+  "Star Citizen": {
+    "type": "statusCode",
+    "url": "https://robertsspaceindustries.com/citizens/%s"
+  },
+
+  "SublimeForum": {
+    "type": "statusCode",
+    "url": "https://forum.sublimetext.com/u/%s"
+  },
+
+  "Tellonym.me": {
+    "type": "statusCode",
+    "url": "https://tellonym.me/%s"
+  },
+
+  "TikTok": {
+    "type": "statusCode",
+    "url": "https://tiktok.com/@%s?"
+  },
+
+  "TradingView": {
+    "type": "statusCode",
+    "url": "https://www.tradingview.com/u/%s/"
+  },
+
+  "TryHackMe": {
+    "type": "statusCode",
+    "url": "https://tryhackme.com/p/%s"
+  },
+
+  "Twitch": {
+    "type": "statusCode",
+    "url": "https://www.twitch.tv/%s"
+  },
+
+  "Twitter": {
+    "type": "statusCode",
+    "url": "https://twitter.com/%s"
+  },
+
+  "Ultimate-Guitar": {
+    "type": "statusCode",
+    "url": "https://ultimate-guitar.com/u/%s"
+  },
+
+  "Unsplash": {
+    "type": "statusCode",
+    "url": "https://unsplash.com/@%s"
+  },
+
+  "VSCO": {
+    "type": "statusCode",
+    "url": "https://vsco.co/%s"
+  },
+
+  "Venmo": {
+    "type": "statusCode",
+    "url": "https://venmo.com/%s"
+  },
+
+  "Vimeo": {
+    "type": "statusCode",
+    "url": "https://vimeo.com/%s"
+  },
+
+  "Warrior Forum": {
+    "type": "statusCode",
+    "url": "https://www.warriorforum.com/members/%s.html"
+  },
+
+  "Wattpad": {
+    "type": "statusCode",
+    "url": "https://www.wattpad.com/user/%s"
+  },
+
+  "WebNode": {
+    "type": "statusCode",
+    "url": "https://%s.webnode.cz/"
+  },
+
+  "Whonix Forum": {
+    "type": "statusCode",
+    "url": "https://forums.whonix.org/u/%s"
+  },
+
+  "Windy": {
+    "type": "statusCode",
+    "url": "https://community.windy.com/user/%s"
+  },
+
+  "Wix": {
+    "type": "statusCode",
+    "url": "https://%s.wix.com"
+  },
+
+  "Xbox Gamertag": {
+    "type": "statusCode",
+    "url": "https://xboxgamertag.com/search/%s"
+  },
+
+  "YouPic": {
+    "type": "statusCode",
+    "url": "https://youpic.com/photographer/%s/"
+  },
+
+  "Youtube": {
+    "type": "statusCode",
+    "url": "https://www.youtube.com/c/%s"
+  },
+
+  "akniga": {
+    "type": "statusCode",
+    "url": "https://akniga.org/profile/%s"
+  },
+
+  "aminoapp": {
+    "type": "statusCode",
+    "url": "https://aminoapps.com/u/%s"
+  },
+
+  "authorSTREAM": {
+    "type": "statusCode",
+    "url": "http://www.authorstream.com/%s/"
+  },
+
+  "chaos.social": {
+    "type": "statusCode",
+    "url": "https://chaos.social/@%s"
+  },
+
+  "couchsurfing": {
+    "type": "statusCode",
+    "url": "https://www.couchsurfing.com/people/%s"
+  },
+
+  "d3RU": {
+    "type": "statusCode",
+    "url": "https://d3.ru/user/%s/posts"
+  },
+
+  "dailykos": {
+    "type": "statusCode",
+    "url": "https://www.dailykos.com/user/%s"
+  },
+
+  "datingRU": {
+    "type": "statusCode",
+    "url": "http://dating.ru/%s"
+  },
+
+  "drive2": {
+    "type": "statusCode",
+    "url": "https://www.drive2.ru/users/%s"
+  },
+
+  "eGPU": {
+    "type": "statusCode",
+    "url": "https://egpu.io/forums/profile/%s/"
+  },
+
+  "eintracht": {
+    "type": "statusCode",
+    "url": "https://community.eintracht.de/fans/%s"
+  },
+
+  "fixya": {
+    "type": "statusCode",
+    "url": "https://www.fixya.com/users/%s"
+  },
+
+  "fl": {
+    "type": "statusCode",
+    "url": "https://www.fl.ru/users/%s"
+  },
+
+  "geocaching": {
+    "type": "statusCode",
+    "url": "https://www.geocaching.com/p/default.aspx?u=%s"
+  },
+
+  "gfycat": {
+    "type": "statusCode",
+    "url": "https://gfycat.com/@%s"
+  },
+
+  "habr": {
+    "type": "statusCode",
+    "url": "https://habr.com/ru/users/%s"
+  },
+
+  "hackster": {
+    "type": "statusCode",
+    "url": "https://www.hackster.io/%s"
+  },
+
+  "irecommend": {
+    "type": "statusCode",
+    "url": "https://irecommend.ru/users/%s"
+  },
+
+  "jbzd.com.pl": {
+    "type": "statusCode",
+    "url": "https://jbzd.com.pl/uzytkownik/%s"
+  },
+
+  "kwork": {
+    "type": "statusCode",
+    "url": "https://kwork.ru/user/%s"
+  },
+
+  "last.fm": {
+    "type": "statusCode",
+    "url": "https://last.fm/user/%s"
+  },
+
+  "leasehackr": {
+    "type": "statusCode",
+    "url": "https://forum.leasehackr.com/u/%s/summary/"
+  },
+
+  "livelib": {
+    "type": "statusCode",
+    "url": "https://www.livelib.ru/reader/%s"
+  },
+
+  "mastodon.cloud": {
+    "type": "statusCode",
+    "url": "https://mastodon.cloud/@%s"
+  },
+
+  "mastodon.social": {
+    "type": "statusCode",
+    "url": "https://mastodon.social/@%s"
+  },
+
+  "mastodon.technology": {
+    "type": "statusCode",
+    "url": "https://mastodon.technology/@%s"
+  },
+
+  "mastodon.xyz": {
+    "type": "statusCode",
+    "url": "https://mastodon.xyz/@%s"
+  },
+
+  "mercadolivre": {
+  "type": "statusCode",
+  "url": "https://www.mercadolivre.com.br/perfil/%s"
+  },
+
+  "moikrug": {
+    "type": "statusCode",
+    "url": "https://moikrug.ru/%s"
+  },
+
+  "mstdn.io": {
+    "type": "statusCode",
+    "url": "https://mstdn.io/@%s"
+  },
+
+  "nairaland.com": {
+    "type": "statusCode",
+    "url": "https://www.nairaland.com/%s"
+  },
+
+  "nnRU": {
+      "type": "statusCode",
+  "url": "https://%s.www.nn.ru/"
+  },
+
+  "note": {
+    "type": "statusCode",
+    "url": "https://note.com/%s"
+  },
+
+  "npm": {
+    "type": "statusCode",
+    "url": "https://www.npmjs.com/~%s"
+  },
+
+  "osu!": {
+    "type": "statusCode",
+    "url": "https://osu.ppy.sh/users/%s"
+  },
+
+  "pikabu": {
+    "type": "statusCode",
+    "url": "https://pikabu.ru/@%s"
+  },
+
+  "pr0gramm": {
+    "type": "statusCode",
+    "url": "https://pr0gramm.com/user/%s"
+  },
+
+  "radio_echo_msk": {
+    "type": "statusCode",
+    "url": "https://echo.msk.ru/users/%s"
+  },
+
+  "satsisRU": {
+    "type": "statusCode",
+    "url": "https://satsis.info/user/%s"
+  },
+
+  "social.tchncs.de": {
+    "type": "statusCode",
+    "url": "https://social.tchncs.de/@%s"
+  },
+
+  "spletnik": {
+    "type": "statusCode",
+    "url": "https://spletnik.ru/user/%s"
+  },
+
+  "svidbook": {
+    "type": "statusCode",
+    "url": "https://www.svidbook.ru/user/%s"
+  },
+
+  "toster": {
+    "type": "statusCode",
+    "url": "https://www.toster.ru/user/%s/answers"
+  },
+
+  "uid": {
+    "type": "statusCode",
+    "url": "http://uid.me/%s"
+  }
+
+}
