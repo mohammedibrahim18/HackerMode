@@ -3,9 +3,7 @@ import os, json, shutil, __main__
 from system import System
 
 class config(object):
-    default_file = os.path.join(
-        os.path.dirname(os.path.abspath(__main__.__file__)),'settings.json'
-    )
+    default_file = os.path.join(System.TOOL_PATH,'settings.json')
 
     def __init__(self,file=None):
         if file:
@@ -14,7 +12,7 @@ class config(object):
             file = self.default_file
             if not os.path.isfile(file):
                 # default settings
-                shutil.copy(file,os.path.join(System.TOOL_PATH,'settings.json'))
+                shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)),'settings.json'),file)
             self.file = file
 
     def set_file(self,file_path):
