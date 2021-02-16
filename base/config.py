@@ -14,8 +14,7 @@ class config(object):
             file = self.default_file
             if not os.path.isfile(file):
                 # default settings
-                ToolPath = System.TOOL_PATH
-                shutil.copy(os.path.join(ToolPath, 'settings.json'), file)
+                shutil.copy(file,os.path.join(System.TOOL_PATH,'settings.json'))
             self.file = file
 
     def set_file(self,file_path):
