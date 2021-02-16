@@ -1,16 +1,20 @@
 # coding: utf-8
-import os, json, __main__
+import os, json, shutil, __main__
 
 class config(object):
     default_file = os.path.join(
-        os.path.dirname(os.path.abspath(__main__.__file__)),'settings.json'
+        os.path.dirname('/'.join(os.path.abspath(__main__.__file__).split('/')[:-1])),'settings.json'
     )
 
     def __init__(self,file=None):
         if file:
             self.file = file
         else:
-            self.file = self.default_file
+            file = self.default_file
+            if not os.path.isfile(file):
+                # default settings
+                shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)),'settings.json'),file)
+            self.file = file
 
     def set_file(self,file_path):
         if os.path.isfile(file_path):
@@ -50,3 +54,4 @@ if __name__ == '__main__':
     home = Config.get('settings','HOME',cast=str)
     debug = Config.get('settings','DEBUG',cast=bool)
     print (home,type(debug))
+    print(Config.default_file)

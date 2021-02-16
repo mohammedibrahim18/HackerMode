@@ -11,6 +11,7 @@ class SocialMedia{
   }
 
   void startLoop(){
+    // to start search
     new File('data.json').readAsString().then((String contents) {
       var jsonData = json.decode(contents);
       jsonData.forEach((hostName,Info){
@@ -26,6 +27,7 @@ class SocialMedia{
   }
 
   Future<bool> getRequest(url) async {
+    // To make request
     var req = await http.get(url);
     if (req.statusCode == 200) {
       return true;
@@ -35,6 +37,7 @@ class SocialMedia{
 }
 
 String input(text){
+  // simple input
   stdout.write(text);
   return stdin.readLineSync();
 }

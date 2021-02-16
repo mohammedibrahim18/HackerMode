@@ -1,4 +1,4 @@
-import os, sys, tempfile, pathlib, pyrebase, requests, json
+import os, sys, pathlib, json
 
 sys.path.append('/'.join(os.path.abspath(__file__).split('/')[:-1]))
 class System:
@@ -12,7 +12,10 @@ class System:
     @property
     def TOOL_PATH(self):
         '''To get the tool path'''
-        return os.path.abspath(tempfile.gettempdir())
+        ToolPath = os.path.join(os.environ['HOME'],'.HackerMode')
+        if not os.path.isdir(ToolPath):
+            os.mkdir(ToolPath)
+        return ToolPath
 
     @property
     def PLATFORME(self):
@@ -46,6 +49,8 @@ class DataBase:
     }
 
     def __init__(self):
+        import pyrebase, requests
+        self.requests = requests
         self.firebase = pyrebase.initialize_app(self.config)
         self.auth = self.firebase.auth()
 
@@ -56,7 +61,7 @@ class DataBase:
                 'status_code':200,
                 'data':user,
             }
-        except requests.exceptions.HTTPError as e:
+        except self.requests.exceptions.HTTPError as e:
             return {
                 'status_code':400,
                 'data':json.loads(e.strerror)
@@ -78,14 +83,14 @@ class DataBase:
                 'status_code':200,
                 'data':user,
             }
-        except requests.exceptions.HTTPError as e:
+        except self.requests.exceptions.HTTPError as e:
             return {
                 'status_code':400,
                 'data':json.loads(e.strerror)
             }
 
     def send_email_verification(self,token):
-        if data:=self.auth.get_account_info(token).get('users')[0].get('emailVerified'):
+        if (data:=self.auth.get_account_info(token)).get('users')[0].get('emailVerified'):
            return {
                 'status_code':200,
                 'data':data
@@ -96,7 +101,7 @@ class DataBase:
                 'status_code':200,
                 'data':self.auth.get_account_info(token)
             }
-        except requests.exceptions.HTTPError as e:
+        except self.requests.exceptions.HTTPError as e:
             return {
                 'status_code': 400,
                 'data': json.loads(e.strerror)

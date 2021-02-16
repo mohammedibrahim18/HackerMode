@@ -142,15 +142,18 @@ class Installer:
                 os.system(f'{chmod} 777 {os.path.join(System.BIN_PATH,System.TOOL_NAME)}')
             except Exception as e:
                 print(e)
+                print ('# installed failed!')
                 return
             Config.set('settings', 'IS_INSTALLED', True)
             try:
                 shutil.move(System.TOOL_NAME,System.TOOL_PATH)
             except shutil.Error as e:
-                pass
+                print(e)
+                print ('# installed failed!')
         else:
             print(f'{RED}# Error: the tool path not found!')
             print(f'# try to run tool using\n# {GREEN}"python3 HakcerMode install"{NORMAL}')
+            print('# installed failed!')
 
     def check(self):
         '''To check if the packages has been
@@ -178,7 +181,7 @@ class Installer:
 
     def update(self):
         if not Config.get('settings','DEBUG'):
-            os.system(f'cd {os.path.join(System.TOOL_PATH,System.TOOL_NAME)} && git fetch && git pull')
+            os.system(f'cd {System.TOOL_PATH} && rm -rif {System.TOOL_NAME} && git clone https://github.com/Arab-developers/{System.TOOL_NAME}')
         else:
             print ("# can't update in the DEUBG mode!")
 
