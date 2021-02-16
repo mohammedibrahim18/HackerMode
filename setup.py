@@ -44,6 +44,7 @@ PYHTON3_MODULES = {
     'python-nmap':'nmap',
     'requests':'requests',
     'bs4':'bs4',
+    'pyrebase':'pyrebase',
     'pygments':'pygments',
     'getmac':'getmac',
 }
