@@ -4,7 +4,7 @@ from system import System
 
 class config(object):
     default_file = os.path.join(
-        os.path.dirname('/'.join(os.path.abspath(__main__.__file__).split('/')[:-1])),'settings.json'
+        os.path.dirname(os.path.abspath(__main__.__file__).split('/')),'settings.json'
     )
 
     def __init__(self,file=None):
