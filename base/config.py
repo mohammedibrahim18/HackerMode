@@ -10,11 +10,13 @@ class config(object):
         if file:
             self.file = file
         else:
-            file = self.default_file
-            if not os.path.isfile(file):
-                # default settings
-                shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)),'settings.json'),file)
-            self.file = file
+            self.file = self.default_file
+
+    def create_settings(self):
+        file = self.default_file
+        if not os.path.isfile(file):
+            # default settings
+            shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)), 'settings.json'), file)
 
     def set_file(self,file_path):
         if os.path.isfile(file_path):
@@ -24,6 +26,7 @@ class config(object):
                 f.write(json.dumps({},indent=4))
 
     def set(self,section,option,value):
+        self.create_settings()
         section = section.lower()
         option = option.upper()
         with open(self.file,'r') as f:
@@ -35,6 +38,7 @@ class config(object):
             f.write(json.dumps(data,indent=4))
 
     def get(self,section,option,cast=None):
+        self.create_settings()
         section = section.lower()
         option = option.upper()
         with open(self.file,'r') as f:
