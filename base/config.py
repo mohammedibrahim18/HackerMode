@@ -1,5 +1,6 @@
 # coding: utf-8
 import os, json, shutil, __main__
+from system import System
 
 class config(object):
     default_file = os.path.join(
@@ -16,7 +17,7 @@ class config(object):
         file = self.default_file
         if not os.path.isfile(file):
             # default settings
-            shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)), 'settings.json'), file)
+            shutil.copy(os.path.join(System.TOOL_PATH, 'settings.json'), file)
 
     def set_file(self,file_path):
         if os.path.isfile(file_path):
