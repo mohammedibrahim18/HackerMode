@@ -150,7 +150,7 @@ class NumFile(BaseShell):
 		print(' '*len(Color().del_colors(point('100'))),end='\r')
 		print((Color().reader("[$LYELLOW]DelRepeat:[$LGREEN] ")+str(i)))
 		
-	def do__maim(self,arg):
+	def do_main(self,arg):
 		return True
 NumFile().cmdloop()
 	

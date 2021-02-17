@@ -18,17 +18,10 @@ terminal = terminal()
 # ╰─>>>$
 # ├
 
-'''
 PROMPT = lambda path,ToolName:Color.reader(f'\
-[$LGREEN]┌───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LRED]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
-[$LGREEN]│\n\
-[$LGREEN]└─>>>WL#$ W#')
-'''
-
-PROMPT = lambda path,ToolName:Color.reader(f'\
-[$LGREEN]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$LGREEN]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$LGREEN]>>>\n\
-[$LGREEN]│\n\
-╰─>>>[$WIHTE]$ ')
+[$/]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n\
+│\n\
+╰─>>>$ ')
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
@@ -61,7 +54,6 @@ class BaseShell(cmd.Cmd):
         return [x+'/' if os.path.isdir(os.path.join(path,x)) else x+' ' for x in os.listdir(path)]
 
     def cmdloop(self, intro=None):
-        #print ('cmdloop(%s)' % intro)
         return cmd.Cmd.cmdloop(self, intro)
 
     def default(self, line):
@@ -132,7 +124,13 @@ class BaseShell(cmd.Cmd):
                 compfunc = self.completenames
             self.completion_matches = compfunc(text, line, begidx, endidx)
         try:
-            return self.completion_matches[state].replace('_','-')
+            if line.split(' ')[0] == 'help':
+                return self.completion_matches[state].replace('_','-')
+            elif len(line.split(' ')) == 1:
+                return self.completion_matches[state].replace('_','-')
+            else:
+                return self.completion_matches[state]
+
         except IndexError:
             return None
 
@@ -244,6 +242,9 @@ class MainShell(HackerModeCommands):
                 os.system('HackerMode')
             threading.Thread(target=refresh).start()
             exit()
+
+    def complete_HackerMode(self, *args):
+        pass
 
     def do_EOF(self, line):
         print ('\n# to exit write "exit"')
