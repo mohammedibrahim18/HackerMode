@@ -124,13 +124,12 @@ class BaseShell(cmd.Cmd):
                 compfunc = self.completenames
             self.completion_matches = compfunc(text, line, begidx, endidx)
         try:
-            if line.split(' ')[0] == 'help':
-                return self.completion_matches[state].replace('_','-')
-            elif len(line.split(' ')) == 1:
-                return self.completion_matches[state].replace('_','-')
-            else:
-                return self.completion_matches[state]
-
+            if state == 0:
+                if line.split(' ')[0] == 'help':
+                    return self.completion_matches[state].replace('_','-')
+                if len(line.split(' ')) == 1:
+                    return self.completion_matches[state].replace('_','-')
+            return self.completion_matches[state]
         except IndexError:
             return None
 
@@ -243,8 +242,9 @@ class MainShell(HackerModeCommands):
             threading.Thread(target=refresh).start()
             exit()
 
-    def complete_HackerMode(self, *args):
-        pass
+    def complete_HackerMode(self, text, *args):
+        argvs = ['update','upgrade','install','check']
+        return [argv for argv in argvs if argv.startswith(text)]
 
     def do_EOF(self, line):
         print ('\n# to exit write "exit"')
