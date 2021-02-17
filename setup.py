@@ -182,6 +182,17 @@ class Installer:
     def update(self):
         if not Config.get('settings','DEBUG'):
             os.system(f'cd {System.TOOL_PATH} && rm -rif {System.TOOL_NAME} && git clone https://github.com/Arab-developers/{System.TOOL_NAME}')
+            tempPath = os.getcwd()
+            run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/bin/run.py'))}"
+            TOOLS_PATH = os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/tools'))
+            print(run)
+            print(TOOLS_PATH)
+            try:
+                for tool in os.listdir(TOOLS_PATH):
+                    os.chdir(os.path.join(TOOLS_PATH, tool))
+                    os.system(f'{run} setup.sh')
+            finally:
+                os.chdir(tempPath)
         else:
             print ("# can't update in the DEUBG mode!")
 
