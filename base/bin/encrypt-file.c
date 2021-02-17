@@ -29,7 +29,7 @@ static void convert(char dte[],int fdc){
 int main(int argc, char *argv[]){
 
   if (argc<2){printf("%s: Need some Arguments\n",argv[0]); exit(1);}
-  ofd=open(argv[2],O_WRONLY|O_TRUNC|O_CREAT);
+  ofd=open(argv[2],O_WRONLY|O_TRUNC|O_CREAT, S_IWRITE|S_IREAD);
   fd=open(argv[1], O_RDONLY);
 
   read(fd,ned,sizeof(ned));
