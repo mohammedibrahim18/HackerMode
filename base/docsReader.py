@@ -1,7 +1,15 @@
 from bs4 import BeautifulSoup
-from N4Tools.Design import Text,Square,Color
+from N4Tools.Design import Text as Text,Square,Color
 from N4Tools.terminal import terminal
 from config import Config
+from rich import print
+from rich import box
+from rich.align import Align
+from rich.console import RenderGroup
+from rich.panel import Panel
+from rich.table import Table
+from rich.layout import Layout
+
 
 Text = Text()
 Square = Square()
@@ -35,52 +43,46 @@ class DocsReader:
         text = text.replace('{{ TOOL_NAME }}',self.file.split('/')[-1].split('.')[0])
         return text
 
-    @property
     def style(self):
-        title = ''
+        title = 'HELP MESSAGE'
         square_text = 6
-        terminal_width = terminal.size['width']-square_text
-        RULER = lambda : '[$WIHTE]' + '╌' * (terminal_width)
+        terminal_width = terminal.size['width'] - square_text
+        RULER = lambda: '[white]' + '╌' * (terminal_width)
 
         if self.title:
-            title = f"[$LBLUE]<<< [$LCYAN]{self.title}[$NORMAL] [$LBLUE]>>>"
-            title = ' '*( (terminal_width//2)-(len(Color.del_colors(title))//2) )+title
-            title = '\n'+title+'\n'
+            title = f"[cyan]{self.title.upper()}[/cyan]"
 
         sections = []
         temp = 0
-        for section_title,commands in self.sections.items():
+        for section_title, commands in self.sections.items():
             sections.append('')
-            sections[temp] += '[$WIHTE][$BOLD][$LBLUEBG] '+section_title+': [$NORMAL]\n'+RULER()+'\n'
+            sections[temp] += f'[white][bold][on blue] {section_title}: [/on blue]\n' + RULER() + '\n'
 
             # commands
             tempFixwidth = [key for key in commands.keys()]
             tempFixwidth = Text.full(tempFixwidth)
             tempCommands = [key for key in commands.keys()]
 
-            for command,helpMsg in commands.items():
+            for command, helpMsg in commands.items():
                 command = tempFixwidth[tempCommands.index(command)]
-                if Config.get('settings','ARABIC_RESHAPER'):
+                if Config.get('settings', 'ARABIC_RESHAPER'):
                     helpMsg = Text.arabic(helpMsg)
-                sections[temp] += '  [$YELLOW]'+command+'  [$WIHTE]'+helpMsg+'\n'
+                sections[temp] += '  [yellow]' + command + '  [white]' + helpMsg + '\n'
 
-            sections[temp] += RULER()+'\n\n'
+            sections[temp] += RULER() + '\n\n'
             temp += 1
 
-        style = title+'\n'
+        style = ''
         for section in sections:
             style += section
 
-        Square.color = Color.LGREEN
-        Square.center = True
-        temp = '[$LBLUE][[$LYELLOW]+[$LBLUE]]'
-        Square.square = [
-            temp,
-            ' │ ',
-            temp,
-            '─',
-            temp,
-            ' │',
-            temp,
-            '─']
-        return Square.base(style[:-1])
+        print (
+            Panel(
+                style[:-2],
+                box=box.ROUNDED,
+                padding=(1, 2),
+                title=title,
+                border_style='green',
+            )
+        )
+

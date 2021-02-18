@@ -224,7 +224,7 @@ class HackerModeCommands(BaseShell):
         if arg:
             try:
                 obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), arg)}.html')
-                print (obj.style)
+                obj.style()
                 return
             except FileNotFoundError:
                 pass
