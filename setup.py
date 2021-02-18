@@ -38,6 +38,7 @@ PACKAGES = {
 
 PYHTON3_MODULES = {
     'N4Tools==1.7.1':'N4Tools',
+    'rich':'rich',
     'pyfiglet':'pyfiglet',
     'python-bidi':'bidi',
     'arabic_reshaper':'arabic_reshaper',

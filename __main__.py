@@ -18,6 +18,8 @@ class HackerMode:
                     print ('help msg')
         else:
             from base.shell import MainShell
+            from rich.traceback import install
+            install()
             Shell = MainShell()
             while True:
                 try:
