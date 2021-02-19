@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
-
+#include <sys/stat.h>
 char dkey[]="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()}{]['/?><.,:;|_-+=1234567890\n ";
 char ekey[]="\n0987654321=+-_|;:,.<>?/'[]{})(*&^%$#@!~ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba ";
 int ofd;
