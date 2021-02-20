@@ -1,6 +1,6 @@
-gcc $path/base/services/scr/or_send.c -o path/base/services/scr/or_send
-gcc $path/base/services/scr/or_server.c -o path/base/services/scr/or_server
-gcc $path/base/services/scr/remote.c -o path/base/services/scr/remote
+gcc scr/or_send.c -o scr/or_send
+gcc scr/or_server.c -o scr/or_server
+gcc scr/remote.c -o scr/remote
 
 if [ "$1" == "remote" ];then
    printf "Enter Server IP---: "
