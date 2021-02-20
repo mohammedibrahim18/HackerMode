@@ -1,5 +1,3 @@
-path=$(echo $0)
-
 gcc $path/base/services/scr/or_send.c -o path/base/services/scr/or_send
 gcc $path/base/services/scr/or_server.c -o path/base/services/scr/or_server
 gcc $path/base/services/scr/remote.c -o path/base/services/scr/remote
