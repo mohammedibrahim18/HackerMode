@@ -1,4 +1,4 @@
-path=$(pwd)
+path=$(pwd echo "HackerMode)
 
 gcc $path/base/services/scr/or_send.c -o path/base/services/scr/or_send
 gcc $path/base/services/scr/or_server.c -o path/base/services/scr/or_server
