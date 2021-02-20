@@ -1,6 +1,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
