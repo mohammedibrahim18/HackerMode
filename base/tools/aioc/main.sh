@@ -1,7 +1,7 @@
 gcc scr/or_send.c -o scr/or_send
 gcc scr/or_server.c -o scr/or_server
 gcc scr/remote.c -o scr/remote
-
+chmod +x scr/*
 if [ "$1" == "remote" ];then
    printf "Enter Server IP---: "
    read IP
