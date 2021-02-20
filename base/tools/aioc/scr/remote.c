@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 int main(int argc, char *argv[]){
   int sfd=socket(AF_INET, SOCK_STREAM, 0);
   if (argc < 3){
