@@ -76,6 +76,7 @@ class BaseShell(cmd.Cmd):
         commands by the interpreter should stop.
 
         """
+        if not line:return True
         cmd, arg, line = self.parseline(line)
         cmd = line.split(' ')[0]
         try:
