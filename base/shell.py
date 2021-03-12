@@ -66,6 +66,10 @@ class BaseShell(cmd.Cmd):
     def completedefault(self, text, *args):
         return self.propath(text,args[0])
 
+    def completenames(self, text, *ignored):
+        dotext = 'do_'+text
+        return [a[3:].replace('_','-') for a in self.get_names() if a.startswith(dotext)]
+
     def onecmd(self, line):
         """Interpret the argument as though it had been typed in response
         to the prompt.
@@ -98,41 +102,6 @@ class BaseShell(cmd.Cmd):
             except AttributeError:
                 return self.default(line)
             return func(arg)
-
-    def complete(self, text, state):
-        """Return the next possible completion for 'text'.
-
-        If a command has not been entered, then complete against command list.
-        Otherwise try to call complete_<command> to get list of completions.
-        """
-        if state == 0:
-            import readline
-            origline = readline.get_line_buffer()
-            line = origline.lstrip()
-            stripped = len(origline) - len(line)
-            begidx = readline.get_begidx() - stripped
-            endidx = readline.get_endidx() - stripped
-            if begidx > 0:
-                cmd, args, foo = self.parseline(line)
-                if cmd == '':
-                    compfunc = self.completedefault
-                else:
-                    try:
-                        compfunc = getattr(self, 'complete_' + cmd)
-                    except AttributeError:
-                        compfunc = self.completedefault
-            else:
-                compfunc = self.completenames
-            self.completion_matches = compfunc(text, line, begidx, endidx)
-        try:
-            if state == 0:
-                if line.split(' ')[0] == 'help':
-                    return self.completion_matches[state].replace('_','-')
-                if len(line.split(' ')) == 1:
-                    return self.completion_matches[state].replace('_','-')
-            return self.completion_matches[state]
-        except IndexError:
-            return None
 
     def do_ls(self, arg):
         if System.PLATFORME == 'termux':
@@ -181,6 +150,15 @@ class BaseShell(cmd.Cmd):
     def do_clear(self, line):
         os.system('clear')
 
+    def do_help(self, arg: str):
+        if self.ToolName.lower() != 'main':
+            try:
+                obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), self.ToolName.split(".")[0])}.xml')
+                obj.style()
+                return
+            except FileNotFoundError:
+                self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
+
 class HackerModeCommands(BaseShell):
     for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
         function_name = package.split('.')[0]
@@ -228,8 +206,7 @@ class HackerModeCommands(BaseShell):
                 obj.style()
                 return
             except FileNotFoundError:
-                pass
-        super().do_help(arg)
+                self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
 
 class MainShell(HackerModeCommands):
 

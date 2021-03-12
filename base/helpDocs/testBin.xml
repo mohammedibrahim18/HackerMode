@@ -2,7 +2,8 @@
 
 <section title="base">
     <line command="play">this is my help msg.</line>
-    <line command="html">this is my [$GREEN]help[$/] msg.</line>
+    <line command="play">this is my help msg.</line>
+    <line command="html">this is my [green]help[/green] msg.</line>
     <line command="delrepate">this is my help msg.</line>
 </section>
 
