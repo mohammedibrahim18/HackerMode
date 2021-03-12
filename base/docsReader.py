@@ -4,12 +4,7 @@ from N4Tools.terminal import terminal
 from config import Config
 from rich import print
 from rich import box
-from rich.align import Align
-from rich.console import RenderGroup
 from rich.panel import Panel
-from rich.table import Table
-from rich.layout import Layout
-
 
 Text = Text()
 Square = Square()
@@ -34,9 +29,9 @@ class DocsReader:
     def sections(self):
         data = {}
         for section in self.soup.find_all('section'):
-            data[section['title']] = {}
+            data[section['title']] = []
             for command in section.find_all('line'):
-                 data[section['title']][command['command']] = command.text
+                 data[section['title']] += [[command['command'],command.text]]
         return data
 
     def ValuesReader(self,text):
@@ -59,15 +54,15 @@ class DocsReader:
             sections[temp] += f'[white][bold][on blue] {section_title}: [/on blue]\n' + RULER() + '\n'
 
             # commands
-            tempFixwidth = [key for key in commands.keys()]
+            tempFixwidth = [key[0] for key in commands]
             tempFixwidth = Text.full(tempFixwidth)
-            tempCommands = [key for key in commands.keys()]
+            tempCommands = [key[0] for key in commands]
 
-            for command, helpMsg in commands.items():
+            for command, helpMsg in commands:
                 command = tempFixwidth[tempCommands.index(command)]
                 if Config.get('settings', 'ARABIC_RESHAPER'):
                     helpMsg = Text.arabic(helpMsg)
-                sections[temp] += '  [yellow]' + command + '  [white]' + helpMsg + '\n'
+                sections[temp] += f'  [yellow]{command}[/yellow]  [white]{ helpMsg }\n'
 
             sections[temp] += RULER() + '\n\n'
             temp += 1

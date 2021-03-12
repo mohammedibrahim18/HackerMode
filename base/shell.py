@@ -224,7 +224,7 @@ class HackerModeCommands(BaseShell):
         'List available commands with "help" or detailed help with "help cmd".'
         if arg:
             try:
-                obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), arg)}.html')
+                obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), arg)}.xml')
                 obj.style()
                 return
             except FileNotFoundError:
