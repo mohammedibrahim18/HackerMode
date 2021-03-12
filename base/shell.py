@@ -67,8 +67,12 @@ class BaseShell(cmd.Cmd):
         return self.propath(text,args[0])
 
     def completenames(self, text, *ignored):
-        dotext = 'do_'+text
-        return [a[3:].replace('_','-') for a in self.get_names() if a.startswith(dotext)]
+        return [
+            a[3:].replace('_','-') for a in self.get_names()
+                if a.startswith('do_'+text)
+        ] + [
+            a for a in System.SYSTEM_PACKAGES
+                if a.startswith(text)]
 
     def onecmd(self, line):
         """Interpret the argument as though it had been typed in response
