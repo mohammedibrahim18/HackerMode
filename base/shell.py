@@ -58,8 +58,9 @@ class BaseShell(cmd.Cmd):
 
     def default(self, line):
         try:
-            os.system(line)
+            a=os.system(line)
             self.Path = self.viewdir(pathlib.PurePath())
+            if a!=0:os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
         except:pass
 #        return cmd.Cmd.default(self, line)
 
