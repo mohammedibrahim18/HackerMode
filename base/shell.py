@@ -62,15 +62,13 @@ class BaseShell(cmd.Cmd):
 
     def default(self, line):
         try:
-            a=os.system(line)
+            a = os.system(line)
             self.Path = self.viewdir(pathlib.PurePath())
+            if a != 0: os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
         except:
             pass
 
     #        return cmd.Cmd.default(self, line)
-            if a!=0:os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
-        except:pass
-#        return cmd.Cmd.default(self, line)
 
     def completedefault(self, text, *args):
         return self.propath(text, args[0])
@@ -86,12 +84,10 @@ class BaseShell(cmd.Cmd):
     def onecmd(self, line):
         """Interpret the argument as though it had been typed in response
         to the prompt.
-
         This may be overridden, but should not normally need to be;
         see the precmd() and postcmd() methods for useful execution hooks.
         The return value is a flag indicating whether interpretation of
         commands by the interpreter should stop.
-
         """
         if not line: return True
         cmd, arg, line = self.parseline(line)
@@ -204,7 +200,6 @@ class HackerModeCommands(BaseShell):
             print ("# in {tool_name}.")
             print ("# this is 'Developer Error'")
             return
-
         try:
             os.chdir(tool_path)
             os.system(run+' '+main+' '+arg)
