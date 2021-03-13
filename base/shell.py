@@ -18,10 +18,11 @@ terminal = terminal()
 # ╰─>>>$
 # ├
 
-PROMPT = lambda path,ToolName:Color.reader(f'\
+PROMPT = lambda path, ToolName: Color.reader(f'\
 [$/]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n\
 │\n\
 ╰─>>>$ ')
+
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
@@ -35,44 +36,52 @@ class BaseShell(cmd.Cmd):
     nohelp = "%s: command not found"
     use_rawinput = 1
 
-    Path=[x+'/' if os.path.isdir(os.path.join('.',x))else x+' ' for x in os.listdir('.')]
+    Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
 
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.prompt = PROMPT(pathlib.Path.cwd().name, self.ToolName)
 
-    def propath(self,text,args):
-        if not text:a=self.Path
-        else:a=[f for f in self.Path if f.startswith(text)]
-        e=args.strip().split(' ')[-1]
-        if e in self.Path:return self.viewdir(e)
-        e=(e.split('/'))
-        if os.path.isdir('/'.join(e[:-1])):return [f+'/' if os.path.isdir('/'.join(e[:-1])+'/'+f) else f+' ' for f in os.listdir('/'.join(e[:-1])) if f.startswith(e[-1])]
+    def propath(self, text, args):
+        if not text:
+            a = self.Path
+        else:
+            a = [f for f in self.Path if f.startswith(text)]
+        e = args.strip().split(' ')[-1]
+        if e in self.Path: return self.viewdir(e)
+        e = (e.split('/'))
+        if os.path.isdir('/'.join(e[:-1])): return [f + '/' if os.path.isdir('/'.join(e[:-1]) + '/' + f) else f + ' '
+                                                    for f in os.listdir('/'.join(e[:-1])) if f.startswith(e[-1])]
         return a
 
-    def viewdir(self,path):
-        return [x+'/' if os.path.isdir(os.path.join(path,x)) else x+' ' for x in os.listdir(path)]
+    def viewdir(self, path):
+        return [x + '/' if os.path.isdir(os.path.join(path, x)) else x + ' ' for x in os.listdir(path)]
 
     def cmdloop(self, intro=None):
         return cmd.Cmd.cmdloop(self, intro)
 
     def default(self, line):
         try:
-            os.system(line)
+            a=os.system(line)
             self.Path = self.viewdir(pathlib.PurePath())
+        except:
+            pass
+
+    #        return cmd.Cmd.default(self, line)
+            if a!=0:os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
         except:pass
 #        return cmd.Cmd.default(self, line)
 
     def completedefault(self, text, *args):
-        return self.propath(text,args[0])
+        return self.propath(text, args[0])
 
     def completenames(self, text, *ignored):
         return [
-            a[3:].replace('_','-') for a in self.get_names()
-                if a.startswith('do_'+text)
-        ] + [
-            a for a in System.SYSTEM_PACKAGES
-                if a.startswith(text)]
+                   a[3:].replace('_', '-') for a in self.get_names()
+                   if a.startswith('do_' + text)
+               ] + [
+                   a for a in System.SYSTEM_PACKAGES
+                   if a.startswith(text)]
 
     def onecmd(self, line):
         """Interpret the argument as though it had been typed in response
@@ -84,12 +93,13 @@ class BaseShell(cmd.Cmd):
         commands by the interpreter should stop.
 
         """
-        if not line:return True
+        if not line: return True
         cmd, arg, line = self.parseline(line)
         cmd = line.split(' ')[0]
         try:
-          arg = arg if not cmd.endswith(arg.split(' ')[0]) else ' '.join(arg.split(' ')[1:])
-        except:pass
+            arg = arg if not cmd.endswith(arg.split(' ')[0]) else ' '.join(arg.split(' ')[1:])
+        except:
+            pass
 
         if not line:
             return self.emptyline()
@@ -102,18 +112,18 @@ class BaseShell(cmd.Cmd):
             return self.default(line)
         else:
             try:
-                func = getattr(self, 'do_' + cmd.replace('-','_'))
+                func = getattr(self, 'do_' + cmd.replace('-', '_'))
             except AttributeError:
                 return self.default(line)
             return func(arg)
 
     def do_ls(self, arg):
         if System.PLATFORME == 'termux':
-            os.system('ls '+arg)
+            os.system('ls ' + arg)
             return
 
         if arg:
-            os.system('ls '+arg)
+            os.system('ls ' + arg)
             return
 
         path = str(pathlib.Path.cwd() if not os.path.exists(arg) else arg)
@@ -138,18 +148,18 @@ class BaseShell(cmd.Cmd):
         try:
             if arg in ['~', '$HOME', '']:
                 os.chdir(str(pathlib.Path.home()))
-                self.Path=self.viewdir(pathlib.PurePath())
+                self.Path = self.viewdir(pathlib.PurePath())
             else:
                 os.chdir(os.path.join(os.getcwd(), arg))
-                self.Path=self.viewdir(pathlib.PurePath())
-            self.prompt = PROMPT(pathlib.Path.cwd().name,self.ToolName)
+                self.Path = self.viewdir(pathlib.PurePath())
+            self.prompt = PROMPT(pathlib.Path.cwd().name, self.ToolName)
         except FileNotFoundError as e:
             print(e)
         except NotADirectoryError as e:
             print(e)
 
     def do_c(self, line):
-        print(chr(27)+"[2J\x1b[H",end='')
+        print(chr(27) + "[2J\x1b[H", end='')
 
     def do_clear(self, line):
         os.system('clear')
@@ -157,28 +167,30 @@ class BaseShell(cmd.Cmd):
     def do_help(self, arg: str):
         if self.ToolName.lower() != 'main':
             try:
-                obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), self.ToolName.split(".")[0])}.xml')
+                obj = DocsReader(
+                    f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), self.ToolName.split(".")[0])}.xml')
                 obj.style()
                 return
             except FileNotFoundError:
                 self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
 
+
 class HackerModeCommands(BaseShell):
-    for package in os.listdir(os.path.join(System.BASE_PATH,'bin')):
+    for package in os.listdir(os.path.join(System.BASE_PATH, 'bin')):
         function_name = package.split('.')[0]
-        exec (f'''
-        \rdef do_{function_name.replace('-','_')}(self,arg):
-        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH,"bin"),"run.py")}'
+        exec(f'''
+        \rdef do_{function_name.replace('-', '_')}(self,arg):
+        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
         try:
-            os.system(run+' {os.path.join(os.path.join(System.BASE_PATH,"bin"),package)} '+arg)
+            os.system(run+' {os.path.join(os.path.join(System.BASE_PATH, "bin"), package)} '+arg)
         except:pass
 ''')
 
-    for tool_name in os.listdir(os.path.join(System.BASE_PATH,'tools')):
-        exec (f'''
-        \rdef do_{tool_name.replace('-','_')}(self,arg):
-        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH,"bin"),"run.py")}'
-        tool_path = "{os.path.join(os.path.join(System.BASE_PATH,"tools"),tool_name)}"
+    for tool_name in os.listdir(os.path.join(System.BASE_PATH, 'tools')):
+        exec(f'''
+        \rdef do_{tool_name.replace('-', '_')}(self,arg):
+        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
+        tool_path = "{os.path.join(os.path.join(System.BASE_PATH, "tools"), tool_name)}"
         system_path = os.getcwd()
         main = ''
         for path,dirs,files in os.walk(tool_path):
@@ -197,7 +209,7 @@ class HackerModeCommands(BaseShell):
             os.chdir(tool_path)
             os.system(run+' '+main+' '+arg)
         except:pass
-        
+
         finally:
             os.chdir(system_path)
 ''')
@@ -212,28 +224,31 @@ class HackerModeCommands(BaseShell):
             except FileNotFoundError:
                 self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
 
+
 class MainShell(HackerModeCommands):
 
     def do_HackerMode(self, line):
         if line:
-            os.system('HackerMode '+line)
-        if line.strip() in ['install','update','upgrade']:
+            os.system('HackerMode ' + line)
+        if line.strip() in ['install', 'update', 'upgrade']:
             def refresh():
                 time.sleep(1)
                 os.system('HackerMode')
+
             threading.Thread(target=refresh).start()
             exit()
 
     def complete_HackerMode(self, text, *args):
-        argvs = ['update','upgrade','install','check']
+        argvs = ['update', 'upgrade', 'install', 'check']
         return [argv for argv in argvs if argv.startswith(text)]
 
     def do_EOF(self, line):
-        print ('\n# to exit write "exit"')
+        print('\n# to exit write "exit"')
         return True
 
     def do_exit(self, line):
         exit()
+
 
 if __name__ == '__main__':
     print(MainShell().__dir__())
