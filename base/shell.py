@@ -40,8 +40,10 @@ class BaseShell(cmd.Cmd):
         e = args.strip().split(' ')[-1]
         if e in self.Path: return self.viewdir(e)
         e = (e.split('/'))
-        if os.path.isdir('/'.join(e[:-1])): return [f + '/' if os.path.isdir('/'.join(e[:-1]) + '/' + f) else f + ' '
-                                                    for f in os.listdir('/'.join(e[:-1])) if f.startswith(e[-1])]
+        if os.path.isdir('/'.join(e[:-1])): return [
+            f + '/' if os.path.isdir('/'.join(e[:-1]) + '/' + f) else f + ' '
+            for f in os.listdir('/'.join(e[:-1])) if f.startswith(e[-1])
+        ]
         return a
 
     def viewdir(self, path):
@@ -94,9 +96,6 @@ class BaseShell(cmd.Cmd):
             return self.emptyline()
         if cmd is None:
             return self.default(line)
-        self.lastcmd = line
-        if line == 'EOF':
-            self.lastcmd = ''
         if cmd == '':
             return self.default(line)
         else:
@@ -218,13 +217,14 @@ class HackerModeCommands(BaseShell):
 
     def default(self, line):
         package = self.get_package_ext(line.split(' ')[0])
+        tool_name = line.split(' ')[0]
         arg = ' '.join(line.split(' ')[1:])
         run = f'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
         try:
             if os.path.isfile(file:=os.path.join(os.path.join(System.BASE_PATH, "bin"), package)):
                 os.system(f'{run} {file} {arg}')
                 return
-            if os.path.isdir(folder:=os.path.join(System.BASE_PATH, "tools")):
+            if os.path.isdir(folder:=os.path.join(System.BASE_PATH, f"tools/{tool_name}")):
                 if not package:
                     print("# HackerMode can't find main file")
                     print("# in {tool_name}.")
