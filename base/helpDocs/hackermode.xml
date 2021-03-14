@@ -1,0 +1,9 @@
+<title>HackerMode</title>
+
+<section title="System">
+        <line command="ls"></line>
+        <line command="c"></line>
+        <line command="clear"></line>
+        <line command="exit"></line>
+        <line command="main"></line>
+</section>

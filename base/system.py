@@ -5,6 +5,9 @@ class System:
     TOOL_NAME = 'HackerMode'
     BASE_PATH = pathlib.Path(os.path.abspath(__file__)).parent
 
+    def __init__(self):
+        self.HACKERMODE_PACKAGES = self.HACKERMODE_PACKAGES()
+
     @property
     def BIN_PATH(self):
         return ''.join(sys.executable.split('bin')[:-1]) + 'bin'
@@ -37,6 +40,20 @@ class System:
     def SYSTEM_PACKAGES(self):
         '''To gat all files that is in [/usr/bin] directory'''
         return os.listdir(self.BIN_PATH)
+
+    def HACKERMODE_PACKAGES(self):
+        HackerModePackages = lambda path: [
+            a for a in os.listdir(
+                os.path.abspath(os.path.join(self.BASE_PATH,path)))
+        ]
+        packages = []
+        for file_name in HackerModePackages('bin')+HackerModePackages('tools'):
+            for ext in ['.py','.sh','.c','.dart','.java','.php','.js','.pyc']:
+                if file_name.endswith(ext):
+                    file_name = file_name[0:len(file_name)-len(ext)]
+                    packages.append(file_name)
+                packages.append(file_name)
+        return list(set(packages))
 
 System = System()
 

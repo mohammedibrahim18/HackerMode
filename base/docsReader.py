@@ -8,7 +8,6 @@ from rich.panel import Panel
 
 Text = Text()
 Square = Square()
-terminal = terminal()
 Color = Color()
 
 class DocsReader:
@@ -41,7 +40,7 @@ class DocsReader:
     def style(self):
         title = 'HELP MESSAGE'
         square_text = 6
-        terminal_width = terminal.size['width'] - square_text
+        terminal_width = terminal().size['width'] - square_text
         RULER = lambda: '[white]' + '╌' * (terminal_width)
 
         if self.title:

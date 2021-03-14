@@ -26,16 +26,6 @@ PROMPT = lambda path, ToolName: Color.reader(f'\
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
-    ruler = '='
-    lastcmd = ''
-    intro = None
-    doc_leader = ""
-    doc_header = "Documented commands (type help <topic>):"
-    misc_header = "Miscellaneous help topics:"
-    undoc_header = "Undocumented commands:"
-    nohelp = "%s: command not found"
-    use_rawinput = 1
-
     Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
 
     def __init__(self, *args, **kwargs):
@@ -61,42 +51,45 @@ class BaseShell(cmd.Cmd):
         return cmd.Cmd.cmdloop(self, intro)
 
     def default(self, line):
-        try:
-            a = os.system(line)
-            self.Path = self.viewdir(pathlib.PurePath())
-            if a != 0: os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
-        except:
-            pass
-
-    #        return cmd.Cmd.default(self, line)
+        if self.ToolName.lower() == 'main':
+            # allow linux commands in Main mode only
+            try:
+                a = os.system(line)
+                self.Path = self.viewdir(pathlib.PurePath())
+                if a != 0:
+                    if System.PLATFORME == 'termux':
+                        os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
+            except:
+                pass
 
     def completedefault(self, text, *args):
         return self.propath(text, args[0])
 
     def completenames(self, text, *ignored):
-        return [
-                   a[3:].replace('_', '-') for a in self.get_names()
-                   if a.startswith('do_' + text)
-               ] + [
-                   a for a in System.SYSTEM_PACKAGES
-                   if a.startswith(text)]
+        packages =  [
+            # add class command to shell
+            a[3:].replace('_', '-') for a in self.get_names()
+            if a.startswith('do_' + text)
+        ]
+        # complete linux commands and HackerMode commands
+        # in Main mode only.
+        if self.ToolName.lower() != 'main':return packages
+
+        packages += [
+            # add HakerMode commands to shell
+            a for a in System.HACKERMODE_PACKAGES
+            if a.startswith(text)
+        ]
+
+        packages += [
+            # add linux commands to shell
+            a for a in System.SYSTEM_PACKAGES
+            if a.startswith(text)
+        ]
+        return list(set(packages))
 
     def onecmd(self, line):
-        """Interpret the argument as though it had been typed in response
-        to the prompt.
-        This may be overridden, but should not normally need to be;
-        see the precmd() and postcmd() methods for useful execution hooks.
-        The return value is a flag indicating whether interpretation of
-        commands by the interpreter should stop.
-        """
-        if not line: return True
         cmd, arg, line = self.parseline(line)
-        cmd = line.split(' ')[0]
-        try:
-            arg = arg if not cmd.endswith(arg.split(' ')[0]) else ' '.join(arg.split(' ')[1:])
-        except:
-            pass
-
         if not line:
             return self.emptyline()
         if cmd is None:
@@ -160,65 +153,96 @@ class BaseShell(cmd.Cmd):
     def do_clear(self, line):
         os.system('clear')
 
-    def do_help(self, arg: str):
-        if self.ToolName.lower() != 'main':
-            try:
-                obj = DocsReader(
-                    f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), self.ToolName.split(".")[0])}.xml')
-                obj.style()
-                return
-            except FileNotFoundError:
-                self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
+    def complete_help(self, *args):
+        if self.ToolName.lower() == 'main':
+            commands = set([
+                    a[3:] for a in self.get_names()
+                    if a.startswith('do_' + args[0])
+                ] + [
+                    a for a in System.HACKERMODE_PACKAGES
+                    if a.startswith(args[0])
+                ]
+            )
+        else:commands = set([])
+        topics = set(a[5:] for a in self.get_names()
+                     if a.startswith('help_' + args[0]))
+        return list(commands | topics)
 
+    def do_help(self, arg: str):
+        help_xml_path = lambda package:os.path.join(
+            os.path.join(System.BASE_PATH, "helpDocs"), package
+        )
+        try:
+            if self.ToolName.lower() == 'main' and not arg.strip():
+                # to show hakcermode help menu.
+                obj = DocsReader(
+                    f'{help_xml_path(System.TOOL_NAME.lower())}.xml')
+
+            elif self.ToolName.lower() != 'main' and not arg.strip():
+                # to show shell help menu.
+                obj = DocsReader(
+                    f'{help_xml_path(self.ToolName.split(".")[0])}.xml')
+
+            else:
+                # to show any package help menu.
+                obj = DocsReader(
+                    f'{help_xml_path(arg)}.xml')
+            obj.style()
+            return
+        except FileNotFoundError:
+            self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
+
+    def do_main(self):
+        return True
+
+    def do_EOF(self, line):
+        print('\n# to exit write "exit"')
+        return True
+
+    def do_exit(self, line):
+        exit(-1)
 
 class HackerModeCommands(BaseShell):
-    for package in os.listdir(os.path.join(System.BASE_PATH, 'bin')):
-        function_name = package.split('.')[0]
-        exec(f'''
-        \rdef do_{function_name.replace('-', '_')}(self,arg):
-        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
+    def get_package_ext(self,package):
+        BIN   = os.listdir(os.path.join(System.BASE_PATH,'bin'))
+        TOOLS = os.listdir(os.path.join(System.BASE_PATH,'tools'))
+        for file in BIN:
+            if file.startswith(package):return file
+        for dir in TOOLS:
+            if package == dir:
+                for path, dirs, files in os.walk(os.path.join(System.BASE_PATH,f'tools/{dir}')):
+                    for main_file in files:
+                        if main_file.startswith('main'):
+                            return main_file
+        return False
+
+    def default(self, line):
+        package = self.get_package_ext(line.split(' ')[0])
+        arg = ' '.join(line.split(' ')[1:])
+        run = f'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
         try:
-            os.system(run+' {os.path.join(os.path.join(System.BASE_PATH, "bin"), package)} '+arg)
-        except:pass
-''')
-
-    for tool_name in os.listdir(os.path.join(System.BASE_PATH, 'tools')):
-        exec(f'''
-        \rdef do_{tool_name.replace('-', '_')}(self,arg):
-        run = 'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
-        tool_path = "{os.path.join(os.path.join(System.BASE_PATH, "tools"), tool_name)}"
-        system_path = os.getcwd()
-        main = ''
-        for path,dirs,files in os.walk(tool_path):
-            for file in files:
-                if file.startswith('main'):
-                    main = os.path.join(path,file)
-                    break
-            break
-        if not main:
-            print ("# HackerMode can't find main file")
-            print ("# in {tool_name}.")
-            print ("# this is 'Developer Error'")
-            return
-        try:
-            os.chdir(tool_path)
-            os.system(run+' '+main+' '+arg)
-        except:pass
-
-        finally:
-            os.chdir(system_path)
-''')
-
-    def do_help(self, arg):
-        'List available commands with "help" or detailed help with "help cmd".'
-        if arg:
-            try:
-                obj = DocsReader(f'{os.path.join(os.path.join(System.BASE_PATH, "helpDocs"), arg)}.xml')
-                obj.style()
+            if os.path.isfile(file:=os.path.join(os.path.join(System.BASE_PATH, "bin"), package)):
+                os.system(f'{run} {file} {arg}')
                 return
-            except FileNotFoundError:
-                self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
+            if os.path.isdir(folder:=os.path.join(System.BASE_PATH, "tools")):
+                if not package:
+                    print("# HackerMode can't find main file")
+                    print("# in {tool_name}.")
+                    print("# this is 'Developer Error'")
+                    return
+                try:
+                    system_path = os.getcwd()
+                    os.chdir(folder)
+                    os.system(f'{run} {package} {arg}')
+                except:
+                    pass
 
+                finally:
+                    os.chdir(system_path)
+                return
+        except:
+            pass
+        super(HackerModeCommands, self).default(line)
 
 class MainShell(HackerModeCommands):
 
@@ -236,14 +260,6 @@ class MainShell(HackerModeCommands):
     def complete_HackerMode(self, text, *args):
         argvs = ['update', 'upgrade', 'install', 'check']
         return [argv for argv in argvs if argv.startswith(text)]
-
-    def do_EOF(self, line):
-        print('\n# to exit write "exit"')
-        return True
-
-    def do_exit(self, line):
-        exit()
-
 
 if __name__ == '__main__':
     print(MainShell().__dir__())
