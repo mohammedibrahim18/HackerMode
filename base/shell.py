@@ -1,6 +1,6 @@
-import cmd, os, pathlib, threading, time
+import cmd, os, pathlib, threading, time,datetime,sys
 from N4Tools.terminal import terminal
-from N4Tools.Design import Color
+from N4Tools.Design import Color,Text,Square
 from system import System
 from docsReader import DocsReader
 
@@ -22,15 +22,26 @@ PROMPT = lambda path, ToolName: Color.reader(f'\
 [$/]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n\
 │\n\
 ╰─>>>$ ')
+PROMPTS=[
+lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LGREEN]{pathlib.Path.cwd().name}[$YELLOW]@[$LWIHTE]{ToolName}[$LRED]][$/]\n\
+╰>>>$'),
+lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LCYAN] {pathlib.Path.cwd().name} [$LRED]][$LCYAN]->[$LRED][[$LWIHTE] {str(datetime.datetime.now()).split(" ")[-1]} [$LRED]][$LYELLOW]<-[$LRED][[$LYELLOW] {ToolName} [$LRED]]\n\
+[$/]╰>>>$'),
+lambda ToolName:Color.reader(f'[$/]-> [$LGREEN]{pathlib.Path.cwd().name} [$/]->[$LYELLOW] {ToolName} [$/]->\n-> '),
 
+lambda ToolName:Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.cwd().name}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n\
+│\n\
+╰─>>>$')
+        ]
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
+    Mode_Prompt=3
     Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt = PROMPT(pathlib.Path.cwd().name, self.ToolName)
+        self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName)
 
     def propath(self, text, args):
         if not text:
@@ -91,6 +102,7 @@ class BaseShell(cmd.Cmd):
         return list(set(packages))
 
     def onecmd(self, line):
+        self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName)
         cmd, arg, line = self.parseline(line)
         if not line:
             return self.emptyline()
@@ -140,7 +152,7 @@ class BaseShell(cmd.Cmd):
             else:
                 os.chdir(os.path.join(os.getcwd(), arg))
                 self.Path = self.viewdir(pathlib.PurePath())
-            self.prompt = PROMPT(pathlib.Path.cwd().name, self.ToolName)
+            self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName)
         except FileNotFoundError as e:
             print(e)
         except NotADirectoryError as e:
@@ -190,6 +202,17 @@ class BaseShell(cmd.Cmd):
             return
         except FileNotFoundError:
             self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
+    def do_GETPROMPT(self,arg): #GET
+        a=''
+        for x in range(len(PROMPTS)):a+=(f'\n\033[1;36m(\033[1;37m {x} \033[1;36m)\033[1;37m ->\n'+PROMPTS[x](self.ToolName)+'\n') 
+        sys.stdout.write(Text().CentreAlign('PROMPTS\n'+Square().base(a+'\n'))+'\n')
+
+    def do_SETPROMPT(self,arg): #SET
+        try:
+            if int(arg) in list(range(len(PROMPTS))):
+                self.Mode_Prompt=int(arg)
+                self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName) #SET
+        except ValueError:pass
 
     def do_main(self):
         return True
