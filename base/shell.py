@@ -1,47 +1,50 @@
-import cmd, os, pathlib, threading, time,datetime,sys
+import cmd, os, pathlib, threading, time,datetime
 from N4Tools.terminal import terminal
-from N4Tools.Design import Color,Text,Square
+from N4Tools.Design import Color
 from system import System
 from docsReader import DocsReader
+from config import Config
 
 Color = Color()
 terminal = terminal()
 
-# Normal:
-# ┌───[ {pwd} ]#[ {ToolName} ]>>>
-# │
-# └─>>>$
+class ShellTheme:
+    def PROMPTS(self):
+        return [
+            lambda ToolName: Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.cwd().name}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n│\n╰─>>>$ '),
+            # ╭───[ home ]#[ Main ]>>>
+            # │
+            # ╰─>>>$
 
-# Smoth:
-# ╭───[ {pwd} ]#[ {ToolName} ]>>>
-# │
-# ╰─>>>$
-# ├
+            lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LGREEN]{pathlib.Path.cwd().name}[$YELLOW]@[$LWIHTE]{ToolName}[$LRED]][$/]\n╰>>>$'),
+            # ╭[home@Main]
+            # ╰>>>$D
 
-PROMPT = lambda path, ToolName: Color.reader(f'\
-[$/]╭───[$LBLUE][ [$LCYAN]{path}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n\
-│\n\
-╰─>>>$ ')
-PROMPTS=[
-lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LGREEN]{pathlib.Path.cwd().name}[$YELLOW]@[$LWIHTE]{ToolName}[$LRED]][$/]\n\
-╰>>>$'),
-lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LCYAN] {pathlib.Path.cwd().name} [$LRED]][$LCYAN]->[$LRED][[$LWIHTE] {str(datetime.datetime.now()).split(" ")[-1]} [$LRED]][$LYELLOW]<-[$LRED][[$LYELLOW] {ToolName} [$LRED]]\n\
-[$/]╰>>>$'),
-lambda ToolName:Color.reader(f'[$/]-> [$LGREEN]{pathlib.Path.cwd().name} [$/]->[$LYELLOW] {ToolName} [$/]->\n-> '),
+            lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LCYAN] {pathlib.Path.cwd().name} [$LRED]][$LWIHTE]-[$LRED][[$LWIHTE] {str(datetime.datetime.now()).split(" ")[-1].split(".")[0]} [$LRED]][$LWIHTE]-[$LRED][[$LYELLOW] {ToolName} [$LRED]]\n[$/]╰>>>$'),
+            # ╭[ home ]-[ 11:41:02 ]-[ Main ]
+            # ╰>>>$
 
-lambda ToolName:Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.cwd().name}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n\
-│\n\
-╰─>>>$')
+            lambda ToolName:Color.reader(f'[$BLUE]┌──[$LBLUE]([$LRED]HACKER💀MODE[$LBLUE])[$BLUE]-[$LBLUE][[$LYELLOW]{ToolName}[$LBLUE]][$BLUE]-[$LBLUE][[$/]{pathlib.Path.cwd().name}[$LBLUE]]\n[$BLUE]└─[$LRED]$[$/] '),
+            # ┌──(HACKER💀MODE)-[Main]-[home]>>>
+            # └─$
         ]
+    def PROMPT(self,ToolName):
+        try:
+            Mode_Prompt = Config.get('SETTINGS','PROMPT',cast=int)
+        except KeyError:
+            Config.set('SETTINGS','PROMPT',0)
+        Mode_Prompt = Config.get('SETTINGS','PROMPT',cast=int)
+        return self.PROMPTS()[Mode_Prompt](ToolName)
+
+ShellTheme = ShellTheme()
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
-    Mode_Prompt=3
     Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName)
+        self.prompt =ShellTheme.PROMPT(self.ToolName)
 
     def propath(self, text, args):
         if not text:
@@ -102,7 +105,6 @@ class BaseShell(cmd.Cmd):
         return list(set(packages))
 
     def onecmd(self, line):
-        self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName)
         cmd, arg, line = self.parseline(line)
         if not line:
             return self.emptyline()
@@ -152,7 +154,7 @@ class BaseShell(cmd.Cmd):
             else:
                 os.chdir(os.path.join(os.getcwd(), arg))
                 self.Path = self.viewdir(pathlib.PurePath())
-            self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName)
+            self.prompt =ShellTheme.PROMPT(self.ToolName)
         except FileNotFoundError as e:
             print(e)
         except NotADirectoryError as e:
@@ -202,17 +204,6 @@ class BaseShell(cmd.Cmd):
             return
         except FileNotFoundError:
             self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
-    def do_GETPROMPT(self,arg): #GET
-        a=''
-        for x in range(len(PROMPTS)):a+=(f'\n\033[1;36m(\033[1;37m {x} \033[1;36m)\033[1;37m ->\n'+PROMPTS[x](self.ToolName)+'\n') 
-        sys.stdout.write(Text().CentreAlign('PROMPTS\n'+Square().base(a+'\n'))+'\n')
-
-    def do_SETPROMPT(self,arg): #SET
-        try:
-            if int(arg) in list(range(len(PROMPTS))):
-                self.Mode_Prompt=int(arg)
-                self.prompt =PROMPTS[self.Mode_Prompt](self.ToolName) #SET
-        except ValueError:pass
 
     def do_main(self):
         return True
@@ -283,6 +274,22 @@ class MainShell(HackerModeCommands):
     def complete_HackerMode(self, text, *args):
         argvs = ['update', 'upgrade', 'install', 'check']
         return [argv for argv in argvs if argv.startswith(text)]
+
+
+    def do_SETPROMPT(self,arg): #SET
+        try:
+            Mode_Prompt=int(arg)
+            max = len(ShellTheme.PROMPTS())
+            if Mode_Prompt > max: raise IndexError()
+            Config.set('SETTINGS','PROMPT',Mode_Prompt)
+            self.prompt =ShellTheme.PROMPT(self.ToolName)
+            return
+        except IndexError:
+            pass
+        except ValueError:
+            pass
+        print(f'# support only {[i for i in range(max)]}')
+
 
 if __name__ == '__main__':
     print(MainShell().__dir__())

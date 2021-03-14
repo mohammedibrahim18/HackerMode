@@ -2,6 +2,7 @@
     "settings":{
         "DEBUG":true,
         "IS_INSTALLED":false,
-        "ARABIC_RESHAPER":false
+        "ARABIC_RESHAPER":false,
+        "PROMPT": 0
     }
 }
