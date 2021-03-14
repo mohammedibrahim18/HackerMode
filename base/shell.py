@@ -36,7 +36,7 @@ lambda ToolName:Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.c
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
-    Mode_Prompt=2
+    Mode_Prompt=3
     Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
 
     def __init__(self, *args, **kwargs):
