@@ -117,6 +117,7 @@ class BaseShell(cmd.Cmd):
         return list(set(packages))
 
     def onecmd(self, line):
+        self.prompt =ShellTheme.PROMPT(self.ToolName)
         cmd, arg, line = self.parseline(line)
         if not line:
             return self.emptyline()

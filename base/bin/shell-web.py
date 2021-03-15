@@ -18,12 +18,18 @@ def GET(Thread):
 	Thread.kill=True
 	return req
 run=False
-try:HTML=GET()#open('/sdcard/soup.py','r').read()
+isfile=False
+try:
+	if os.path.isfile(url):HTML=open(url,'r').read();isfile=True
+	else:
+		HTML=GET()#open('/sdcard/soup.py','r').read()
+		HTML_headers=HTML.headers
+		HTML=HTML.text
 except Exception as e:print('\r'+str(e));exit()
 
 
 #header={k.replace('-','_'):v for k,v in HTML.headers.items()}
-soup=Soup(HTML.text,'html.parser')
+soup=Soup(HTML,'html.parser')
 class HtmlCmd(BaseShell):
 	ToolName = f"{TOOL_NAME}.[$LPINK]Html"
 	AllDag=['ins', 'frame', 'area', 'option', 'wbr', 'b', 'code', 'head', 'audio', 'main', 'optgroup', 'dialog', 'big', 'acronym', 'hr', 'dir', 'data', 'div', 'h5', 'h4', 'h6', 'h1', 'h3', 'h2', 'span', 'picture', 'output', 'link', 'video', 'pagh', 'section', 'map', 'em', 'small', 'nav', 's', 'object', 'noscript', 'cite', 'html', 'ul', 'mark', 'button', 'title', 'figure', 'ruby', 'font', 'br', 'aside', 'rp', 'ol', 'rt', 'progress', 'time', 'details', 'dfn', 'applet', 'summary', 'svg', 'samp', 'meta', 'p', 'li', 'track', 'script', 'style', 'table', 'del', 'figcaption', 'dd', 'basefont', 'colgroup', 'dl', 'strong', 'dt', 'input', 'base', 'tr', 'tt', 'footer', 'canvas', 'noframes', 'select', 'circle', 'td', 'embed', 'template', 'th', 'caption', 'bdi', 'bdo', 'i', 'a', 'thead', 'abbr', 'u', 'nobr', 'q', 'meter', 'stop', 'datalist', 'radialgradient', 'form', 'frameset', 'body', 'pre', 'col', 'blockquote', 'address', 'heada', 'label', 'param', 'tbody', 'img', 'sub', 'fieldset', 'article', 'sup', 'header', 'kbd', 'var', 'textarea', 'center', 'legend', 'strike', 'iframe', 'tfoot', 'source']
@@ -175,7 +181,7 @@ class HtmlCmd(BaseShell):
 
 class InfoCmd(BaseShell):
 	ToolName = f"{TOOL_NAME}.[$LGREEN]Info"
-	header={k.replace('-','_'):v for k,v in HTML.headers.items()}
+	if not isfile:header={k.replace('-','_'):v for k,v in HTML_headers.items()}
 	AllCommentInfo=['encoding','reason','request','status_code','url','ok','links','history','is_permanent_redirect','is_redirect','apparent_encoding','cookies','elapsed']
 	for x in AllCommentInfo:
 		exec(f'''\
@@ -215,7 +221,7 @@ class InfoCmd(BaseShell):
 
 class LinkCmd(BaseShell):
 	ToolName = f"{TOOL_NAME}.[$LCYAN]Link"
-	all=set(list(map((lambda t:t[0]),re.findall('"((http|ftp)s?://.*?)"', HTML.text))))
+	all=set(list(map((lambda t:t[0]),re.findall('"((http|ftp)s?://.*?)"', HTML))))
 	file=set([x for x in all if re.findall('[\w]*\.[\w]*$',x)])
 	ends=set([x[x.rfind('.'):] for x in file])
 	for x in ends:
@@ -234,7 +240,8 @@ class MainCmd(BaseShell):
 	def do_html(self,arg):
 		HtmlCmd().cmdloop()
 	def do_info(self,arg):
-		InfoCmd().cmdloop()
+		if not isfile:InfoCmd().cmdloop()
+		else:print('Not info in File..')
 	def do_links(self,arg):
 		LinkCmd().cmdloop()
 	def do_main(self,arg):
