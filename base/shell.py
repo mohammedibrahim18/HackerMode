@@ -46,7 +46,7 @@ class BaseShell(cmd.Cmd):
         super().__init__(*args, **kwargs)
         self.prompt =ShellTheme.PROMPT(self.ToolName)
 
-    def propath(self, text, args):
+    def pathCompleter(self, text, args):
         if not text:
             a = self.Path
         else:
@@ -78,8 +78,20 @@ class BaseShell(cmd.Cmd):
             except:
                 pass
 
-    def completedefault(self, text, *args):
-        return self.propath(text, args[0])
+    def completedefault(self, text, line, begidx, endidx):
+        if len(line.split(' ')) == 1:
+            # linux commands complete
+            return [
+                a[begidx:] for a in self.completenames(line,line,begidx,endidx)
+            ]
+        if len(l:=line.split(' ')) > 1 and '-' in line.split(' ')[-1]:
+            # path complete
+            return [
+                a.split('-')[-1]
+                for a in self.pathCompleter(l[-1], line)
+            ]
+        return self.pathCompleter(text, line)
+
 
     def completenames(self, text, *ignored):
         packages =  [
@@ -205,7 +217,7 @@ class BaseShell(cmd.Cmd):
         except FileNotFoundError:
             self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
 
-    def do_main(self):
+    def do_main(self,arg):
         return True
 
     def do_EOF(self, line):
@@ -220,7 +232,7 @@ class HackerModeCommands(BaseShell):
         BIN   = os.listdir(os.path.join(System.BASE_PATH,'bin'))
         TOOLS = os.listdir(os.path.join(System.BASE_PATH,'tools'))
         for file in BIN:
-            if file.startswith(package):return file
+            if ''.join(file.split('.')[0:-1]) == package:return file
         for dir in TOOLS:
             if package == dir:
                 for path, dirs, files in os.walk(os.path.join(System.BASE_PATH,f'tools/{dir}')):
