@@ -11,40 +11,44 @@ terminal = terminal()
 class ShellTheme:
     def PROMPTS(self):
         return [
-            lambda ToolName: Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.cwd().name}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{ToolName} [$LBLUE]][$/]>>>\n│\n╰─>>>$ '),
+            lambda Root: Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.cwd().name}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{Root.ToolName} [$LBLUE]][$/]>>>\n│\n╰─>>>$ '),
             # ╭───[ home ]#[ Main ]>>>
             # │
             # ╰─>>>$
 
-            lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LGREEN]{pathlib.Path.cwd().name}[$YELLOW]@[$LWIHTE]{ToolName}[$LRED]][$/]\n╰>>>$'),
+            lambda Root:Color.reader(f'[$/]╭[$LRED][[$LGREEN]{pathlib.Path.cwd().name}[$YELLOW]@[$LWIHTE]{Root.ToolName}[$LRED]][$/]\n╰>>>$'),
             # ╭[home@Main]
             # ╰>>>$D
 
-            lambda ToolName:Color.reader(f'[$/]╭[$LRED][[$LCYAN] {pathlib.Path.cwd().name} [$LRED]][$LWIHTE]-[$LRED][[$LWIHTE] {str(datetime.datetime.now()).split(" ")[-1].split(".")[0]} [$LRED]][$LWIHTE]-[$LRED][[$LYELLOW] {ToolName} [$LRED]]\n[$/]╰>>>$'),
+            lambda Root:Color.reader(f'[$/]╭[$LRED][[$LCYAN] {pathlib.Path.cwd().name} [$LRED]][$LWIHTE]-[$LRED][[$LWIHTE] {str(datetime.datetime.now()).split(" ")[-1].split(".")[0]} [$LRED]][$LWIHTE]-[$LRED][[$LYELLOW] {Root.ToolName} [$LRED]]\n[$/]╰>>>$'),
             # ╭[ home ]-[ 11:41:02 ]-[ Main ]
             # ╰>>>$
 
-            lambda ToolName:Color.reader(f'[$BLUE]┌──[$LBLUE]([$LRED]HACKER💀MODE[$LBLUE])[$BLUE]-[$LBLUE][[$LYELLOW]{ToolName}[$LBLUE]][$BLUE]-[$LBLUE][[$/]{pathlib.Path.cwd().name}[$LBLUE]]\n[$BLUE]└─[$LRED]$[$/] '),
+            lambda Root:Color.reader(f'[$BLUE]┌──[$LBLUE]([$LRED]HACKER💀MODE[$LBLUE])[$BLUE]-[$LBLUE][[$LYELLOW]{Root.ToolName}[$LBLUE]][$BLUE]-[$LBLUE][[$/]{pathlib.Path.cwd().name}[$LBLUE]]\n[$BLUE]└─[$LRED]$[$/] '),
             # ┌──(HACKER💀MODE)-[Main]-[home]>>>
             # └─$
+            lambda Root:Color.reader(f'[$/]╭[$LRED]({"❌" if Root.is_error else "✅"})[$/]─[$LGREEN]{{[$LYELLOW]home[$LRED]:[$LBLUE]Main[$LGREEN]}}[$/]>>>\n╰>>>$')
+            # ╭(✅)─{home:Main}─>>>
+            # ╰>>>$
         ]
-    def PROMPT(self,ToolName):
+    def PROMPT(self,Root):
         try:
             Mode_Prompt = Config.get('SETTINGS','PROMPT',cast=int)
         except KeyError:
             Config.set('SETTINGS','PROMPT',0)
         Mode_Prompt = Config.get('SETTINGS','PROMPT',cast=int)
-        return self.PROMPTS()[Mode_Prompt](ToolName)
+        return self.PROMPTS()[Mode_Prompt](Root)
 
 ShellTheme = ShellTheme()
 
 class BaseShell(cmd.Cmd):
     ToolName = 'Main'
+    is_error=False
     Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt =ShellTheme.PROMPT(self.ToolName)
+        self.prompt =ShellTheme.PROMPT(self)
 
     def pathCompleter(self, text, args):
         if not text:
@@ -74,6 +78,7 @@ class BaseShell(cmd.Cmd):
                 self.Path = self.viewdir(pathlib.PurePath())
                 if a != 0:
                     if System.PLATFORME == 'termux':
+                        self.is_error=True
                         os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
             except:
                 pass
@@ -115,10 +120,11 @@ class BaseShell(cmd.Cmd):
             if a.startswith(text)
         ]
         return list(set(packages))
-
+    def postcmd(self,*args):
+        self.prompt =ShellTheme.PROMPT(self)
     def onecmd(self, line):
-        self.prompt =ShellTheme.PROMPT(self.ToolName)
         cmd, arg, line = self.parseline(line)
+        self.is_error=False
         if not line:
             return self.emptyline()
         if cmd is None:
@@ -167,7 +173,7 @@ class BaseShell(cmd.Cmd):
             else:
                 os.chdir(os.path.join(os.getcwd(), arg))
                 self.Path = self.viewdir(pathlib.PurePath())
-            self.prompt =ShellTheme.PROMPT(self.ToolName)
+            self.prompt =ShellTheme.PROMPT(self)
         except FileNotFoundError as e:
             print(e)
         except NotADirectoryError as e:
@@ -295,7 +301,7 @@ class MainShell(HackerModeCommands):
             M = len(ShellTheme.PROMPTS())
             if Mode_Prompt in list(range(M)):
                 Config.set('SETTINGS','PROMPT',Mode_Prompt)
-                self.prompt =ShellTheme.PROMPT(self.ToolName)
+                self.prompt =ShellTheme.PROMPT(self)
             else:raise IndexError()
         except:
             print(f'# support only {list(range(len(ShellTheme.PROMPTS())))}')
