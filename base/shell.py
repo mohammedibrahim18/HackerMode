@@ -292,17 +292,13 @@ class MainShell(HackerModeCommands):
     def do_SETPROMPT(self,arg): #SET
         try:
             Mode_Prompt=int(arg)
-            max = len(ShellTheme.PROMPTS())
-            if Mode_Prompt > max: raise IndexError()
-            Config.set('SETTINGS','PROMPT',Mode_Prompt)
-            self.prompt =ShellTheme.PROMPT(self.ToolName)
-            return
-        except IndexError:
-            pass
-        except ValueError:
-            pass
-        print(f'# support only {[i for i in range(max)]}')
-
+            M = len(ShellTheme.PROMPTS())
+            if Mode_Prompt in list(range(M)):
+                Config.set('SETTINGS','PROMPT',Mode_Prompt)
+                self.prompt =ShellTheme.PROMPT(self.ToolName)
+            else:raise IndexError()
+        except:
+            print(f'# support only {list(range(len(ShellTheme.PROMPTS())))}')
 
 if __name__ == '__main__':
     print(MainShell().__dir__())
