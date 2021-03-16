@@ -27,9 +27,10 @@ class ShellTheme:
             lambda Root:Color.reader(f'[$BLUE]┌──[$LBLUE]([$LRED]HACKER💀MODE[$LBLUE])[$BLUE]-[$LBLUE][[$LYELLOW]{Root.ToolName}[$LBLUE]][$BLUE]-[$LBLUE][[$/]{pathlib.Path.cwd().name}[$LBLUE]]\n[$BLUE]└─[$LRED]$[$/] '),
             # ┌──(HACKER💀MODE)-[Main]-[home]>>>
             # └─$
+
             lambda Root:Color.reader(f'[$/]╭[$LRED]({"❌" if Root.is_error else "✅"})[$/]─[$LGREEN]{{[$LYELLOW]home[$LRED]:[$LBLUE]Main[$LGREEN]}}[$/]>>>\n╰>>>$')
             # ╭(✅)─{home:Main}─>>>
-            # ╰>>>$
+        # ╰>>>$
         ]
     def PROMPT(self,Root):
         try:

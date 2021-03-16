@@ -1,39 +1,72 @@
 import os
 import sys
-BinaryFiles = lambda file :os.path.join(os.path.join(os.path.abspath(__file__).split('/bin')[0],'BinaryFiles'),file)
+
+compileFiles = lambda file :os.path.join(os.path.join(os.path.abspath(__file__).split('/bin')[0],'compilerFiles'),file)
 
 class runfile:
-        def __init__(self):
-                self.commands={
-                        '.py':'python3',
-                        '.pyc':'python3',
-                        '.sh':'bash',
-                        '.php':'php',
-                        '.dart':'dart',
-                        '.js':'node',
-                        '.c':f'gcc [$FILE] -o {BinaryFiles("Cfile")} && {BinaryFiles("Cfile")}',
-                }
-                self.path='.'
-        def isfile(self):
-                for x in self.commands.keys():
-                        if self.path.endswith(x):return True
-        def run(self):
-                if not os.path.isfile(self.path):
-                        print (f"[Errno 2] No such file or directory: '{os.path.join(*__file__.split('/')[:-1],sys.argv[1])}'")
-                        return
-                if not self.isfile():
-                        print (f'# run not support this file "{self.path}"')
-                        return
-                ext = self.path.split('.')[-1]
-                if ext == 'c':
-                        file = (sys.argv[1])
-                        os.system(f'{self.commands["."+ext].replace("[$FILE]",file)} {" ".join(sys.argv[2:])}')
-                else:
-                        os.system(f'{self.commands["."+ext]} {" ".join(sys.argv[1:])}')
-        def run_shell(self):
-                try:
-                        self.path=sys.argv[1]
-                        self.run()
-                except IndexError:pass
+    def __init__(self,file):
+        self.commands = {
+            '.py': self.py,
+            '.pyc': self.pyc,
+            '.sh': self.sh,
+            '.php': self.php,
+            '.dart': self.dart,
+            '.js': self.js,
+            '.c': self.c,
+            '.java': self.java,
+        }
+        self.file = file
+        self.ext = self.file.split('.')[-1]
 
-runfile().run_shell()
+        if not os.path.isfile(self.file):
+            print (f"bash: {self.file}: No such file or directory")
+            return
+        if not self.support():
+            print (f'# run not support this file "{self.file}"')
+            return
+
+        self.commands['.'+self.ext]()
+
+    def support(self):
+        for x in self.commands.keys():
+            if self.file.endswith(x):return True
+
+    def run(self,language):
+        os.system(
+            f'{language} {" ".join(sys.argv[1:])}'
+            # example:
+            # python3 file.py argvs
+        )
+    def py(self):
+        self.run('python3')
+
+    def pyc(self):
+        self.run('python3')
+
+    def sh(self):
+        self.run('bash')
+
+    def php(self):
+        self.run('php')
+
+    def dart(self):
+        self.run('dart')
+
+    def js(self):
+        self.run('node')
+
+    def c(self):
+        os.system(f'gcc {self.file} -o {compileFiles("c/Cfile")}')
+        os.system(f'{compileFiles("c/Cfile")} {" ".join(sys.argv[2:])}')
+
+    def java(self):
+        if 'termux' in os.getcwd():
+            os.system(f'ecj {self.file}')
+            os.system(f'dx --dex --output={self.file.split(".")[0]}.dex {self.file.split(".")[0]}.class')
+            os.system(f'dalvikvm -cp {self.file.split(".")[0]}.dex {self.file.split(".")[0]}')
+            return
+
+try:
+    runfile(sys.argv[1])
+except IndexError:
+    print ('# run <file name>')
