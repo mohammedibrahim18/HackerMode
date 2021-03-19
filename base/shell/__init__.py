@@ -1,57 +1,35 @@
-import cmd, os, pathlib, threading, time,datetime
-from N4Tools.terminal import terminal
-from N4Tools.Design import Color
-from system import System
-from docsReader import DocsReader
-from config import Config
+import cmd
+import os
+import pathlib
+import threading
+import time
+from typing import List, Tuple
 
-Color = Color()
+from config import Config
+from docsReader import DocsReader
+from system import System
+
+from N4Tools.terminal import terminal
+from .shelltheme import ShellTheme
+
 terminal = terminal()
 
-class ShellTheme:
-    def PROMPTS(self):
-        return [
-            lambda Root: Color.reader(f'[$/]╭───[$LBLUE][ [$LCYAN]{pathlib.Path.cwd().name}[$LBLUE] ][$/]#[$LBLUE][ [$LYELLOW]{Root.ToolName} [$LBLUE]][$/]>>>\n│\n╰─>>>$ '),
-            # ╭───[ home ]#[ Main ]>>>
-            # │
-            # ╰─>>>$
-
-            lambda Root:Color.reader(f'[$/]╭[$LRED][[$LGREEN]{pathlib.Path.cwd().name}[$YELLOW]@[$LWIHTE]{Root.ToolName}[$LRED]][$/]\n╰>>>$'),
-            # ╭[home@Main]
-            # ╰>>>$D
-
-            lambda Root:Color.reader(f'[$/]╭[$LRED][[$LCYAN] {pathlib.Path.cwd().name} [$LRED]][$LWIHTE]-[$LRED][[$LWIHTE] {str(datetime.datetime.now()).split(" ")[-1].split(".")[0]} [$LRED]][$LWIHTE]-[$LRED][[$LYELLOW] {Root.ToolName} [$LRED]]\n[$/]╰>>>$'),
-            # ╭[ home ]-[ 11:41:02 ]-[ Main ]
-            # ╰>>>$
-
-            lambda Root:Color.reader(f'[$BLUE]┌──[$LBLUE]([$LRED]HACKER💀MODE[$LBLUE])[$BLUE]-[$LBLUE][[$LYELLOW]{Root.ToolName}[$LBLUE]][$BLUE]-[$LBLUE][[$/]{pathlib.Path.cwd().name}[$LBLUE]]\n[$BLUE]└─[$LRED]$[$/] '),
-            # ┌──(HACKER💀MODE)-[Main]-[home]>>>
-            # └─$
-
-            lambda Root:Color.reader(f'[$/]╭[$LRED]({"❌" if Root.is_error else "✅"})[$/]─[$LGREEN]{{[$LYELLOW]home[$LRED]:[$LBLUE]Main[$LGREEN]}}[$/]>>>\n╰>>>$')
-            # ╭(✅)─{home:Main}─>>>
-        # ╰>>>$
-        ]
-    def PROMPT(self,Root):
-        try:
-            Mode_Prompt = Config.get('SETTINGS','PROMPT',cast=int)
-        except KeyError:
-            Config.set('SETTINGS','PROMPT',0)
-        Mode_Prompt = Config.get('SETTINGS','PROMPT',cast=int)
-        return self.PROMPTS()[Mode_Prompt](Root)
-
-ShellTheme = ShellTheme()
 
 class BaseShell(cmd.Cmd):
-    ToolName = 'Main'
-    is_error=False
-    Path = [x + '/' if os.path.isdir(os.path.join('.', x)) else x + ' ' for x in os.listdir('.')]
+    ToolName: str = 'Main'
+    is_error: bool = False
+    Path: Tuple[str] = (
+        x + '/'
+        if os.path.isdir(os.path.join('.', x))
+        else x + ' '
+        for x in os.listdir('.')
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt =ShellTheme.PROMPT(self)
+        self.prompt = ShellTheme.prompt(self)
 
-    def pathCompleter(self, text, args):
+    def pathCompleter(self, text: str, args):
         if not text:
             a = self.Path
         else:
@@ -65,13 +43,18 @@ class BaseShell(cmd.Cmd):
         ]
         return a
 
-    def viewdir(self, path):
-        return [x + '/' if os.path.isdir(os.path.join(path, x)) else x + ' ' for x in os.listdir(path)]
+    def viewdir(self, path: str) -> List[str]:
+        return [
+            x + '/'
+            if os.path.isdir(os.path.join(path, x))
+            else x + ' '
+            for x in os.listdir(path)
+        ]
 
     def cmdloop(self, intro=None):
         return cmd.Cmd.cmdloop(self, intro)
 
-    def default(self, line):
+    def default(self, line: str):
         if self.ToolName.lower() == 'main':
             # allow linux commands in Main mode only
             try:
@@ -79,18 +62,24 @@ class BaseShell(cmd.Cmd):
                 self.Path = self.viewdir(pathlib.PurePath())
                 if a != 0:
                     if System.PLATFORME == 'termux':
-                        self.is_error=True
+                        self.is_error = True
                         os.system(f'/data/data/com.termux/files/usr/libexec/termux/command-not-found "{line}"')
             except:
                 pass
 
-    def completedefault(self, text, line, begidx, endidx):
+    def completedefault(
+            self,
+            text: str,
+            line: str,
+            begidx: int,
+            endidx: int
+    ) -> List[str]:
         if len(line.split(' ')) == 1:
             # linux commands complete
             return [
-                a[begidx:] for a in self.completenames(line,line,begidx,endidx)
+                a[begidx:] for a in self.completenames(line, line, begidx, endidx)
             ]
-        if len(l:=line.split(' ')) > 1 and '-' in line.split(' ')[-1]:
+        if len(l := line.split(' ')) > 1 and '-' in line.split(' ')[-1]:
             # path complete
             return [
                 a.split('-')[-1]
@@ -98,16 +87,20 @@ class BaseShell(cmd.Cmd):
             ]
         return self.pathCompleter(text, line)
 
+    def completenames(
+            self,
+            text: str,
+            *ignored
+    ) -> List[str]:
 
-    def completenames(self, text, *ignored):
-        packages =  [
+        packages: List[str] = [
             # add class command to shell
             a[3:].replace('_', '-') for a in self.get_names()
             if a.startswith('do_' + text)
         ]
         # complete linux commands and HackerMode commands
         # in Main mode only.
-        if self.ToolName.lower() != 'main':return packages
+        if self.ToolName.lower() != 'main': return packages
 
         packages += [
             # add HakerMode commands to shell
@@ -121,11 +114,13 @@ class BaseShell(cmd.Cmd):
             if a.startswith(text)
         ]
         return list(set(packages))
-    def postcmd(self,*args):
-        self.prompt =ShellTheme.PROMPT(self)
-    def onecmd(self, line):
+
+    def postcmd(self, *args):
+        self.prompt = ShellTheme.prompt(self)
+
+    def onecmd(self, line: str):
         cmd, arg, line = self.parseline(line)
-        self.is_error=False
+        self.is_error = False
         if not line:
             return self.emptyline()
         if cmd is None:
@@ -139,7 +134,7 @@ class BaseShell(cmd.Cmd):
                 return self.default(line)
             return func(arg)
 
-    def do_ls(self, arg):
+    def do_ls(self, arg: str):
         if System.PLATFORME == 'termux':
             os.system('ls ' + arg)
             return
@@ -166,7 +161,7 @@ class BaseShell(cmd.Cmd):
                 output.append(i)
         self.columnize(output, displaywidth=terminal.size['width'])
 
-    def do_cd(self, arg):
+    def do_cd(self, arg: str):
         try:
             if arg in ['~', '$HOME', '']:
                 os.chdir(str(pathlib.Path.home()))
@@ -174,37 +169,38 @@ class BaseShell(cmd.Cmd):
             else:
                 os.chdir(os.path.join(os.getcwd(), arg))
                 self.Path = self.viewdir(pathlib.PurePath())
-            self.prompt =ShellTheme.PROMPT(self)
+            self.prompt = ShellTheme.prompt(self)
         except FileNotFoundError as e:
             print(e)
         except NotADirectoryError as e:
             print(e)
 
-    def do_c(self, line):
+    def do_c(self, line: str):
         print(chr(27) + "[2J\x1b[H", end='')
 
-    def do_clear(self, line):
+    def do_clear(self, line: str):
         os.system('clear')
 
-    def complete_help(self, *args):
+    def complete_help(self, *args) -> List[str]:
         if self.ToolName.lower() == 'main':
-            commands = set([
-                    a[3:] for a in self.get_names()
-                    if a.startswith('do_' + args[0])
-                ] + [
+            commands = set(
+                [
                     a for a in System.HACKERMODE_PACKAGES
                     if a.startswith(args[0])
                 ]
             )
-        else:commands = set([])
+        else:
+            commands = set([])
         topics = set(a[5:] for a in self.get_names()
                      if a.startswith('help_' + args[0]))
         return list(commands | topics)
 
     def do_help(self, arg: str):
-        help_xml_path = lambda package:os.path.join(
-            os.path.join(System.BASE_PATH, "helpDocs"), package
-        )
+        def help_xml_path(package):
+            return os.path.join(
+                os.path.join(System.BASE_PATH, "helpDocs"), package
+            )
+
         try:
             if self.ToolName.lower() == 'main' and not arg.strip():
                 # to show hakcermode help menu.
@@ -225,7 +221,7 @@ class BaseShell(cmd.Cmd):
         except FileNotFoundError:
             self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
 
-    def do_main(self,arg):
+    def do_main(self, arg):
         return True
 
     def do_EOF(self, line):
@@ -235,30 +231,40 @@ class BaseShell(cmd.Cmd):
     def do_exit(self, line):
         exit(-1)
 
+
 class HackerModeCommands(BaseShell):
-    def get_package_ext(self,package):
-        BIN   = os.listdir(os.path.join(System.BASE_PATH,'bin'))
-        TOOLS = os.listdir(os.path.join(System.BASE_PATH,'tools'))
-        for file in BIN:
-            if ''.join(file.split('.')[0:-1]) == package:return file
-        for dir in TOOLS:
+
+    def get_package_ext(self, package: str) -> bool:
+        bin: List[str] = os.listdir(
+            os.path.join(System.BASE_PATH, 'bin')
+        )
+        tools: List[str] = os.listdir(
+            os.path.join(System.BASE_PATH, 'tools')
+        )
+        for file in bin:
+            if ''.join(file.split('.')[0:-1]) == package: return file
+        for dir in tools:
             if package == dir:
-                for path, dirs, files in os.walk(os.path.join(System.BASE_PATH,f'tools/{dir}')):
+                for path, dirs, files in os.walk(
+                        os.path.join(
+                            System.BASE_PATH, f'tools/{dir}'
+                        )
+                ):
                     for main_file in files:
                         if main_file.startswith('main'):
                             return main_file
         return False
 
-    def default(self, line):
+    def default(self, line: str):
         package = self.get_package_ext(line.split(' ')[0])
         tool_name = line.split(' ')[0]
         arg = ' '.join(line.split(' ')[1:])
         run = f'python3 -B  {os.path.join(os.path.join(System.BASE_PATH, "bin"), "run.py")}'
         try:
-            if os.path.isfile(file:=os.path.join(os.path.join(System.BASE_PATH, "bin"), package)):
+            if os.path.isfile(file := os.path.join(os.path.join(System.BASE_PATH, "bin"), package)):
                 os.system(f'{run} {file} {arg}')
                 return
-            if os.path.isdir(folder:=os.path.join(System.BASE_PATH, f"tools/{tool_name}")):
+            if os.path.isdir(folder := os.path.join(System.BASE_PATH, f"tools/{tool_name}")):
                 if not package:
                     print("# HackerMode can't find main file")
                     print("# in {tool_name}.")
@@ -278,9 +284,10 @@ class HackerModeCommands(BaseShell):
             pass
         super(HackerModeCommands, self).default(line)
 
+
 class MainShell(HackerModeCommands):
 
-    def do_HackerMode(self, line):
+    def do_HackerMode(self, line: str):
         if line:
             os.system('HackerMode ' + line)
         if line.strip() in ['install', 'update', 'upgrade']:
@@ -291,22 +298,18 @@ class MainShell(HackerModeCommands):
             threading.Thread(target=refresh).start()
             exit()
 
-    def complete_HackerMode(self, text, *args):
-        argvs = ['update', 'upgrade', 'install', 'check']
+    def complete_HackerMode(self, text: str) -> List[str]:
+        argvs: List[str] = ['update', 'upgrade', 'install', 'check']
         return [argv for argv in argvs if argv.startswith(text)]
 
-
-    def do_SETPROMPT(self,arg): #SET
+    def do_SETPROMPT(self, arg: str):
         try:
-            Mode_Prompt=int(arg)
-            M = len(ShellTheme.PROMPTS())
-            if Mode_Prompt in list(range(M)):
-                Config.set('SETTINGS','PROMPT',Mode_Prompt)
-                self.prompt =ShellTheme.PROMPT(self)
-            else:raise IndexError()
+            prompt_theme = int(arg)
+            themes = len(ShellTheme.prompts)
+            if prompt_theme in list(range(themes)):
+                Config.set('SETTINGS', 'prompt', prompt_theme)
+                self.prompt = ShellTheme.prompt(self)
+            else:
+                raise IndexError()
         except:
-            print(f'# support only {list(range(len(ShellTheme.PROMPTS())))}')
-
-if __name__ == '__main__':
-    print(MainShell().__dir__())
-    MainShell().cmdloop()
+            print(f'# support only {list(range(len(ShellTheme.prompts)))}')
