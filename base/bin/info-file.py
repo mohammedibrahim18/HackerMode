@@ -110,56 +110,36 @@ class Main(BaseShell):
 def do_{x}(self, arg):
     if arg == 'paths' :
         self.paths("{x}")
-    elif arg == "Del_paths" :
-        self.paths("{x}", Del=True)
     elif arg == "size_all" :
         print ('\033[0;33mSize_All \033[1;31m: \033[0;32m',GetInfo(".").getsize(Data["Mode"]["{x}"][1]))
     elif arg == 'repeat' :
         self.repeat("{x}")
-    elif arg == 'Del_repeat' :
-        self.repeat("{x}", Del=True)
+
 def complete_{x}(self, arg, *args):
     all=['repeat', 'size_all',
-         'Del_repeat','paths',
-         'Del_paths'
+         'paths',
         ]
     return all if not arg else [x for x in all if x.startswith(arg)]''')
-    def paths(self, arg, Del=False):
+    def paths(self, arg):
         table = Table(
                     expand=True, box=box.SQUARE_DOUBLE_HEAD,
                     title="Paths", title_style="none")
         table.add_column('Path', style="green")
         table.add_column('Size', style='blue')
-        if Del:
-            table.add_column('Del', style="red")
         all = 0
         with Live(table, refresh_per_second=1)as live:
             for k,v in Data['Mode'][arg][2].items():
                 if k not in self.remove:
-                    if not Del:
-                        table.add_row(k, str(v))
-                    else:
-                        table.add_row(k, str(v), str(self.Remove(k)))
+                    table.add_row(k, str(v))
                     all += 1
-        print (f'\033[0;33m{"Del" if Del else "Path"}_All\033[1;31m : \033[0;32m{all}\n\033[0;33mSize_All \033[1;31m: \033[0;32m{GetInfo(".").getsize(Data["Mode"][arg][1])}')
-        if Del:
-            Data['Mode'][arg][2] = {}
-            Data['Mode'][arg][1] = 0
-    def Remove(self, path):
-        try:
-            os.remove(path)
-            return True
-        except:
-            return False
+        print (f'\033[0;33mPath_All\033[1;31m : \033[0;32m{all}\n\033[0;33mSize_All \033[1;31m: \033[0;32m{GetInfo(".").getsize(Data["Mode"][arg][1])}')
+
     def reader(self, path):
         with open(path, 'rb')as f:
             return f.read()
 
-    def repeat(self, arg, Del=False):
+    def repeat(self, arg):
         all = Data['in_repeat'][arg]
-#        if all == {} :
-#            print ('Not Repeat')
-#            return False
         k = list(all.keys())
         P = []
         Done = []
@@ -169,10 +149,7 @@ def complete_{x}(self, arg, *args):
         table.add_column('Path', style='green')
         table.add_column('Size', style='blue')
         table.add_column("Mode", style="cyan")
-        if Del:
-            table.add_column('Del', style="red")
         size_all = 0
-        Del_all = 0
         size_all_repeat = 0
         D = ''
         with Live(table)as live:
@@ -188,19 +165,8 @@ def complete_{x}(self, arg, *args):
                     if self.reader(x[1][0]) == self.reader(x[1][1]):
                         size_all_repeat += x[0]
                         repeat_all += 1
-                        if Del:
-                           table.add_row(x[1][0] , S, "orignal","False")
-                           table.add_row(x[1][1] , S, "plus",str(self.Remove(x[1][0]))) 
-                           Del_all += 1
-                           Data["Mode"][arg][1] -= x[0]
-                           try:
-                               self.remove.append(x[1][1])
-                               x[1].remove(x[1][1])
-                           except:pass
-                           repeat_all += 1
-                        else:
-                            table.add_row(x[1][0] , S, "orignal")
-                            table.add_row(x[1][1] , S, "plus")
+                        table.add_row(x[1][0] , S, "orignal")
+                        table.add_row(x[1][1] , S, "plus")
                 elif len(x[1]) > 2:
                     original=x[1][0]
                     r=self.reader(original)
@@ -208,23 +174,12 @@ def complete_{x}(self, arg, *args):
                     for p in x[1][1:]:
                         if r == self.reader(p):
                             if N==0:
-                                if Del:
-                                    table.add_row(original, S, "original", "False")
-                                    #x[1].remove(original)
-                                else:
-                                    table.add_row(original, S, "original")
-                            if Del:
-                                table.add_row(p,S,"plus",str(self.Remove(p)))
-                                Del_all += 1
-                                Data["Mode"][arg][1] -= x[0]
-                                x[1].remove(p)
-                                self.remove.append(p)
-                            else:
-                                table.add_row(p,S,"plus")
+                                table.add_row(original, S, "original")
+                            table.add_row(p,S,"plus")
                             size_all_repeat += x[0]
                             N+=1
                             repeat_all+=1
                     live.update(table)
-        print (f'\033[0;33m{"Del" if Del else "Repeat"}_All\033[1;31m :\033[0;32m {Del_all if Del else repeat_all}\n\033[0;33mSize_All_{"Del"if Del else "Repeat"} \033[1;31m:\033[0;32m {GetInfo(".").getsize(size_all_repeat)}')
+        print (f'\033[0;33mRepeat_All\033[1;31m :\033[0;32m {repeat_all}\n\033[0;33mSize_All_Repeat \033[1;31m:\033[0;32m {GetInfo(".").getsize(size_all_repeat)}')
 Main().cmdloop()
 
