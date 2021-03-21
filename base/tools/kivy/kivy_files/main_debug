@@ -1,0 +1,49 @@
+from kivymd.app import MDApp
+from kivy.utils import platform
+from kivy.lang import Builder
+import os
+
+from app.backend.root import ManagerScreens
+
+if platform != 'android':
+    from kaki.app import App as MDApp
+
+class $appName(MDApp):
+    DEBUG = True
+
+    AUTORELOADER_PATHS = [
+        (".", {"recursive": True}),
+    ]
+
+    CLASSES = {
+        "<ManagerScreens>": "app.backend.manager_screens.managerscreens.ManagerScreens",
+
+        "<MainScreen>": "app.backend.mainScreen.MainScreen",
+        "<AppItemWidget>": "app.backend.mainScreen.AppItemWidget",
+    }
+
+    KV_FILES = {
+        "app/frontend/root/managerWidget.kv",
+        "app/frontend/mainScreen/MainScreen.kv",
+    }
+
+    def build_app(self):
+        if platform == 'android':
+            self.load_kivy_files()
+        return ManagerScreens()
+
+    def build(self):
+        if platform == 'android':
+            return self.build_app()
+        else:
+            super($appName, self).build()
+
+    def load_kivy_files(self):
+        frontend_path = os.path.join(os.getcwd(),'app/frontend')
+        for path,dirs,files in os.walk(frontend_path):
+            for file in files:
+                if file.endswith('.kv'):
+                    Builder.load_file(os.path.join(path, file))
+
+if __name__ == '__main__':
+    $appName().run()

@@ -1,5 +1,5 @@
-name: user_info
-description: user-info packages
+name: social_media
+description: social-media packages
 
 dependencies:
   http: ^0.12.2
