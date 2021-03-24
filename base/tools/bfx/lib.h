@@ -26,7 +26,7 @@ reg regs[]={
 
 const char *names[]={"rbx", "ebx", "bx", "bl"};
 void usage(char *prgname){
-     cout << "Usage: " << prgname << " [Option] " <<"[Argument] "<< endl;
+     cout << "Usage: bfx <Option> <Argument> "<< endl;
 }
 void GetHexOrder(const char *data){
     int l=strlen(data);l--;

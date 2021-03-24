@@ -13,6 +13,7 @@ class runfile:
             '.dart': self.dart,
             '.js': self.js,
             '.c': self.c,
+            '.cpp': self.cpp,
             '.java': self.java,
         }
         self.file = file
@@ -58,6 +59,10 @@ class runfile:
     def c(self):
         os.system(f'gcc {self.file} -o {compileFiles("c/Cfile")}')
         os.system(f'{compileFiles("c/Cfile")} {" ".join(sys.argv[2:])}')
+
+    def cpp(self):
+        os.system(f'g++ {self.file} -o {compileFiles("cpp/C++file")}')
+        os.system(f'{compileFiles("cpp/C++file")} {" ".join(sys.argv[2:])}')
 
     def java(self):
         if 'termux' in os.getcwd():
