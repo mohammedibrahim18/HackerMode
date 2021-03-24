@@ -10,6 +10,8 @@ from docsReader import DocsReader
 from system import System
 
 from N4Tools.terminal import terminal
+from N4Tools.Design import Color
+
 from .shelltheme import ShellTheme
 
 terminal = terminal()
@@ -147,20 +149,71 @@ class BaseShell(cmd.Cmd):
         path = str(pathlib.Path.cwd() if not os.path.exists(arg) else arg)
         files = os.popen('ls').read()
         files = files.split('\n')
+        c = Color().reader
+
         output = []
         for i in files:
             if os.path.isfile(os.path.join(path, i)):
-                if i.endswith('.png') or i.endswith('.jpg'):
-                    output.append('\033[1;95m' + i + '\033[0m')
+                if i.split('.')[-1] in ('jpg','png'):
+                    output.append(c(f'[$LPINK]{i}[$NORMAL]'))
                 else:
-                    output.append('\033[0;37m' + i + '\033[0m')
+                    output.append(c(f'[$NORMAL]{i}'))
                 if ' ' in i:
                     i = f"'{i}'"
             elif os.path.isdir(os.path.join(path, i)):
-                output.append('\033[1;34m' + i + '\033[0m')
+                output.append(c(f'[$LBLUE]{i}[$NORMAL]'))
             else:
                 output.append(i)
-        self.columnize(output, displaywidth=terminal.size['width'])
+
+        list = output
+        displaywidth = terminal.size['width']
+        if not list:
+            self.stdout.write("<empty>\n")
+            return
+
+        size = len(list)
+        if size == 1:
+            self.stdout.write('%s\n'%str(list[0]))
+            return
+        # Try every row count from 1 upwards
+        for nrows in range(1, len(list)):
+            ncols = (size+nrows-1) // nrows
+            colwidths = []
+            totwidth = -2
+            for col in range(ncols):
+                colwidth = 0
+                for row in range(nrows):
+                    i = row + nrows*col
+                    if i >= size:
+                        break
+                    x = Color().del_colors(list[i])
+                    colwidth = max(colwidth, len(x))
+                colwidths.append(colwidth)
+                totwidth += colwidth + 2
+                if totwidth > displaywidth:
+                    break
+            if totwidth <= displaywidth:
+                break
+        else:
+            nrows = len(list)
+            ncols = 1
+            colwidths = [0]
+
+        for row in range(nrows):
+            texts = []
+            for col in range(ncols):
+                i = row + nrows*col
+                if i >= size:
+                    x = ""
+                else:
+                    x = list[i]
+                texts.append(x)
+
+            for col in range(len(texts)):
+                x = Color().del_colors(texts[col])
+                padding = x.ljust(colwidths[col])
+                texts[col] += padding[len(x):]
+            self.stdout.write("%s\n"%str("  ".join(texts)))
 
     def do_cd(self, arg: str):
         try:
