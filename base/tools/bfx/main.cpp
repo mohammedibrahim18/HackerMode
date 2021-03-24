@@ -3,7 +3,7 @@
 using namespace std;
 int main(int argc, char *argv[]){
   if (argc==1){
-    cout << "Need Some Argument, Type with -h or help bsx\n";
+    cout << "Need Some Argument, Type with -h or help bfx\n";
 }
   int arg;
   while ((arg = getopt(argc, argv, "x:e:c:h"))!=-1 ){
