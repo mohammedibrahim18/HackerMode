@@ -74,6 +74,7 @@ class BaseShell(cmd.Cmd):
             begidx: int,
             endidx: int
     ) -> List[str]:
+
         if len(line.split(' ')) == 1:
             # linux commands complete
             return [
@@ -298,7 +299,7 @@ class MainShell(HackerModeCommands):
             threading.Thread(target=refresh).start()
             exit()
 
-    def complete_HackerMode(self, text: str) -> List[str]:
+    def complete_HackerMode(self, text: str, *args) -> List[str]:
         argvs: List[str] = ['update', 'upgrade', 'install', 'check']
         return [argv for argv in argvs if argv.startswith(text)]
 

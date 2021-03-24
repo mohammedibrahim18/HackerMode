@@ -1,19 +1,26 @@
-import os, sys, pathlib, json
+import os
+import sys
+import pathlib
+import json
+
+from typing import List
+
 
 sys.path.append('/'.join(os.path.abspath(__file__).split('/')[:-1]))
+
 class System:
-    TOOL_NAME = 'HackerMode'
-    BASE_PATH = pathlib.Path(os.path.abspath(__file__)).parent
+    TOOL_NAME: str = 'HackerMode'
+    BASE_PATH: str = pathlib.Path(os.path.abspath(__file__)).parent
 
     def __init__(self):
         self.HACKERMODE_PACKAGES = self.HACKERMODE_PACKAGES()
 
     @property
-    def BIN_PATH(self):
+    def BIN_PATH(self) -> str:
         return ''.join(sys.executable.split('bin')[:-1]) + 'bin'
 
     @property
-    def TOOL_PATH(self):
+    def TOOL_PATH(self) -> str:
         '''To get the tool path'''
         ToolPath = os.path.join(os.environ['HOME'],'.HackerMode')
         if not os.path.isdir(ToolPath):
@@ -21,7 +28,7 @@ class System:
         return ToolPath
 
     @property
-    def PLATFORME(self):
+    def PLATFORME(self) -> str:
         '''To get the platform name'''
         if sys.platform in ('win32', 'cygwin'):
             return 'win'
@@ -37,22 +44,23 @@ class System:
         return 'unknown'
 
     @property
-    def SYSTEM_PACKAGES(self):
+    def SYSTEM_PACKAGES(self) -> str:
         '''To gat all files that is in [/usr/bin] directory'''
         return os.listdir(self.BIN_PATH)
 
-    def HACKERMODE_PACKAGES(self):
+    def HACKERMODE_PACKAGES(self) -> List[str]:
         HackerModePackages = lambda path: [
             a for a in os.listdir(
                 os.path.abspath(os.path.join(self.BASE_PATH,path)))
         ]
-        packages = []
-        for file_name in HackerModePackages('bin')+HackerModePackages('tools'):
-            for ext in ['.py','.sh','.c','.dart','.java','.php','.js','.pyc']:
+        packages: List[str] = []
+        for file_name in HackerModePackages('bin'):
+            for ext in ['.c','.py','.sh','.dart','.java','.php','.js','.pyc','.cpp']:
                 if file_name.endswith(ext):
-                    file_name = file_name[0:len(file_name)-len(ext)]
-                    packages.append(file_name)
-                packages.append(file_name)
+                    packages.append(file_name[0:-len(ext)])
+        for tool_name in HackerModePackages('tools'):
+            if tool_name not in packages:
+                packages.append(tool_name)
         return list(set(packages))
 
 System = System()
