@@ -3,6 +3,7 @@ import os
 import pathlib
 import threading
 import time
+import re
 from typing import List, Tuple
 
 from config import Config
@@ -82,7 +83,7 @@ class BaseShell(cmd.Cmd):
             return [
                 a[begidx:] for a in self.completenames(line, line, begidx, endidx)
             ]
-        if len(l := line.split(' ')) > 1 and '-' in line.split(' ')[-1]:
+        if len(l := line.split(' ')) > 1 and [ x for x in re.findall('([\W]*)',l[-1])if x ]: # -^[ ...
             # path complete
             return [
                 a[len(l[-1]) - len(text):]
