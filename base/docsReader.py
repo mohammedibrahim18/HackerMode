@@ -41,16 +41,16 @@ class DocsReader:
         title = 'HELP MESSAGE'
         square_text = 6
         terminal_width = terminal().size['width'] - square_text
-        RULER = lambda: '[white]' + '╌' * (terminal_width)
+        RULER = lambda: '[white]' + '─' * (terminal_width)
 
         if self.title:
-            title = f"[cyan]{self.title.upper()}[/cyan]"
+            title = f"[bold][green]{self.title.upper()}[/green]"
 
         sections = []
         temp = 0
         for section_title, commands in self.sections.items():
             sections.append('')
-            sections[temp] += f'[white][bold][on blue] {section_title}: [/on blue]\n' + RULER() + '\n'
+            sections[temp] += f'[white][bold] {section_title.lower()}: [/bold]\n' + RULER() + '\n'
 
             # commands
             tempFixwidth = [key[0] for key in commands]
@@ -76,7 +76,7 @@ class DocsReader:
                 box=box.ROUNDED,
                 padding=(1, 2),
                 title=title,
-                border_style='green',
+                border_style='bold green',
             )
         )
 

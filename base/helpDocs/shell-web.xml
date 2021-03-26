@@ -1,34 +1,33 @@
 <title>{{ TOOL_NAME }}</title>
 
-<section title="System">
-        <line command="main">الرجوع الى الصفحه الرأيسيه</line>
-</section>
 <section title="Command">
         <line command="html">استخراج اكواد الصفحه html</line>
         <line command="info">استخراج بعظ المعلومات عن الموقع</line>
         <line command="links">استخراج جميع روابط الصفحه</line>
 </section>
 <section title="example Html">
-        <line command="Tag1">--class="Name"</line>
-        <line command="Tag2">--id="Name" -a</line>
-        <line command="Tag4">--id="Name" -a.href</line>
-        <line command="Tag5">--id="Name" -a.class</line>
-        <line command="Tag6">--style="{backgrund:red}"</line>
-        <line command="Tag7">Tag</line>
-        <line command="Tag8">-a</line>
-        <line command="Tag9">-a.href</line>
-        <line command="Tag10">-a.class</line>
+        <line command="<tag>">--class="Name"</line>
+        <line command="<tag>">--id="Name" -a</line>
+        <line command="<tag>">--id="Name" -a.href</line>
+        <line command="<tag>">--id="Name" -a.class</line>
+        <line command="<tag>">--style="{backgrund:red}"</line>
+        <line command="<tag>">Tag</line>
+        <line command="<tag>">-a</line>
+        <line command="<tag>">-a.href</line>
+        <line command="<tag>">-a.class</line>
 </section>
 <section title="example Info">
         <line command="headers"></line>
-        <line command="heafers">Date</line>
-        <line command="heafers">Date Server ...</line>
         <line command="cookies"></line>
         <line command="ok"></line>
-        <line command="...">...</line>
 </section>
 <section title="example Links">
         <line command="rest"></line>
-        <line command="...">...</line>
-
+</section>
+<section title="Note">
+        <line command="tap + tap">لإظهار كل الخيارات</line>
+</section>
+<section title="System">
+        <line command="main">الرجوع الى الصفحه الرأيسيه</line>
+        <line command="back">الرجوع الى shell-web</line>
 </section>

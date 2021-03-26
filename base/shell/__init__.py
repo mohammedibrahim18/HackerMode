@@ -96,11 +96,16 @@ class BaseShell(cmd.Cmd):
             *ignored
     ) -> List[str]:
 
+        base_commands: Tuple[str] = ('ls','c','cd','clear','EOF','exit')
+
         packages: List[str] = [
             # add class command to shell
             a[3:].replace('_', '-') for a in self.get_names()
             if a.startswith('do_' + text)
         ]
+
+        packages = [i for i in packages if i not in base_commands]
+
         # complete linux commands and HackerMode commands
         # in Main mode only.
         if self.ToolName.lower() != 'main': return packages
@@ -110,7 +115,6 @@ class BaseShell(cmd.Cmd):
             a for a in System.HACKERMODE_PACKAGES
             if a.startswith(text)
         ]
-
         packages += [
             # add linux commands to shell
             a for a in System.SYSTEM_PACKAGES
@@ -118,14 +122,13 @@ class BaseShell(cmd.Cmd):
         ]
         return list(set(packages))
 
-    def postcmd(self, *args):
+    def postcmd(self, stop: bool, line: str):
         self.prompt = ShellTheme.prompt(self)
+        return stop
 
     def onecmd(self, line: str):
         cmd, arg, line = self.parseline(line)
         self.is_error = False
-        if not line:
-            return self.emptyline()
         if cmd is None:
             return self.default(line)
         if cmd == '':
@@ -276,14 +279,14 @@ class BaseShell(cmd.Cmd):
             self.stdout.write("%s\n" % str(self.nohelp % (arg,)))
 
     def do_main(self, arg):
-        return True
+        if self.ToolName.lower() != 'main':
+            exit()
 
     def do_EOF(self, line):
         print('\n# to exit write "exit"')
-        return True
 
     def do_exit(self, line):
-        exit(-1)
+        exit()
 
 
 class HackerModeCommands(BaseShell):

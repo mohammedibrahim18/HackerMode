@@ -1,16 +1,14 @@
-
 <title>del</title>
  
 <section title="options">
-        <line command="-h"> تحديد المستندات المخفية </line>
-	<line command="-c"> تنظيف السلة من الملفات المؤقتة</line>
+	<line command="-h">تحديد المستندات المخفية</line>
+	<line command="-c">تنظيف السلة من الملفات المؤقتة</line>
 	<line command=" *">حذف جميع المستندات فى المسار الحالى</line>
 </section>
 
 <section title="Examples">
-        <line command="del -h -c">تنظيف السلة من جميع المستندات  </line>
-        <line command="del -c">تنظيف السلة مع ترك المستندات المخفية</line>
-	<line command="del test.py ">حذف الملفات المعطاة</line>
+	<line command="del -h -c">تنظيف السلة من جميع المستندات</line>
+	<line command="del -c">تنظيف السلة مع ترك المستندات المخفية</line>
+	<line command="del test.py">حذف الملفات المعطاة</line>
 	<line command="del -h *">حذف جميع المستندات</line>
 </section>
-
