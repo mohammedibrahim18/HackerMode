@@ -1,0 +1,17 @@
+<title>{{ TOOL_NAME }}</title>
+
+<section title="Command">
+        <line command="<ext> paths">لعرظ جميع الملفات بأمتداد محدد</line>
+        <line command="<ext> size_all">لعرظ حجم جميع الملفات بأمتداد محدد</line>
+        <line command="<ext> repeat">لعرظ الملفات المكرره بأمتداد محدد</line>
+</section>
+
+<section title="example">
+        <line command="py paths">عرض كل الملفات بصيغه بايثون</line>
+        <line command="png size_all">عرض حجم الصور</line>
+        <line command="jpg repeat">كم تكررت الصور</line>
+</section>
+
+<section title="System">
+        <line command="main">الرجوع الى الصفحه الرأيسيه</line>
+</section>

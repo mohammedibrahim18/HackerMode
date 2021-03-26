@@ -25,7 +25,7 @@
         <line command="rest"></line>
 </section>
 <section title="Note">
-        <line command="tap + tap">لإظهار كل الخيارات</line>
+        <line command="tab + tab">لإظهار كل الخيارات</line>
 </section>
 <section title="System">
         <line command="main">الرجوع الى الصفحه الرأيسيه</line>

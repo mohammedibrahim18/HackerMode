@@ -39,9 +39,17 @@ class DocsReader:
 
     def style(self):
         title = 'HELP MESSAGE'
-        square_text = 6
-        terminal_width = terminal().size['width'] - square_text
-        RULER = lambda: '[white]' + '─' * (terminal_width)
+        def terminal_width(width: int) -> int:
+            '''controle the ruler width
+            max width = 1
+            minmim width = 0
+            '''
+            square_text = 6
+            terminal_width = terminal().size['width'] - square_text
+            return int(terminal_width * float(width) / float(1))
+
+        #RULER = lambda: '[white]' + '─' * (terminal_width(1))
+        RULER = lambda: f'[bold][white]{"─"*terminal_width(1)}[/bold][/white]'
 
         if self.title:
             title = f"[bold][green]{self.title.upper()}[/green]"
@@ -63,7 +71,8 @@ class DocsReader:
                     helpMsg = Text.arabic(helpMsg)
                 sections[temp] += f'  [yellow]{command}[/yellow]  [white]{ helpMsg }\n'
 
-            sections[temp] += RULER() + '\n\n'
+            #sections[temp] += RULER() + '\n\n'
+            sections[temp] += '\n\n'
             temp += 1
 
         style = ''
@@ -72,7 +81,7 @@ class DocsReader:
 
         print (
             Panel(
-                style[:-2],
+                style[:-3],
                 box=box.ROUNDED,
                 padding=(1, 2),
                 title=title,

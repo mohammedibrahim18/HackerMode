@@ -255,8 +255,9 @@ class BaseShell(cmd.Cmd):
 
     def do_help(self, arg: str):
         def help_xml_path(package):
+            language = Config.get('settings','LANGUAGE',default='ar')
             return os.path.join(
-                os.path.join(System.BASE_PATH, "helpDocs"), package
+                os.path.join(System.BASE_PATH, f"helpDocs/{language}"), package
             )
 
         try:

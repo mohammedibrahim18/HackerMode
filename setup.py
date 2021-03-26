@@ -118,7 +118,7 @@ class Installer:
         # check:
         print('\n# checking:')
         self.check()
-        if Config.get('settings', 'IS_INSTALLED', cast=bool):
+        if Config.get('actions', 'IS_INSTALLED', cast=bool,default=False):
             return
 
         # Move the tool to "System.TOOL_PATH"
@@ -126,7 +126,7 @@ class Installer:
             print(f'# {RED}Error:{NORMAL} some of the basics package not installed!')
             return
 
-        if Config.get('settings','DEBUG',cast=bool):
+        if Config.get('actions','DEBUG',cast=bool,default=False):
             print('# In DEBUG mode can"t move the tool\n# to "System.TOOL_PATH"!')
             return
 
@@ -145,7 +145,7 @@ class Installer:
                 print(e)
                 print ('# installed failed!')
                 return
-            Config.set('settings', 'IS_INSTALLED', True)
+            Config.set('actions', 'IS_INSTALLED', True)
             try:
                 shutil.move(System.TOOL_NAME,System.TOOL_PATH)
             except shutil.Error as e:
@@ -181,7 +181,7 @@ class Installer:
                 self.InstalledSuccessfully['base'].append(False)
 
     def update(self):
-        if not Config.get('settings','DEBUG'):
+        if not Config.get('actions','DEBUG',cast=bool,default=False):
             os.system(f'cd {System.TOOL_PATH} && rm -rif {System.TOOL_NAME} && git clone https://github.com/Arab-developers/{System.TOOL_NAME}')
             tempPath = os.getcwd()
             run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/bin/run.py'))}"

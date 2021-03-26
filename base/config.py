@@ -1,6 +1,11 @@
 # coding: utf-8
-import os, json, shutil, __main__
+import os
+import json
+import shutil
+import __main__
+
 from system import System
+
 
 class config(object):
     default_file = os.path.join(System.TOOL_PATH,'settings.json')
@@ -33,14 +38,25 @@ class config(object):
         with open(self.file,'w') as f:
             f.write(json.dumps(data,indent=4))
 
-    def get(self,section,option,cast=None):
-        section = section.lower()
-        option = option.upper()
+    def get(self,section,option,cast=None,default=None):
+        section: str = section.lower()
+        option: str = option.upper()
+        objects = (str, bool, dict, list, int, set)
         with open(self.file,'r') as f:
             data = json.loads(f.read())
-        if cast in [str,bool,dict,list,int,set]:
-            return cast(data[section][option])
-        return data[section][option]
+        if default != None:
+            print('default')
+            try:
+                return self.get(section,option,cast=cast)
+            except KeyError:
+                default = cast(default) if cast in objects else default
+                self.set(section,option,default)
+                return default
+        else:
+            if cast in objects:
+                return cast(data[section][option])
+            return data[section][option]
+
 
 Config = config()
 
