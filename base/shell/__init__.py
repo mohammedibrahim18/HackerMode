@@ -4,14 +4,16 @@ import pathlib
 import threading
 import time
 import re
-from typing import List, Tuple
+import json
 
+from typing import List, Tuple
 from config import Config
 from docsReader import DocsReader
 from system import System
 
 from N4Tools.terminal import terminal
 from N4Tools.Design import Color
+from rich import print
 
 from .shelltheme import ShellTheme
 
@@ -101,7 +103,7 @@ class BaseShell(cmd.Cmd):
 
         packages: List[str] = [
             # add class command to shell
-            a[3:].replace('_', '-') for a in self.get_names()
+            a[3:] for a in self.get_names()
             if a.startswith('do_' + text)
         ]
 
@@ -344,8 +346,58 @@ class HackerModeCommands(BaseShell):
         super(HackerModeCommands, self).default(line)
 
 
-class MainShell(HackerModeCommands):
+class Settings(BaseShell):
+    def do_SHOW_SETTINGS(self, arg):
+        max_width: int= 0
+        with open(Config.file) as file:
+            data = json.load(file)
+            if arg.strip():
+                try:
+                    data = data[arg]
+                except KeyError:
+                    print(f'# support only {data.keys()}')
+            else:
+                data = data['settings']
+        for key in data.keys():
+            max_width = len(key) if max_width < len(key) else max_width
+        for key, value in data.items():
+            print(key+' '*(max_width-len( key )+2), value)
 
+    def do_SET_PROMPT(self, arg: str):
+        try:
+            prompt_theme = int(arg)
+            themes = len(ShellTheme.prompts)
+            if prompt_theme in list(range(themes)):
+                Config.set('SETTINGS', 'prompt', prompt_theme)
+                self.prompt = ShellTheme.prompt(self)
+            else:
+                raise IndexError()
+        except:
+            print(f'# support only {list(range(len(ShellTheme.prompts)))}')
+
+    def do_SET_LANGUAGE(self,arg: str):
+        lang_support: List[str] = os.listdir(
+            os.path.join(System.BASE_PATH,"helpDocs")
+        )
+        if arg.strip() in lang_support:
+            Config.set('settings','LANGUAGE',arg.strip())
+            print('# DONE')
+        else:
+            print(f'# support only {lang_support}')
+
+    def do_SET_ARABIC_RESHAPER(self,arg: str):
+        if arg.title() == 'True':
+            Config.set('settings','ARABIC_RESHAPER',True)
+            print('# DONE')
+        elif arg.title() == 'False':
+            Config.set('settings','ARABIC_RESHAPER',False)
+            print('# DONE')
+        else:
+            print(f'# support only {[True,False]}')
+
+
+
+class MainShell(Settings):
     def do_HackerMode(self, line: str):
         if line:
             os.system('HackerMode ' + line)
@@ -360,15 +412,3 @@ class MainShell(HackerModeCommands):
     def complete_HackerMode(self, text: str, *args) -> List[str]:
         argvs: List[str] = ['update', 'upgrade', 'install', 'check']
         return [argv for argv in argvs if argv.startswith(text)]
-
-    def do_SETPROMPT(self, arg: str):
-        try:
-            prompt_theme = int(arg)
-            themes = len(ShellTheme.prompts)
-            if prompt_theme in list(range(themes)):
-                Config.set('SETTINGS', 'prompt', prompt_theme)
-                self.prompt = ShellTheme.prompt(self)
-            else:
-                raise IndexError()
-        except:
-            print(f'# support only {list(range(len(ShellTheme.prompts)))}')

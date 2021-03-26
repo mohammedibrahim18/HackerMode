@@ -5,8 +5,8 @@ import json
 
 from typing import List
 
-
 sys.path.append('/'.join(os.path.abspath(__file__).split('/')[:-1]))
+
 
 class System:
     TOOL_NAME: str = 'HackerMode'
@@ -62,6 +62,7 @@ class System:
             if tool_name not in packages:
                 packages.append(tool_name)
         return list(set(packages))
+
 
 System = System()
 
@@ -131,6 +132,7 @@ class DataBase:
                 'status_code': 400,
                 'data': json.loads(e.strerror)
             }
+        
 
 if __name__ == '__main__':
     # tests:
