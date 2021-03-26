@@ -33,7 +33,11 @@ class config(object):
         with open(self.file,'r') as f:
             data = json.loads(f.read())
 
-        data[section][option] = value
+        try:
+            data[section][option] = value
+        except KeyError:
+            data[section] = {}
+            data[section][option] = value
 
         with open(self.file,'w') as f:
             f.write(json.dumps(data,indent=4))
@@ -45,7 +49,6 @@ class config(object):
         with open(self.file,'r') as f:
             data = json.loads(f.read())
         if default != None:
-            print('default')
             try:
                 return self.get(section,option,cast=cast)
             except KeyError:

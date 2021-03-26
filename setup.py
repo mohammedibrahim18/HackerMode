@@ -191,7 +191,8 @@ class Installer:
             try:
                 for tool in os.listdir(TOOLS_PATH):
                     os.chdir(os.path.join(TOOLS_PATH, tool))
-                    os.system(f'{run} setup.sh')
+                    if os.path.isfile('setup.sh'):
+                        os.system(f'{run} setup.sh')
             finally:
                 os.chdir(tempPath)
         else:
