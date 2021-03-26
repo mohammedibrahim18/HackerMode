@@ -83,10 +83,10 @@ class BaseShell(cmd.Cmd):
             return [
                 a[begidx:] for a in self.completenames(line, line, begidx, endidx)
             ]
-        if len(l := line.split(' ')) > 1 and [ x for x in re.findall('([\W]*)',l[-1])if x ]: # -^[ ...
+        if len(l := line.split(' ')) > 1 and [ x for x in re.findall('([\W]*)',l[-1])if '/' not in x and x ]: # -^[ ...
             # path complete
             return [
-                a[len(l[-1]) - len(text):]
+                a[len(l[-1].split('/')[-1]) - len(text):]
                 for a in self.pathCompleter(l[-1], line)
             ]
         return self.pathCompleter(text, line)
