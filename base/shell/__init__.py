@@ -85,7 +85,7 @@ class BaseShell(cmd.Cmd):
         if len(l := line.split(' ')) > 1 and '-' in line.split(' ')[-1]:
             # path complete
             return [
-                a.split('-')[-1]
+                a[len(l[-1]) - len(text):]
                 for a in self.pathCompleter(l[-1], line)
             ]
         return self.pathCompleter(text, line)
