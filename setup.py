@@ -1,15 +1,11 @@
+import os
+import shutil
+
+from base.system import System
+from base.config import Config
+
+
 PACKAGES = {
-    # -----------------------------------
-    'dart':{
-        'termux': ['pkg install dart'],
-        'linux': [
-            "sudo apt-get install apt-transport-https",
-            "sudo sh -c 'wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -'",
-            "sudo sh -c 'wget -qO- https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list'",
-            "sudo apt-get update",
-            "sudo apt-get install dart",
-        ],
-    },
     # -----------------------------------
     'pip3':{
         'termux': ['pip3 install --upgrade pip'],
@@ -34,30 +30,54 @@ PACKAGES = {
         'linux': ['sudo apt install nmap'],
     },
     # -----------------------------------
+    'dart': {
+        'termux': ['pkg install dart'],
+        'linux': [
+            "sudo apt-get install apt-transport-https",
+            "sudo sh -c 'wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -'",
+            "sudo sh -c 'wget -qO- https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list'",
+            "sudo apt-get update",
+            "sudo apt-get install dart",
+        ],
+    }
+
 }
 
-PYHTON3_MODULES = {
+PYHTON_MODULES = {
     'N4Tools==1.7.1':'N4Tools',
     'rich':'rich',
     'pyfiglet':'pyfiglet',
     'python-bidi':'bidi',
     'arabic_reshaper':'arabic_reshaper',
-    'python-nmap':'nmap',
-    'requests':'requests',
     'bs4':'bs4',
     'pyrebase':'pyrebase',
-    'pygments':'pygments',
-    'getmac':'getmac',
+    'pygments': 'pygments',
+    'python-nmap': 'nmap',
+    'requests': 'requests',
+    'getmac': 'getmac',
 }
 
-from base.system import System
-from base.config import Config
-import os, shutil
+BASE_PYHTON_MODULES = (
+    'requests',
+    'rich',
+    'N4Tools==1.7.1',
+    'bs4',
+    'pyfiglet',
+    'arabic_reshaper',
+    'python-bidi',
+)
+
+BASE_PACKAGES = (
+    'git',
+    'pip',
+)
 
 RED = '\033[1;31m'
 GREEN = '\033[1;32m'
+YELLOW = '\033[1;33m'
 NORMAL = '\033[0m'
 HACKERMODE_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
+
 
 class Installer:
     InstalledSuccessfully = {
@@ -68,9 +88,41 @@ class Installer:
         DefaultMessage = f'{package} installed successfully.'
         return f'[  {GREEN}OK{NORMAL}  ] {DefaultMessage if not message else message}'
 
-    def NotInstalledMsg(self, package, message=False):
+    def NotInstalledMsg(self, package, message=False, is_base=False):
         DefaultMessage = f' not able to install "{package}".'
-        return f'[ {RED}Error{NORMAL} ] {DefaultMessage if not message else message}'
+        return f'[ {RED if is_base else YELLOW}{"error" if is_base else "warning"}{NORMAL} ] {DefaultMessage if not message else message}'
+
+    def installer(self):
+        '''Install all HackerMode packages and modules'''
+
+        # Install the basics packages:
+        for PACKAGE_NAME, SETUP in PACKAGES.items():
+            for COMMANDS in SETUP[System.PLATFORME]:
+                os.system(COMMANDS)
+
+        # Install the basics python3 modules:
+        for MODULES in PYHTON_MODULES.keys():
+            if System.PLATFORME == 'linux':
+                os.system(f'sudo pip3 install {MODULES}')
+            elif System.PLATFORME == 'termux':
+                os.system(f'pip install {MODULES}')
+
+
+
+        # Install tools packages:
+        if Config.get('actions','DEBUG',default=False):
+            print ('# In debug mode can"t run setup.sh')
+            return
+        tempPath = os.getcwd()
+        run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/bin/run.py'))}"
+        TOOLS_PATH = os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/tools'))
+        try:
+            for tool in os.listdir(TOOLS_PATH):
+                os.chdir(os.path.join(TOOLS_PATH, tool))
+                if os.path.isfile('setup.sh'):
+                    os.system(f'{run} setup.sh')
+        finally:
+            os.chdir(tempPath)
 
     def install(self):
         if System.PLATFORME in ('termux','linux'):
@@ -90,30 +142,7 @@ class Installer:
                 print ('# good bye :D')
                 return
 
-        # Install the basics packages:
-        for PACKAGE_NAME,SETUP in PACKAGES.items():
-            for COMMANDS in SETUP[System.PLATFORME]:
-                os.system(COMMANDS)
-
-        # Install the basics python3 modules:
-        for MODULES in PYHTON3_MODULES.keys():
-            if System.PLATFORME == 'linux':
-                os.system(f'sudo pip3 install {MODULES}')
-            elif System.PLATFORME == 'termux':
-                os.system(f'pip install {MODULES}')
-
-        # Install tools packages:
-        tempPath = os.getcwd()
-        run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH,'base/bin/run.py'))}"
-        TOOLS_PATH = os.path.abspath(os.path.join(HACKERMODE_PATH,'base/tools'))
-        print (run)
-        print (TOOLS_PATH)
-        try:
-            for tool in  os.listdir(TOOLS_PATH):
-                os.chdir(os.path.join(TOOLS_PATH,tool))
-                os.system(f'{run} setup.sh')
-        finally:
-            os.chdir(tempPath)
+        self.installer()
 
         # check:
         print('\n# checking:')
@@ -126,7 +155,7 @@ class Installer:
             print(f'# {RED}Error:{NORMAL} some of the basics package not installed!')
             return
 
-        if Config.get('actions','DEBUG',cast=bool,default=False):
+        if Config.get('actions','DEBUG',cast=bool,default=True):
             print('# In DEBUG mode can"t move the tool\n# to "System.TOOL_PATH"!')
             return
 
@@ -158,27 +187,33 @@ class Installer:
 
     def check(self):
         '''To check if the packages has been
-           installed successfully. '''
+        installed successfully.
 
-        # check the basics packages:
+        '''
+
+        # check packages:
         for package in PACKAGES.keys():
             if package in System.SYSTEM_PACKAGES:
                 print (self.InstalledMsg(package))
-                self.InstalledSuccessfully['base'].append(True)
+                if package in BASE_PACKAGES:
+                    self.InstalledSuccessfully['base'].append(True)
             else:
-                print (self.NotInstalledMsg(package))
-                self.InstalledSuccessfully['base'].append(False)
+                print (self.NotInstalledMsg(package, is_base=(package in BASE_PACKAGES)))
+                if package in BASE_PACKAGES:
+                    self.InstalledSuccessfully['base'].append(False)
 
-        # check the basics python3 modules:
-        for module in PYHTON3_MODULES.keys():
+        # check python modules:
+        for module in PYHTON_MODULES.keys():
             try:
-                exec(f'import {PYHTON3_MODULES[module]}')
+                exec(f'import {PYHTON_MODULES[module]}')
                 print(self.InstalledMsg(module))
-                self.InstalledSuccessfully['base'].append(True)
+                if module in BASE_PYHTON_MODULES:
+                    self.InstalledSuccessfully['base'].append(True)
 
             except ModuleNotFoundError:
-                print (self.NotInstalledMsg(module))
-                self.InstalledSuccessfully['base'].append(False)
+                print(self.NotInstalledMsg(module, is_base=(module in BASE_PYHTON_MODULES)))
+                if module in BASE_PYHTON_MODULES:
+                    self.InstalledSuccessfully['base'].append(False)
 
     def update(self):
         if not Config.get('actions','DEBUG',cast=bool,default=False):
@@ -186,8 +221,6 @@ class Installer:
             tempPath = os.getcwd()
             run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/bin/run.py'))}"
             TOOLS_PATH = os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/tools'))
-            print(run)
-            print(TOOLS_PATH)
             try:
                 for tool in os.listdir(TOOLS_PATH):
                     os.chdir(os.path.join(TOOLS_PATH, tool))
