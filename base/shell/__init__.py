@@ -99,7 +99,7 @@ class BaseShell(cmd.Cmd):
             *ignored
     ) -> List[str]:
 
-        base_commands: Tuple[str] = ('ls','c','cd','clear','EOF','exit')
+        base_commands: Tuple[str] = ('ls','c','cd','clear','EOF','exit','help')
 
         packages: List[str] = [
             # add class command to shell
@@ -107,7 +107,8 @@ class BaseShell(cmd.Cmd):
             if a.startswith('do_' + text)
         ]
 
-        packages = [i for i in packages if i not in base_commands]
+        if self.ToolName.lower() != 'main':
+            packages = [i for i in packages if i not in base_commands]
 
         # complete linux commands and HackerMode commands
         # in Main mode only.
@@ -346,7 +347,7 @@ class HackerModeCommands(BaseShell):
         super(HackerModeCommands, self).default(line)
 
 
-class Settings(BaseShell):
+class Settings(HackerModeCommands):
     def do_SHOW_SETTINGS(self, arg):
         max_width: int= 0
         with open(Config.file) as file:
