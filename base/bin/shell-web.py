@@ -1,299 +1,394 @@
+import cmd
+import os
+import sys
 import requests
 import json
 import re
-import sys
-import os
+
+from bs4 import BeautifulSoup
+
+from N4Tools.Design import ThreadAnimation
 
 from pygments import highlight
 from pygments.lexers import HtmlLexer, JsonLexer
 from pygments.formatters import TerminalFormatter
 
-from N4Tools.Design import Color, ThreadAnimation
-from bs4 import BeautifulSoup as Soup
-
-
 sys.path.append(os.path.abspath(__file__).split('/bin')[0])
+
 from shell import BaseShell
 
-url = input(Color().reader('[$LYELLOW]URL[$GREEN]~[$LRED]/[$LWIHTE]$ [$WIHTE]'))
-TOOL_NAME = __file__.split('/')[-1].split('.')[0]
 
 
-@ThreadAnimation()
-def GET(Thread):
-    req = requests.get(url)
-    Thread.kill = True
-    return req
+
+app = """
+# Flask - Server
+from flask import Flask
+from flask import render_template
+
+from random import randint as PORT
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    # Code...
+    return render_template('index.html')
+
+app.run(port=PORT(999, 65535))
+"""
 
 
-run = False
-isfile = False
-try:
-    if os.path.isfile(url):
-        HTML = open(url, 'r').read();
-        isfile = True
-    else:
-        HTML = GET()  # open('/sdcard/soup.py','r').read()
-        HTML_headers = HTML.headers
-        HTML = HTML.text
-except Exception as e:
-    print('\r' + str(e));
-    exit()
-
-# header={k.replace('-','_'):v for k,v in HTML.headers.items()}
-soup = Soup(HTML, 'html.parser')
-
-
-class HtmlCmd(BaseShell):
-    ToolName = f"{TOOL_NAME}.[$LPINK]Html"
-    AllDag = ['ins', 'frame', 'area', 'option', 'wbr', 'b', 'code', 'head', 'audio', 'main', 'optgroup', 'dialog',
-              'big', 'acronym', 'hr', 'dir', 'data', 'div', 'h5', 'h4', 'h6', 'h1', 'h3', 'h2', 'span', 'picture',
-              'output', 'link', 'video', 'pagh', 'section', 'map', 'em', 'small', 'nav', 's', 'object', 'noscript',
-              'cite', 'html', 'ul', 'mark', 'button', 'title', 'figure', 'ruby', 'font', 'br', 'aside', 'rp', 'ol',
-              'rt', 'progress', 'time', 'details', 'dfn', 'applet', 'summary', 'svg', 'samp', 'meta', 'p', 'li',
-              'track', 'script', 'style', 'table', 'del', 'figcaption', 'dd', 'basefont', 'colgroup', 'dl', 'strong',
-              'dt', 'input', 'base', 'tr', 'tt', 'footer', 'canvas', 'noframes', 'select', 'circle', 'td', 'embed',
-              'template', 'th', 'caption', 'bdi', 'bdo', 'i', 'a', 'thead', 'abbr', 'u', 'nobr', 'q', 'meter', 'stop',
-              'datalist', 'radialgradient', 'form', 'frameset', 'body', 'pre', 'col', 'blockquote', 'address', 'heada',
-              'label', 'param', 'tbody', 'img', 'sub', 'fieldset', 'article', 'sup', 'header', 'kbd', 'var', 'textarea',
-              'center', 'legend', 'strike', 'iframe', 'tfoot', 'source']
-    doc_header = 'Example Comments:'
-    for x in AllDag:
-        exec(f"""\
-		\rdef do_{x}(self,arg):
-		self.MainRunDag(arg,'{x}')
-		\rdef help_{x}(self):
-		print('example:{x} --class="Name" ')
-		print('example:{x} --id="Name" -a')
-		print('example:{x} --id="Name" -{x}.id')
-		print('example:{x} --style="{{backgrund:red}}" -a.href')
-		print('example:{x}')
-		print('example:{x}.class or {x}.text or....')
-		print('example:{x} -a')
-		print('example:{x} -a.href')
-		""")
-
-    def MainRunDag(self, arg, name):
-        r = re.findall('^[\w]*.[\w]*$', arg)
-        if len(r) == 1 and len(r[0]) == len(arg):  # tagattr link.href
-            Com = (f'{name}{arg}').strip()
-        else:
-            Com = (f"{name} {arg}").strip()
-        r = re.findall('^[\w]*[\s]*-[\w]*$', arg)
-        if len(r) == 1 and len(r[0]) == len(arg):  # tagattr link -a
-            Com = (f'{name} {arg}').strip()
-        TC = (self.SortData(Com))  # TypeComment
-
-        @ThreadAnimation()
-        def GT(Thread, N):
-            a = (self.TypeComment(N))
-            a = Soup(a, 'html.parser').prettify()
-            a = self.Lexer('\n'.join([x for x in a.split('\n') if x]))
+class Source:
+      def __init__(self, url, Name, html):
+            # url -> domin
+            self.url = url
+            self.domin = '//'.join([ x for x in url.split('/') if x ][:2])
+            self.html = BeautifulSoup(html, "html.parser")            
+            self.urls = []
+            self.Name = Name
+            # paths -> app
+            self.Paths = [
+                              f"{Name}",
+                              f"{Name}/__main__.py",
+                              f"{Name}/static",
+                              f"{Name}/templates",
+            ]
+            
+      def write(self, Name, text):
+            with open(Name, "wb") as f:
+                  f.write(text)
+                  
+      def Text(self, text):
+            for nc in range(8):
+                  text = text.replace(f"${nc}", f"\033[1;3{nc}m")
+            return text.replace("$$", "\033[0m")
+            
+      @ThreadAnimation()
+      def Install(self, Thread, url):
+            out = None
+            try:
+                  out = requests.get(url)
+            except Exception as e:
+                  print (f"\033[1;31mERROR    \033[1;32m: \033[0m{e}")
+                  out = None
             Thread.kill = True
-            return a
+            return out
+                  
+      def Create(self, tag, attr, expr):
+            Name = self.Name
+            isurl = lambda u:True if re.findall('((http|ftp)s?://.*?)', get) else False
+            for src in self.html.find_all(tag):
+               if (get := src.get(attr)) and (get := get.strip()) and not get.endswith('/'):
+                        path = f"{{{{ url_for('static', filename='{get.split('/')[-1].replace(' ','_')}') }}}}"
+                        if isurl(get):
+                            self.urls.append(get)
+                            src[attr] = path
+                        elif ((st := get.startswith('/')) or expr):
+                            self.urls.append(self.domin + ("/" if not st else '') + get)
+                            src[attr] = path
 
-        a = (GT(TC))
-        print(a[:-1] if a.endswith('\n') else a)
-
-    def Lexer(self, text):
-        a = highlight(text, HtmlLexer(), TerminalFormatter())
-        return ('\r' + a)
-
-    def TypeComment(self, TC):  # Type Comment...
-        out = ''
-        isnotnone = lambda t: str(t) + '\n' if t != None else ''
-        if TC != None:
-            if TC[-1] == 'if':  # do if
-                for x in soup.find_all(TC[0], TC[1]):
-                    out += str(x) + '\n'
-            elif TC[-1] == 'ifto':  # do ifto
-                for x in soup.find_all(TC[0], TC[1]):
-                    s = Soup(f'{x}', 'html.parser')
-                    for c in s.find_all(TC[2]):
-                        out += str(c) + '\n'
-            elif TC[-1] == 'iftoatr':  # do iftoatr
-                for x in soup.find_all(TC[0], TC[1]):
-                    s = Soup(f'{x}', 'html.parser')
-                    for c in s.find_all(TC[2][0]):
-                        if TC[2][-1] == 'text':
-                            out += str(c.text) + '\n'
+               
+                      
+                    
+                
+            
+      
+      def Setup(self):
+            Name = self.Name
+            # print -> Setup: NameFile
+            for s in self.Paths:
+                  if not os.path.exists(s) and not s.endswith('index.py'):
+                        if s.endswith('__main__.py'):
+                              # write __main__.py -> Flask server 
+                              self.write(s, app.encode())
                         else:
-                            u = c.get(TC[2][-1])
-                            if u != None: out += str(u) + '\n'
-            elif TC[-1] == 'tagall':  # do tagall
-                for x in soup.find_all(TC[0]):
-                    out += str(x) + '\n'
-            elif TC[-1] == 'tagattr':  # do tagattr
-                for x in soup.find_all(TC[0]):
-                    if TC[1] == 'text':
-                        out += str(x.text) + '\n'
-                    else:
-                        u = x.get(TC[1])
-                        if u: out += isnotnone(u)
-            elif TC[-1] == 'tagtoall':  # to tagtoall
-                for x in soup.find_all(TC[0]):
-                    s = Soup(f'{x}', 'html.parser')
-                    for c in s.find_all(TC[1]):
-                        out += str(c) + '\n'
-            elif TC[-1] == 'tagtoatrall':  # do tagtoatrall
-                for x in soup.find_all(TC[0]):
-                    s = Soup(f'{x}', 'html.parser')
-                    for c in s.find_all(TC[1][0]):
-                        if TC[1][1] == 'text':
-                            out += str(c.text) + '\n'
-                        else:
-                            u = c.get(TC[1][1])
-                            if u: out += str(u) + '\n'
-        return (out)
+                              os.mkdir(s)
+                        print(self.Text(f"$2Setup    $1: $$") + s)
+                  else:
+                        print (self.Text(f"$3Exists   $1: $$") + s)
+            index = os.path.join(Name, "templates", "index.html")
+            print(self.Text(f"$2Setup    $1: $$") + index)  
 
-    def SortData(self, arg):
-        arg = arg.replace("'", '"').strip()
-        n = lambda a: [x for x in a if x.strip()]
-        r = re.findall('^[\w\s]*--[\w\s]*=[\s]*"[\w\S\s]*"$', arg)
 
-        if len(r) == 1:
-            if len(r[0]) == len(arg):  ##if div -id="help"
-                tag = (re.findall('^[\w\s]*', arg)[0].strip())
-                k = (re.findall('--[\w]*', arg)[0][2:])
-                v = (re.findall('"[\w\s\S]*"', arg)[0][1:-1])
-                return ([tag, {k: v}, 'if'])
-        else:
-            r = re.findall('^[\w\s]*--[\w\s]*=[\s]*"[\w\S\s]*"[\s]*-[\w]*$', arg)
-
-            if len(r) == 1 and len(r[0]) == len(arg):  ##ifto div -id="help" -a
-                tag = (re.findall('^[\w\s]*', arg)[0].strip())
-                k = (re.findall('--[\w]*', arg)[0][2:])
-                v = (re.findall('"[\w\S\s]*"', arg)[0][1:-1])
-                totag = (re.findall('-[\w)]*$', arg)[0][1:])
-                return ([tag, {k: v}, totag, 'ifto'])
-            else:
-                r = re.findall('^[\w\s]*--[\w\s]*=[\s]*"[\w\S\s]*"[\s]*-[\w]*.[\w]*$', arg)
-
-                if len(r) == 1 and len(r[0]) == len(arg):  # iftoatr div -id="help" -a.text
-                    tag = (re.findall('^[\w\s]*', arg)[0].strip())
-                    k = (re.findall('--[\w]*', arg)[0][2:])
-                    v = (re.findall('"[\w\S\s]*"', arg)[0][1:-1])
-                    totag = (re.findall('-[\w]*.', arg)[-1][1:-1])
-                    attrtag = (re.findall('.[\w]*$', arg)[0][1:])
-                    return ([tag, {k: v}, [totag, attrtag], 'iftoatr'])
+                        
+      def Start(self):
+            # Setup dir and file -> app
+            self.Setup()
+            self.Create("link", "href", False)
+            self.Create("script", "src", True)
+            self.Create("img", "src", True)
+            self.Create("meta", "content", False)
+            self.write(os.path.join(self.Name, "templates", "index.html"), self.html.prettify().encode())
+            
+            for url in set(self.urls):
+                path = os.path.join(self.Name, "static", url.split('/')[-1])
+                print(self.Text(f"$2Download$1 :$$ {path}"))
+                if (install := self.Install(url)):
+                    self.write(path, install.content)
                 else:
-                    r = re.findall('^[\w]*$', arg)
-                    if len(r) == 1 and len(r[0]) == len(arg):  # tagll div
-                        tag = re.findall('^[\w]*$', arg)[0]
-                        return ([tag, 'tagall'])
+                    print(self.Text(f"$1ERROR    :$$ {url}"))
+            
+
+
+class Input(BaseShell):
+        value = None 
+        def __init__(self,Prompt,*args,**kwargs):
+            super().__init__(*args,**kwargs)
+            self.Prompt = Prompt
+            self.prompt = Prompt
+
+        def completenames(self,arg,*args):
+            all = ["file ", "url "]
+            return [x for x in all if x.startswith(arg)] if arg else all
+
+        def onecmd(self, *args):
+            pass
+
+        def Req(self,line):
+            @ThreadAnimation()
+            def _Req(Thread):
+                try:
+                    r = requests.get(line)
+                except Exception as e:
+                    print (e)
+                    Thread.kill = True
+                    return False
+                Thread.kill = True
+                return r
+            return _Req()
+
+        def postcmd(self, arg, line):
+            Mode = line[:line.find(' ')]
+            line = line[line.find(' '):].strip()
+            if Mode == "file":
+                if os.path.isfile(line):
+                    with open(line, 'r')as f:
+                        self.value = ThreadAnimation()((lambda Thread: f.read()))()
+
+                    return line
+                else:
+                    print ("not File...!")
+            elif Mode == "url":
+                
+                if (req := self.Req(line)) != False:
+                    self.value = req
+
+                    return line
+            else:
+                print ('Enter File or url')
+                self.prompt = self.Prompt
+
+value = Input("\033[0;32mfile\033[0m -\033[0;33m url\033[0m ->\033[0m\n     -> ")
+value.cmdloop()
+value = value.value
+if type(value) == str:
+    html = BeautifulSoup(value, "html.parser")
+    URL = None
+else:
+    html = BeautifulSoup(value.text, "html.parser")
+    URL = value.url
+
+class HtmlShell(BaseShell):
+	ToolName = "Shell-Web.Html"
+
+	for Tag in html.open_tag_counter.keys():
+		Tag = Tag.replace('-',"_")
+		exec(f"""
+
+
+def do_{Tag}(self,arg):
+	arg = BeautifulSoup(arg, "html.parser")
+	a = lambda Name: {{ attr[0]: (' '.join(attr[1]) if type(attr[1]) == list else attr[1]) for x in arg.find_all(Name) for attr in x.attrs.items() }}
+	get = a('get')
+	_if = a(f'{{ "{Tag}" }}_if')
+	g = self.GetAttr(arg, "{Tag}", _if)
+	attr = [x for x in arg.text.split(' ')if x]
+	Done = []
+	if not g and not attr:
+		for s in html.find_all("{Tag}", _if):
+			print(self.Lexer_Html(s.prettify()))
+	else:
+		for s in html.find_all("{Tag}", _if):
+			for p in attr:
+				f = s.get(p)
+				if f:
+					if f not in Done:
+						print(f"\033[1;32m{{ '{Tag}' }}\033[1;31m - \033[1;33m{{p}}\033[1;31m ->\033[1;37m",(' '.join(f) if type(f) == list else f),'\033[0m')
+						Done.append(f)
+		
+		
+def complete_{Tag}(self, arg, line, *args):
+		al = html.{Tag}.attrs
+		params = ' '.join([x[0]+' = '+'"'+(' '.join(x[1]) if type(x[1]) == list else x[1])+'"' for x in al.items()])
+		com = {{
+					"__get__":"<get   ></get>",
+					"__if__":"<if   />",
+					f"__{{ '{Tag}' }}_if__":f"<{{ '{Tag}' }}_if  {{ params }} />",
+					"__attr__": "<attr   />"
+		}}
+		
+		al = list(al)
+		all = al + list(com.keys())
+		if (l := line.split(' ')[-1]).endswith('-') or '-' in l:
+			p = [
+					x[len(l) - len(l[l.rfind('-'):]) + 1:] + ' ' 
+					for x in al if x.startswith(l)
+			]
+ 
+			return [x for x in p if x.startswith(arg)] if arg else p
+			
+		out = [x for x in all if x.startswith(arg)] if arg  else list(all)
+		 
+		return [ com[ out[0] ] ] if len(out) == 1 and out[0] in list(com.keys()) else out
+def help_{Tag}(self,*args):
+		print(self.Lexer_Html("exaple:\
+		\\r-> {Tag} class\
+		\\r-> {Tag} class style <div_if class='Name' />\
+		\\r-> {Tag} <get button  ></get>\
+		\\r-> {Tag} <get button input  ></get>\
+		\\r-> {Tag} <get button input  ><attr class name type /></get>\
+		\\r-> {Tag} <get button input  ><if type='text' name='search'><attr type /></get>")[0:-1])
+		""")
+	def GetAttr(self, arg, tag, if_):
+		get = []
+		_if = {}
+		attr = []
+		Done = []
+		for a in arg.find_all('get'):
+			get += list(a.attrs.keys())
+			for b in a.find_all('if'):
+				for c in b.attrs.items():
+					_if[c[0]] = ' '.join(c[1]) if type(c[1]) == list else c[1]
+			
+			for d in a.find_all('attr'):
+				for x in d.attrs.keys():
+					attr.append(x)		
+		
+		for a in html.findChildren(tag, if_):
+			for b in get:
+				for x in a.find_all(b, _if):
+					if attr:
+						for g in attr:
+							s = x.get(g)
+							if s:
+								if s not in Done:
+									print(f"\033[1;32m{b}\033[1;31m - \033[1;33m{g}\033[1;31m ->\033[1;37m",(' '.join(s) if type(s) == list else s),'\033[0m')
+									Done.append(s)
+					else:
+						if x not in Done:
+							print(self.Lexer_Html(x.prettify()))
+							Done.append(x)
+
+		return get != []
+
+		
+	def completenames(self,line,*args):
+		all = [tag[3:].replace("_","-")+' ' for tag in self.get_names() if tag.startswith('do_')]
+		return [x for x in all if x.startswith(line)] if line  else all
+
+	@ThreadAnimation()
+	def Lexer_Html(self, Thread, Code):
+		out = highlight(Code, HtmlLexer(), TerminalFormatter())
+		Thread.kill = True
+		return out
+
+	def do_exit(self, arg):
+		return True
+
+class MainShell(BaseShell): # Main Shell
+    ToolName = "Shell-Web"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, *kwargs)
+        self.Names = {"rest": []} # Mode: [ Urls ]
+        for x in re.findall('"((http|ftp)s?://.*?)"', html.prettify()):
+            x = x[0]
+            if x.endswith('/'):
+                self.Names["rest"].append(x)
+            else:
+                line = x.split('/')[-1]
+                if '.' in line:
+                    line = line.split('.')[-1]
+                    if [c for c in re.findall('[\W]*',line) if c] or '_' in line:
+                        self.Names["rest"].append(x)
                     else:
-                        r = re.findall('^[\w]*.[\w]*$', arg)
-                        if len(r) == 1 and len(r[0]) == len(arg):  # tagattr link.href
-                            tag = (re.findall('^[\w]*.', arg)[0][:-1])
-                            attr = (re.findall('.[\w]*$', arg)[0][1:])
-                            return ([tag, attr, 'tagattr'])
+                        if line in self.Names:
+                            self.Names[line].append(x)
                         else:
-                            r = re.findall('^[\w]*[\s]*-[\w]*$', arg)
+                            self.Names[line] = [x]
+                else:
+                    self.Names["rest"].append(x)
+        self.Names = {
+                   a: list(set(self.Names[a]))
+                   for a in sorted( list( self.Names.keys() ) )
+        }
+    def do_html(self, arg): # html Shell
+        HtmlShell().cmdloop()
+        
+    def do_Flask(self, arg):
+        if URL:
+            all = BeautifulSoup(arg, "html.parser")
+            try:
+                if (get :=  all.find("flask").get('filename')):
+                    obj = Source("https://github.com/login", get, html.prettify())
+                    obj.Start()
+                else:
+                    print("Flask <flask filename='Name' />")
+            except:
+                    print("Flask <flask filename='Name' />")
+        else:            
+            print("Not URL...!")
+            
 
-                            if len(r) == 1 and len(r[0]) == len(arg):  # tagtoall div -link
-                                tag = (re.findall('^[\w]*', arg)[0])
-                                totag = (re.findall('-[\w]*$', arg)[0][1:])
-                                return ([tag, totag, 'tagtoall'])
-                            else:
-                                r = re.findall('^[\w]*[\s]*-[\w]*.[\w]*$', arg)
+    def complete_Flask(self, *args):
+        return ["<flask filename=' ' />"]
+        
 
-                                if len(r) == 1 and len(r[0]) == len(arg):  # tagtoatrall div -link.href
-                                    tag = (re.findall('^[\w]*', arg)[0])
-                                    totag = (re.findall('-[\w]*.', arg)[0][1:-1])
-                                    attrtotag = (re.findall('.[\w]*$', arg)[0][1:])
-                                    return ([tag, [totag, attrtotag], 'tagtoatrall'])
-
-    def default(self, line):  # not in Code
-        self.stdout.write('Not Tag: "<%s>" in Code\n' % line)
-
-    def do_back(self, arg):
-        return True
-
-
-class InfoCmd(BaseShell):
-    ToolName = f"{TOOL_NAME}.[$LGREEN]Info"
-    if not isfile: header = {k.replace('-', '_'): v for k, v in HTML_headers.items()}
-    AllCommentInfo = ['encoding', 'reason', 'request', 'status_code', 'url', 'ok', 'links', 'history',
-                      'is_permanent_redirect', 'is_redirect', 'apparent_encoding', 'cookies', 'elapsed']
-    for x in AllCommentInfo:
-        exec(f'''\
-		\rdef do_{x}(self,arg):
-		@ThreadAnimation()
-		def get(Thread):
-			a=(HTML.{x})
-			Thread.kill=True
-			return('\\r'+str(a)+' '*7)
-		print(get())
-		\rdef help_{x}(self):
-		print('example:{x}')
-		''')
-
-    def do_headers(self, arg):  ###
-        if not arg.strip():
-            self.Lexer(self.header)
-        else:
-            self.Lexer(self.getheader(arg))
-
-    def getheader(self, arg):
-        out = {}
-        for x in arg.split(' '):
-            if x in self.header.keys():
-                out[x] = self.header[x]
-        return out
-
-    def Lexer(self, text):  ###
-        @ThreadAnimation()
-        def lexer(Thread):
-            a = highlight(json.dumps(text, indent=3), JsonLexer(), TerminalFormatter())
+    @ThreadAnimation()
+    def Lexer_Json(self, Thread, Code):
+            out = highlight(Code, JsonLexer(), TerminalFormatter())
             Thread.kill = True
-            return ('\r' + a)
+            return out
 
-        print(lexer())
-
-    def complete_headers(self, arg, *args):  ###
-        all = [k for k in self.header.keys()]
-        if not arg:
-            return all
+    def do_Info(self, arg):
+        if type(value) == str :
+            print ("Not info...!")
         else:
-            return [k + ' ' for k in all if k.startswith(arg)]
+            try:
+                temp = eval(f'value.{arg}')
+            except Exception as e:
+                print ("\033[1;31mERROR:\033[0m",e)
+            else:
+                if type(temp) == dict or arg == "headers":
+                    print (
+                              self.Lexer_Json(
+                                       str(
+                                            json.dumps(
+                                                   dict(temp),
+                                                   indent=3
+                                            )
+                                       )
+                              )
+                    )
+                else:
+                    print (temp)
 
-    def do_back(self, arg):
-        return True
+    def complete_Info(self, line, *args):
+        if type(value) == str :
+            return ["None"]
+        Del = ["text", "_content", "iter_content", "iter_lines", "json"]
+        all = [
+                  x for x in dir(value)
+                  if not x.startswith('__') and x not in Del
+        ]
+        return [ x for x in all if x.startswith(line)] if line else all
 
+    def do_Link(self, arg): # Links-Urls
+        for x in (self.Names[arg]):
+            print (f'\033[1;31m-> \033[1;37m{x}\033[0m')
 
-class LinkCmd(BaseShell):
-    ToolName = f"{TOOL_NAME}.[$LCYAN]Link"
-    all = set(list(map((lambda t: t[0]), re.findall('"((http|ftp)s?://.*?)"', HTML))))
-    file = set([x for x in all if re.findall('[\w]*\.[\w]*$', x)])
-    ends = set([x[x.rfind('.'):] for x in file])
-    for x in ends:
-        exec(f'''\
-		\rdef do_{x[1:]}(self,arg):
-		for x in self.file:
-			if x.endswith('{x}'):print(x)
-		''')
-
-    def do_rest(self, arg):
-        print('\n'.join([x for x in self.all if not x in self.file]))
-
-    def do_back(self, arg):
-        return True
-
-
-class MainCmd(BaseShell):
-    ToolName = TOOL_NAME
-
-    def do_html(self, arg):
-        HtmlCmd().cmdloop()
-
-    def do_info(self, arg):
-        if not isfile:
-            InfoCmd().cmdloop()
-        else:
-            print('Not info in File..')
-
-    def do_links(self, arg):
-        LinkCmd().cmdloop()
-
-
-MainCmd().cmdloop()
+    def complete_Link(self, line, *args):
+        all = list(self.Names.keys()) + ["rest"]
+        return [x for x in all if x.startswith(line)] if line else all
+if __name__ == "__main__":
+	MainShell().cmdloop()
