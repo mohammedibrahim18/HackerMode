@@ -19,8 +19,12 @@ class HackerMode:
         else:
             from base.shell import MainShell
             from rich.traceback import install
+            from base.system import AppApi
             install()
             Shell = MainShell()
+            if not AppApi.activ():
+                print("# Time out.\n# Refresh the time from within the 'Hacker Mode' application.")
+                return
             while True:
                 try:
                     Shell.cmdloop()

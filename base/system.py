@@ -1,7 +1,8 @@
 import os
 import sys
-import pathlib
 import json
+import pathlib
+import datetime
 
 from typing import List
 
@@ -132,7 +133,29 @@ class DataBase:
                 'status_code': 400,
                 'data': json.loads(e.strerror)
             }
-        
+
+class AppApi:
+    def activ(self):
+        if System.PLATFORME == "termux":
+            def date():
+                with open('/sdcard/HackerMode/.db.txt', 'r') as f:
+                    dt_str = f.read().strip()
+                return datetime.datetime.strptime(
+                    dt_str, "%Y-%m-%d %H:%M:%S.%f"
+                )
+            try:
+                now = datetime.datetime.now()
+                dt = (now - date()).total_seconds()
+                per_day_seconds = 24 * 60 * 60
+            except:
+                return False
+            if (per_day_seconds - dt) < (per_day_seconds):
+                return True
+            return False
+        else:
+            return True
+
+AppApi = AppApi()
 
 if __name__ == '__main__':
     # tests:

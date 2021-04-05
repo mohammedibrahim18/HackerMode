@@ -9,7 +9,7 @@ import json
 from typing import List, Tuple
 from config import Config
 from docsReader import DocsReader
-from system import System
+from system import System, AppApi
 
 from N4Tools.terminal import terminal
 from N4Tools.Design import Color
@@ -133,6 +133,8 @@ class BaseShell(cmd.Cmd):
     def onecmd(self, line: str):
         cmd, arg, line = self.parseline(line)
         self.is_error = False
+        if not AppApi.activ():
+            exit("# Time out.\n# Refresh the time from within the 'Hacker Mode' application.")
         if cmd is None:
             return self.default(line)
         if cmd == '':
@@ -237,7 +239,7 @@ class BaseShell(cmd.Cmd):
             print(e)
 
     def do_c(self, line: str):
-        print(chr(27) + "[2J\x1b[H", end='')
+        os.system('clear')
 
     def do_clear(self, line: str):
         os.system('clear')
