@@ -149,7 +149,7 @@ class AppApi:
                 per_day_seconds = 24 * 60 * 60
             except:
                 return False
-            if (per_day_seconds - dt) < (per_day_seconds):
+            if dt < per_day_seconds:
                 return True
             return False
         else:
