@@ -1,4 +1,3 @@
-import cmd
 import os
 import sys
 import requests
@@ -16,9 +15,6 @@ from pygments.formatters import TerminalFormatter
 sys.path.append(os.path.abspath(__file__).split('/bin')[0])
 
 from shell import BaseShell
-
-
-
 
 app = """
 # Flask - Server
@@ -39,144 +35,138 @@ app.run(port=PORT(999, 65535))
 
 
 class Source:
-      def __init__(self, url, Name, html):
-            # url -> domin
-            self.url = url
-            self.domin = '//'.join([ x for x in url.split('/') if x ][:2])
-            self.html = BeautifulSoup(html, "html.parser")            
-            self.urls = []
-            self.Name = Name
-            # paths -> app
-            self.Paths = [
-                              f"{Name}",
-                              f"{Name}/__main__.py",
-                              f"{Name}/static",
-                              f"{Name}/templates",
-            ]
-            
-      def write(self, Name, text):
-            with open(Name, "wb") as f:
-                  f.write(text)
-                  
-      def Text(self, text):
-            for nc in range(8):
-                  text = text.replace(f"${nc}", f"\033[1;3{nc}m")
-            return text.replace("$$", "\033[0m")
-            
-      @ThreadAnimation()
-      def Install(self, Thread, url):
+    def __init__(self, url, Name, html):
+        # url -> domin
+        self.url = url
+        self.domin = '//'.join([x for x in url.split('/') if x][:2])
+        self.html = BeautifulSoup(html, "html.parser")
+        self.urls = []
+        self.Name = Name
+        # paths -> app
+        self.Paths = [
+            f"{Name}",
+            f"{Name}/__main__.py",
+            f"{Name}/static",
+            f"{Name}/templates",
+        ]
+
+    def write(self, Name, text):
+        with open(Name, "wb") as f:
+            f.write(text)
+
+    def Text(self, text):
+        for nc in range(8):
+            text = text.replace(f"${nc}", f"\033[1;3{nc}m")
+        return text.replace("$$", "\033[0m")
+
+    @ThreadAnimation()
+    def Install(self, Thread, url):
+        out = None
+        try:
+            out = requests.get(url)
+        except Exception as e:
+            print(f"\033[1;31mERROR    \033[1;32m: \033[0m{e}")
             out = None
-            try:
-                  out = requests.get(url)
-            except Exception as e:
-                  print (f"\033[1;31mERROR    \033[1;32m: \033[0m{e}")
-                  out = None
-            Thread.kill = True
-            return out
-                  
-      def Create(self, tag, attr, expr):
-            Name = self.Name
-            isurl = lambda u:True if re.findall('((http|ftp)s?://.*?)', get) else False
-            for src in self.html.find_all(tag):
-               if (get := src.get(attr)) and (get := get.strip()) and not get.endswith('/'):
-                        path = f"{{{{ url_for('static', filename='{get.split('/')[-1].replace(' ','_')}') }}}}"
-                        if isurl(get):
-                            self.urls.append(get)
-                            src[attr] = path
-                        elif ((st := get.startswith('/')) or expr):
-                            self.urls.append(self.domin + ("/" if not st else '') + get)
-                            src[attr] = path
+        Thread.kill = True
+        return out
 
-               
-                      
-                    
-                
-            
-      
-      def Setup(self):
-            Name = self.Name
-            # print -> Setup: NameFile
-            for s in self.Paths:
-                  if not os.path.exists(s) and not s.endswith('index.py'):
-                        if s.endswith('__main__.py'):
-                              # write __main__.py -> Flask server 
-                              self.write(s, app.encode())
-                        else:
-                              os.mkdir(s)
-                        print(self.Text(f"$2Setup    $1: $$") + s)
-                  else:
-                        print (self.Text(f"$3Exists   $1: $$") + s)
-            index = os.path.join(Name, "templates", "index.html")
-            print(self.Text(f"$2Setup    $1: $$") + index)  
+    def Create(self, tag, attr, expr):
+        Name = self.Name
+        isurl = lambda u: True if re.findall('((http|ftp)s?://.*?)', get) else False
+        for src in self.html.find_all(tag):
+            if (get := src.get(attr)) and (get := get.strip()) and not get.endswith('/'):
+                path = f"{{{{ url_for('static', filename='{get.split('/')[-1].replace(' ', '_')}') }}}}"
+                if isurl(get):
+                    self.urls.append(get)
+                    src[attr] = path
+                elif ((st := get.startswith('/')) or expr):
+                    self.urls.append(self.domin + ("/" if not st else '') + get)
+                    src[attr] = path
 
-
-                        
-      def Start(self):
-            # Setup dir and file -> app
-            self.Setup()
-            self.Create("link", "href", False)
-            self.Create("script", "src", True)
-            self.Create("img", "src", True)
-            self.Create("meta", "content", False)
-            self.write(os.path.join(self.Name, "templates", "index.html"), self.html.prettify().encode())
-            
-            for url in set(self.urls):
-                path = os.path.join(self.Name, "static", url.split('/')[-1])
-                print(self.Text(f"$2Download$1 :$$ {path}"))
-                if (install := self.Install(url)):
-                    self.write(path, install.content)
+    def Setup(self):
+        Name = self.Name
+        # print -> Setup: NameFile
+        for s in self.Paths:
+            if not os.path.exists(s) and not s.endswith('index.py'):
+                if s.endswith('__main__.py'):
+                    # write __main__.py -> Flask server
+                    self.write(s, app.encode())
                 else:
-                    print(self.Text(f"$1ERROR    :$$ {url}"))
-            
+                    os.mkdir(s)
+                print(self.Text(f"$2Setup    $1: $$") + s)
+            else:
+                print(self.Text(f"$3Exists   $1: $$") + s)
+        index = os.path.join(Name, "templates", "index.html")
+        print(self.Text(f"$2Setup    $1: $$") + index)
+
+    def Start(self):
+        # Setup dir and file -> app
+        self.Setup()
+        self.Create("link", "href", True)
+        self.Create("script", "src", True)
+        self.Create("img", "src", True)
+        #self.Create("meta", "content", False)
+        self.write(os.path.join(self.Name, "templates", "index.html"), self.html.prettify().encode())
+
+        for url in set(self.urls):
+            path = os.path.join(self.Name, "static", url.split('/')[-1])
+            print(self.Text(f"$2Download$1 :$$ {path}"))
+            if (install := self.Install(url)):
+                self.write(path, install.content)
+            else:
+                print(self.Text(f"$1ERROR    :$$ {url}"))
 
 
 class Input(BaseShell):
-        value = None 
-        def __init__(self,Prompt,*args,**kwargs):
-            super().__init__(*args,**kwargs)
-            self.Prompt = Prompt
-            self.prompt = Prompt
+    value = None
 
-        def completenames(self,arg,*args):
-            all = ["file ", "url "]
-            return [x for x in all if x.startswith(arg)] if arg else all
+    def __init__(self, Prompt, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.Prompt = Prompt
+        self.prompt = Prompt
 
-        def onecmd(self, *args):
-            pass
+    def completenames(self, arg, *args):
+        all = ["file ", "url "]
+        return [x for x in all if x.startswith(arg)] if arg else all
 
-        def Req(self,line):
-            @ThreadAnimation()
-            def _Req(Thread):
-                try:
-                    r = requests.get(line)
-                except Exception as e:
-                    print (e)
-                    Thread.kill = True
-                    return False
+    def onecmd(self, *args):
+        pass
+
+    def Req(self, line):
+        @ThreadAnimation()
+        def _Req(Thread):
+            try:
+                r = requests.get(line)
+            except Exception as e:
+                print(e)
                 Thread.kill = True
-                return r
-            return _Req()
+                return False
+            Thread.kill = True
+            return r
 
-        def postcmd(self, arg, line):
-            Mode = line[:line.find(' ')]
-            line = line[line.find(' '):].strip()
-            if Mode == "file":
-                if os.path.isfile(line):
-                    with open(line, 'r')as f:
-                        self.value = ThreadAnimation()((lambda Thread: f.read()))()
+        return _Req()
 
-                    return line
-                else:
-                    print ("not File...!")
-            elif Mode == "url":
-                
-                if (req := self.Req(line)) != False:
-                    self.value = req
+    def postcmd(self, arg, line):
+        Mode = line[:line.find(' ')]
+        line = line[line.find(' '):].strip()
+        if Mode == "file":
+            if os.path.isfile(line):
+                with open(line, 'r')as f:
+                    self.value = ThreadAnimation()((lambda Thread: f.read()))()
 
-                    return line
+                return line
             else:
-                print ('Enter File or url')
-                self.prompt = self.Prompt
+                print("not File...!")
+        elif Mode == "url":
+
+            if (req := self.Req(line)) != False:
+                self.value = req
+
+                return line
+        else:
+            print('Enter File or url')
+            self.prompt = self.Prompt
+
 
 value = Input("\033[0;32mfile\033[0m -\033[0;33m url\033[0m ->\033[0m\n     -> ")
 value.cmdloop()
@@ -188,12 +178,13 @@ else:
     html = BeautifulSoup(value.text, "html.parser")
     URL = value.url
 
-class HtmlShell(BaseShell):
-	ToolName = "Shell-Web.Html"
 
-	for Tag in html.open_tag_counter.keys():
-		Tag = Tag.replace('-',"_")
-		exec(f"""
+class HtmlShell(BaseShell):
+    ToolName = "Shell-Web.Html"
+
+    for Tag in html.open_tag_counter.keys():
+        Tag = Tag.replace('-', "_")
+        exec(f"""
 
 
 def do_{Tag}(self,arg):
@@ -249,58 +240,60 @@ def help_{Tag}(self,*args):
 		\\r-> {Tag} <get button input  ><attr class name type /></get>\
 		\\r-> {Tag} <get button input  ><if type='text' name='search'><attr type /></get>")[0:-1])
 		""")
-	def GetAttr(self, arg, tag, if_):
-		get = []
-		_if = {}
-		attr = []
-		Done = []
-		for a in arg.find_all('get'):
-			get += list(a.attrs.keys())
-			for b in a.find_all('if'):
-				for c in b.attrs.items():
-					_if[c[0]] = ' '.join(c[1]) if type(c[1]) == list else c[1]
-			
-			for d in a.find_all('attr'):
-				for x in d.attrs.keys():
-					attr.append(x)		
-		
-		for a in html.findChildren(tag, if_):
-			for b in get:
-				for x in a.find_all(b, _if):
-					if attr:
-						for g in attr:
-							s = x.get(g)
-							if s:
-								if s not in Done:
-									print(f"\033[1;32m{b}\033[1;31m - \033[1;33m{g}\033[1;31m ->\033[1;37m",(' '.join(s) if type(s) == list else s),'\033[0m')
-									Done.append(s)
-					else:
-						if x not in Done:
-							print(self.Lexer_Html(x.prettify()))
-							Done.append(x)
 
-		return get != []
+    def GetAttr(self, arg, tag, if_):
+        get = []
+        _if = {}
+        attr = []
+        Done = []
+        for a in arg.find_all('get'):
+            get += list(a.attrs.keys())
+            for b in a.find_all('if'):
+                for c in b.attrs.items():
+                    _if[c[0]] = ' '.join(c[1]) if type(c[1]) == list else c[1]
 
-		
-	def completenames(self,line,*args):
-		all = [tag[3:].replace("_","-")+' ' for tag in self.get_names() if tag.startswith('do_')]
-		return [x for x in all if x.startswith(line)] if line  else all
+            for d in a.find_all('attr'):
+                for x in d.attrs.keys():
+                    attr.append(x)
 
-	@ThreadAnimation()
-	def Lexer_Html(self, Thread, Code):
-		out = highlight(Code, HtmlLexer(), TerminalFormatter())
-		Thread.kill = True
-		return out
+        for a in html.findChildren(tag, if_):
+            for b in get:
+                for x in a.find_all(b, _if):
+                    if attr:
+                        for g in attr:
+                            s = x.get(g)
+                            if s:
+                                if s not in Done:
+                                    print(f"\033[1;32m{b}\033[1;31m - \033[1;33m{g}\033[1;31m ->\033[1;37m",
+                                          (' '.join(s) if type(s) == list else s), '\033[0m')
+                                    Done.append(s)
+                    else:
+                        if x not in Done:
+                            print(self.Lexer_Html(x.prettify()))
+                            Done.append(x)
 
-	def do_exit(self, arg):
-		return True
+        return get != []
 
-class MainShell(BaseShell): # Main Shell
+    def completenames(self, line, *args):
+        all = [tag[3:].replace("_", "-") + ' ' for tag in self.get_names() if tag.startswith('do_')]
+        return [x for x in all if x.startswith(line)] if line else all
+
+    @ThreadAnimation()
+    def Lexer_Html(self, Thread, Code):
+        out = highlight(Code, HtmlLexer(), TerminalFormatter())
+        Thread.kill = True
+        return out
+
+    def do_exit(self, arg):
+        return True
+
+
+class MainShell(BaseShell):  # Main Shell
     ToolName = "Shell-Web"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
-        self.Names = {"rest": []} # Mode: [ Urls ]
+        self.Names = {"rest": []}  # Mode: [ Urls ]
         for x in re.findall('"((http|ftp)s?://.*?)"', html.prettify()):
             x = x[0]
             if x.endswith('/'):
@@ -309,7 +302,7 @@ class MainShell(BaseShell): # Main Shell
                 line = x.split('/')[-1]
                 if '.' in line:
                     line = line.split('.')[-1]
-                    if [c for c in re.findall('[\W]*',line) if c] or '_' in line:
+                    if [c for c in re.findall('[\W]*', line) if c] or '_' in line:
                         self.Names["rest"].append(x)
                     else:
                         if line in self.Names:
@@ -319,76 +312,77 @@ class MainShell(BaseShell): # Main Shell
                 else:
                     self.Names["rest"].append(x)
         self.Names = {
-                   a: list(set(self.Names[a]))
-                   for a in sorted( list( self.Names.keys() ) )
+            a: list(set(self.Names[a]))
+            for a in sorted(list(self.Names.keys()))
         }
-    def do_html(self, arg): # html Shell
+
+    def do_html(self, arg):  # html Shell
         HtmlShell().cmdloop()
-        
+
     def do_Flask(self, arg):
         if URL:
             all = BeautifulSoup(arg, "html.parser")
             try:
-                if (get :=  all.find("flask").get('filename')):
-                    obj = Source("https://github.com/login", get, html.prettify())
+                if (get := all.find("flask").get('filename')):
+                    obj = Source(URL, get, html.prettify())
                     obj.Start()
                 else:
                     print("Flask <flask filename='Name' />")
             except:
-                    print("Flask <flask filename='Name' />")
-        else:            
+                print("Flask <flask filename='Name' />")
+        else:
             print("Not URL...!")
-            
 
     def complete_Flask(self, *args):
         return ["<flask filename=' ' />"]
-        
 
     @ThreadAnimation()
     def Lexer_Json(self, Thread, Code):
-            out = highlight(Code, JsonLexer(), TerminalFormatter())
-            Thread.kill = True
-            return out
+        out = highlight(Code, JsonLexer(), TerminalFormatter())
+        Thread.kill = True
+        return out
 
     def do_Info(self, arg):
-        if type(value) == str :
-            print ("Not info...!")
+        if type(value) == str:
+            print("Not info...!")
         else:
             try:
                 temp = eval(f'value.{arg}')
             except Exception as e:
-                print ("\033[1;31mERROR:\033[0m",e)
+                print("\033[1;31mERROR:\033[0m", e)
             else:
                 if type(temp) == dict or arg == "headers":
-                    print (
-                              self.Lexer_Json(
-                                       str(
-                                            json.dumps(
-                                                   dict(temp),
-                                                   indent=3
-                                            )
-                                       )
-                              )
+                    print(
+                        self.Lexer_Json(
+                            str(
+                                json.dumps(
+                                    dict(temp),
+                                    indent=3
+                                )
+                            )
+                        )
                     )
                 else:
-                    print (temp)
+                    print(temp)
 
     def complete_Info(self, line, *args):
-        if type(value) == str :
+        if type(value) == str:
             return ["None"]
         Del = ["text", "_content", "iter_content", "iter_lines", "json"]
         all = [
-                  x for x in dir(value)
-                  if not x.startswith('__') and x not in Del
+            x for x in dir(value)
+            if not x.startswith('__') and x not in Del
         ]
-        return [ x for x in all if x.startswith(line)] if line else all
+        return [x for x in all if x.startswith(line)] if line else all
 
-    def do_Link(self, arg): # Links-Urls
+    def do_Link(self, arg):  # Links-Urls
         for x in (self.Names[arg]):
-            print (f'\033[1;31m-> \033[1;37m{x}\033[0m')
+            print(f'\033[1;31m-> \033[1;37m{x}\033[0m')
 
     def complete_Link(self, line, *args):
         all = list(self.Names.keys()) + ["rest"]
         return [x for x in all if x.startswith(line)] if line else all
+
+
 if __name__ == "__main__":
-	MainShell().cmdloop()
+    MainShell().cmdloop()

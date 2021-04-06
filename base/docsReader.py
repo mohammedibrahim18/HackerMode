@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from N4Tools.Design import Text as Text,Square,Color
+from N4Tools.Design import Text,Square,Color
 from N4Tools.terminal import terminal
 from config import Config
 from rich import print
@@ -15,7 +15,7 @@ class DocsReader:
         self.file = file
         with open(file, 'r') as f:
             doc = f.read()
-        self.soup = BeautifulSoup(self.ValuesReader(doc), 'html.parser')
+        self.soup = BeautifulSoup(self.values_reader(doc), 'html.parser')
 
     @property
     def title(self):
@@ -33,7 +33,7 @@ class DocsReader:
                  data[section['title']] += [[command['command'],command.text]]
         return data
 
-    def ValuesReader(self,text):
+    def values_reader(self,text):
         text = text.replace('{{ TOOL_NAME }}',self.file.split('/')[-1].split('.')[0])
         return text
 

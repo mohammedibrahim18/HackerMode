@@ -1,6 +1,6 @@
 <title>{{ TOOL_NAME }}</title>
 
-<section title="Command">
+<section title="commands">
         <line command="<ext> paths">لعرظ جميع الملفات بأمتداد محدد</line>
         <line command="<ext> size_all">لعرظ حجم جميع الملفات بأمتداد محدد</line>
         <line command="<ext> repeat">لعرظ الملفات المكرره بأمتداد محدد</line>
@@ -12,6 +12,6 @@
         <line command="jpg repeat">كم تكررت الصور</line>
 </section>
 
-<section title="System">
+<section title="system">
         <line command="main">الرجوع الى الصفحه الرأيسيه</line>
 </section>

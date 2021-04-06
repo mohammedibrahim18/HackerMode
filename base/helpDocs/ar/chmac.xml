@@ -1,6 +1,6 @@
 <title>{{ TOOL_NAME }}</title>
  
-<section title="Args">
+<section title="optional arguments">
     <line command="-m  --mac">تغيير مباشر لعنوان الماك</line>
     <line command="-i  --interface">تغيير الواجهة التى سيعمل عليها</line>
     <line command="-d  --default">إعادة تعيين عنوان mac إلى الأصل</line>

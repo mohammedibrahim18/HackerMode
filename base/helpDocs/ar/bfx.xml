@@ -1,6 +1,6 @@
 <title>{{ TOOL_NAME }}</title>
  
-<section title="Usage">
+<section title="optional arguments">
     <line command="-h">لإظهار قائمة المساعدة</line>
     <line command="-c">اختبار برنامج سطر الأوامر لاكتشاف تجاوز التدفق تلقائيًا</line>
     <line command="-x">لإنشاء سلسلة ترتيب سداسية عشرية للمكدس</line>

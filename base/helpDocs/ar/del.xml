@@ -1,6 +1,6 @@
 <title>del</title>
  
-<section title="options">
+<section title="optional arguments">
 	<line command="-h">تحديد المستندات المخفية</line>
 	<line command="-c">تنظيف السلة من الملفات المؤقتة</line>
 	<line command=" *">حذف جميع المستندات فى المسار الحالى</line>
