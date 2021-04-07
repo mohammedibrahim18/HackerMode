@@ -135,8 +135,12 @@ class BaseShell(cmd.Cmd):
         self.is_error = False
         if not AppApi.activ():
             exit("# Time out.\n# Refresh the time from within the 'Hacker Mode' application.")
+        if not line.strip():
+            if Config.get("settings","LAST_COMMAND",default=False):
+                return self.emptyline()
         if cmd is None:
             return self.default(line)
+        self.lastcmd = line
         if cmd == '':
             return self.default(line)
         else:
@@ -297,7 +301,6 @@ class BaseShell(cmd.Cmd):
 
 
 class HackerModeCommands(BaseShell):
-
     def get_package_ext(self, package: str) -> bool:
         bin: List[str] = os.listdir(
             os.path.join(System.BASE_PATH, 'bin')
@@ -378,7 +381,7 @@ class Settings(HackerModeCommands):
         except:
             print(f'# support only {list(range(len(ShellTheme.prompts)))}')
 
-    def do_SET_LANGUAGE(self,arg: str):
+    def do_SET_LANGUAGE(self, arg: str):
         lang_support: List[str] = os.listdir(
             os.path.join(System.BASE_PATH,"helpDocs")
         )
@@ -388,12 +391,22 @@ class Settings(HackerModeCommands):
         else:
             print(f'# support only {lang_support}')
 
-    def do_SET_ARABIC_RESHAPER(self,arg: str):
+    def do_SET_ARABIC_RESHAPER(self, arg: str):
         if arg.title() == 'True':
             Config.set('settings','ARABIC_RESHAPER',True)
             print('# DONE')
         elif arg.title() == 'False':
             Config.set('settings','ARABIC_RESHAPER',False)
+            print('# DONE')
+        else:
+            print(f'# support only {[True,False]}')
+
+    def do_SET_LAST_COMMAND(self, arg: str):
+        if arg.title() == 'True':
+            Config.set('settings','LAST_COMMAND',True)
+            print('# DONE')
+        elif arg.title() == 'False':
+            Config.set('settings','LAST_COMMAND',False)
             print('# DONE')
         else:
             print(f'# support only {[True,False]}')
