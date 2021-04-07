@@ -2,20 +2,25 @@
 
 <section title="commands">
         <line command="html">استخراج اكواد الصفحه html</line>
-        <line command="info">استخراج بعظ المعلومات عن الموقع</line>
-        <line command="link">استخراج جميع روابط الصفحه</line>
+        <line command="Info">استخراج بعظ المعلومات عن الموقع</line>
+        <line command="Link">استخراج جميع روابط الصفحه</line>
+        <line command="Flask">لتنزيل صفحة الويب وإنشاء خادم flask</line>
 </section>
 
 <section title="html examples">
-        <line command="<tag>">--class="Name"</line>
-        <line command="<tag>">--id="Name" -a</line>
-        <line command="<tag>">--id="Name" -a.href</line>
-        <line command="<tag>">--id="Name" -a.class</line>
-        <line command="<tag>">--style="{backgrund:red}"</line>
-        <line command="<tag>">Tag</line>
-        <line command="<tag>">-a</line>
-        <line command="<tag>">-a.href</line>
-        <line command="<tag>">-a.class</line>
+        <line command="<tag> __attr__:"></line>
+        <line command="  [green]tag <[red]get[/red] tag ><[red]attr[/red] option /></[red]get[/red]>[/green]"></line>
+        <line command=""></line>
+        <line command="<tag> __get__:"></line>
+        <line command="  [green]tag <[red]get[/red] tag ></[red]get[/red]>[/green]"></line>
+        <line command=""></line>
+        <line command="<tag> __if__:"></line>
+        <line command="  [green]tag <[red]get[/red] tag ><[red]if[/red] option='value' /></[red]get[/red]>[/green]"></line>
+        <line command=""></line>
+        <line command="<tag> __<tag>_if__:"></line>
+        <line command="  [green]tag <[red]tag_if[/red] option='value' />[/green]"></line>
+        <line command=""></line>
+        <line command="<tag> [green]option[/green]"></line>
 </section>
 
 <section title="info examples">
@@ -29,6 +34,10 @@
 <section title="link examples">
         <line command="Link [green]rest[/green]"></line>
         <line command="Link [green]png[/green]"></line>
+</section>
+
+<section title="flask examples">
+        <line command="Flask [green]<[red]flask[/red] filename='project-folder' />[/green]"></line>
 </section>
 
 <section title="note">
