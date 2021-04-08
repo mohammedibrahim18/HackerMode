@@ -1,9 +1,27 @@
 <title>HackerMode</title>
 
-<section title="System">
-        <line command="ls"></line>
-        <line command="c"></line>
-        <line command="clear"></line>
-        <line command="exit"></line>
-        <line command="main"></line>
+<section title="information">
+        <line command="tutorial  [cyan]https://example.com[/cyan]"></line>
+        <line command="telegram  [cyan]https://t.me/psh_team[/cyan]"></line>
+        <line command="website   [cyan]https://arab-developers.github.io[/cyan]"></line>
+
+</section>
+
+<section title="commands">
+        <line command="c">تنظيف شاشة الجهاز</line>
+        <line command="run">تشغيل أي ملف</line>
+        <line command="del">حذف الملفات أو المجلدات</line>
+        <line command="size">حساب حجم الملف أو المجلد</line>
+        <line command="lsmap">إظهار الملفات والمجلدات كشجرة</line>
+</section>
+
+<section title="simple tools">
+        <line command="view-source">أظهر الكود مع الألوان</line>
+        <line command="encrypt-file">تشفير أي ملف</line>
+        <line command="pyprivate">تشفير أي ملف بيثون</line>
+</section>
+
+<section title="system">
+        <line command="exit">أوقف الأداة</line>
+        <line command="main">انتقل إلى الوضع الرئيسي</line>
 </section>

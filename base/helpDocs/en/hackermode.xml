@@ -1,0 +1,27 @@
+<title>HackerMode</title>
+
+<section title="information">
+        <line command="tutorial  [cyan]https://example.com[/cyan]"></line>
+        <line command="telegram  [cyan]https://t.me/psh_team[/cyan]"></line>
+        <line command="website   [cyan]https://arab-developers.github.io[/cyan]"></line>
+
+</section>
+
+<section title="commands">
+        <line command="c">clear the terminal</line>
+        <line command="run">run any file</line>
+        <line command="del">delete files or folders</line>
+        <line command="size">calculate file or folder size</line>
+        <line command="lsmap">show files and folders as tree</line>
+</section>
+
+<section title="simple tools">
+        <line command="view-source">show code with colors</line>
+        <line command="encrypt-file">encrypt any file</line>
+        <line command="pyprivate">encrypt any python file</line>
+</section>
+
+<section title="system">
+        <line command="exit">stop the tool</line>
+        <line command="main">go the main Mode</line>
+</section>
