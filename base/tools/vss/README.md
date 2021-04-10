@@ -1,12 +1,12 @@
 # Vairous7x Supper Sploit
---------------Subscribe to Vairous7x on Youtube------------------- 
+>> Subscribe to Vairous7x on Youtube 
 
-run 'bash setup.sh' #To Install Requirements
+1- run 'bash setup.sh' 
 
-then run 'bash main.sh' #To Install The VSS
+2- then run 'bash main.sh' 
 
-type 'full_guide' to learn usage
+3- type 'full_guide' to learn usage
 
-type 'help' to show commands
+4- type 'help' to show commands
 
--------------Subscribe to Vairous7x on Youtube-------------------
+>> Subscribe to Vairous7x on YouTube
