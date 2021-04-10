@@ -2,8 +2,8 @@
 
 <section title="commands">
         <line command="<ext> paths">لعرظ جميع الملفات بأمتداد محدد</line>
-        <line command="<ext> size_all">لعرظ حجم جميع الملفات بأمتداد محدد</line>
-        <line command="<ext> repeat">لعرظ الملفات المكرره بأمتداد محدد</line>
+        <line command="<ext> size_all">لعرض حجم جميع الملفات بأمتداد محدد</line>
+        <line command="<ext> repeat">لعرض الملفات المتكرره بأمتداد محدد</line>
 </section>
 
 <section title="example">
@@ -13,5 +13,5 @@
 </section>
 
 <section title="system">
-        <line command="main">الرجوع الى الصفحه الرأيسيه</line>
+        <line command="main">الرجوع الى الصفحه الرئيسيه</line>
 </section>
