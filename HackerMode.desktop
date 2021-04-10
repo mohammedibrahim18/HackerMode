@@ -1,0 +1,8 @@
+[Desktop Entry]
+
+Terminal=true
+Name=Hacker Mode
+Type=Application
+Icon=/root/.HackerMode/icon.png
+Exec=/bin/HackerMode
+StartupNotify=false
