@@ -1,27 +1,49 @@
 <title>HackerMode</title>
 
-<section title="information">
-        <line command="tutorial  [cyan]https://example.com[/cyan]"></line>
-        <line command="telegram  [cyan]https://t.me/psh_team[/cyan]"></line>
-        <line command="website   [cyan]https://arab-developers.github.io[/cyan]"></line>
-
+<section title="commands">
+    <line command="run">run any file</line>
+    <line command="del">delete files or folders</line>
+    <line command="size">calculate file or folder size</line>
+    <line command="lsmap">show files and folders as tree</line>
 </section>
 
-<section title="commands">
-        <line command="c">clear the terminal</line>
-        <line command="run">run any file</line>
-        <line command="del">delete files or folders</line>
-        <line command="size">calculate file or folder size</line>
-        <line command="lsmap">show files and folders as tree</line>
+<section title="shortcuts">
+    <line command="c">clean terminal screen</line>
+    <line command="archive"></line>
+    <line command="unarchive"></line>
+    <line command="brightness"></line>
+    <line command="cool-screen"></line>
+    <line command="eye-protect"></line>
+    <line command="reset-filter"></line>
+    <line command="hide"></line>
+    <line command="unhide"></line>
+</section>
+
+<section title="tools">
+    <line command="exploit-shell">exploit the victim's command-line</line>
+    <line command="info-file">Show information about files</line>
+    <line command="shell-web">site control</line>
+    <line command="lib-installer">Python Libraries Installer</line>
+    <line command="social-media"></line>
+    <line command="shall-game"></line>
+    <line command="aioc"></line>
+    <line command="bfx"></line>
+    <line command="vss"></line>
 </section>
 
 <section title="simple tools">
-        <line command="view-source">show code with colors</line>
-        <line command="encrypt-file">encrypt any file</line>
-        <line command="pyprivate">encrypt any python file</line>
+    <line command="view-source">Show the code with the colors</line>
+    <line command="encrypt-file">Encrypt any file</ line>
+    <line command="pyprivate">encrypt any Python file</ line>
+    <line command="chmac">change MAC address</line>
+    <line command="networ-info">to show network information</line>
+    <line command="scan">Check if the ports are</ line>
+    <line command="">open in network</line>
+    <line command="kivy">kivy helper</line>
+    <line command="text-image">Convert an image to text</line>
 </section>
 
 <section title="system">
-        <line command="exit">stop the tool</line>
-        <line command="main">go the main Mode</line>
+    <line command="exit">stop the tool</line>
+    <line command="main">go to the main mode</line>
 </section>

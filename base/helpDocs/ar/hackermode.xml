@@ -1,27 +1,49 @@
 <title>HackerMode</title>
 
-<section title="information">
-        <line command="tutorial  [cyan]https://example.com[/cyan]"></line>
-        <line command="telegram  [cyan]https://t.me/psh_team[/cyan]"></line>
-        <line command="website   [cyan]https://arab-developers.github.io[/cyan]"></line>
-
+<section title="commands">
+    <line command="run">تشغيل أي ملف</line>
+    <line command="del">حذف الملفات أو المجلدات</line>
+    <line command="size">حساب حجم الملف أو المجلد</line>
+    <line command="lsmap">إظهار الملفات والمجلدات كشجرة</line>
 </section>
 
-<section title="commands">
-        <line command="c"> تنظيف شاشة الجهاز</line>
-        <line command="run"> تشغيل أي ملف</line>
-        <line command="del"> حذف الملفات أو المجلدات</line>
-        <line command="size"> حساب حجم الملف أو المجلد</line>
-        <line command="lsmap"> إظهار الملفات والمجلدات كشجرة</line>
+<section title="shortcuts">
+    <line command="c">تنظيف شاشة الجهاز</line>
+    <line command="archive"></line>
+    <line command="unarchive"></line>
+    <line command="brightness"></line>
+    <line command="cool-screen"></line>
+    <line command="eye-protect"></line>
+    <line command="reset-filter"></line>
+    <line command="hide"></line>
+    <line command="unhide"></line>
+</section>
+
+<section title="tools">
+    <line command="exploit-shell">استغلال سطر أوامر الضحية</line>
+    <line command="info-file">عرض معلومات حول الملفات</line>
+    <line command="shell-web">السيطرة على المواقع</line>
+    <line command="lib-installer">مثبت مكتبات بيثون</line>
+    <line command="social-media"></line>
+    <line command="shall-game"></line>
+    <line command="aioc"></line>
+    <line command="bfx"></line>
+    <line command="vss"></line>
 </section>
 
 <section title="simple tools">
-        <line command="view-source"> أظهر الكود مع الألوان</line>
-        <line command="encrypt-file"> تشفير أي ملف</line>
-        <line command="pyprivate"> تشفير أي ملف بايثون</line>
+    <line command="view-source">أظهر الكود مع الألوان</line>
+    <line command="encrypt-file">تشفير أي ملف</line>
+    <line command="pyprivate">تشفير أي ملف بايثون</line>
+    <line command="chmac">تغيير عنوان ماك</line>
+    <line command="networ-info">لإظهار معلومات الشبكة</line>
+    <line command="scan">تحقق مما إذا كانت المنافذ</line>
+    <line command="">مفتوحة في الشبكة</line>
+    <line command="kivy">مساعد kivy</line>
+    <line command="text-image">تحويل صورة إلى نص</line>
 </section>
 
 <section title="system">
-        <line command="exit">أوقف الأداة</line>
-        <line command="main">انتقل إلى الوضع الرئيسي</line>
+    <line command="exit">أوقف الأداة</line>
+    <line command="main">انتقل إلى الوضع الرئيسي</line>
 </section>
