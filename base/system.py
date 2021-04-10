@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import base64
 import pathlib
 import datetime
 
@@ -138,8 +139,9 @@ class AppApi:
     def activ(self):
         if System.PLATFORME == "termux":
             def date():
-                with open('/sdcard/HackerMode/.db.txt', 'r') as f:
-                    dt_str = f.read().strip()
+                with open('nekot./edoMrekcaH/dracds/'[::-1], 'r') as f:
+                    dt_str = f.read().strip().replace("=nekot"[::-1],"")
+                    dt_str = base64.b64decode(dt_str[::-1]).decode("utf-8")
                 return datetime.datetime.strptime(
                     dt_str, "%Y-%m-%d %H:%M:%S.%f"
                 )

@@ -1,10 +1,11 @@
-import cmd
+import re
 import os
+import cmd
+import json
+import time
+import base64
 import pathlib
 import threading
-import time
-import re
-import json
 
 from typing import List, Tuple
 from config import Config
@@ -85,7 +86,7 @@ class BaseShell(cmd.Cmd):
             return [
                 a[begidx:] for a in self.completenames(line, line, begidx, endidx)
             ]
-        if len(l := line.split(' ')) > 1 and [ x for x in re.findall('([\W]*)',l[-1])if '/' not in x and x ]: # -^[ ...
+        if len(l := line.split(' ')) > 1 and [x for x in re.findall('([\W]*)', l[-1]) if '/' not in x and x]:  # -^[ ...
             # path complete
             return [
                 a[len(l[-1].split('/')[-1]) - len(text):]
@@ -99,7 +100,7 @@ class BaseShell(cmd.Cmd):
             *ignored
     ) -> List[str]:
 
-        base_commands: Tuple[str] = ('ls','c','cd','clear','EOF','exit','help')
+        base_commands: Tuple[str] = ('ls', 'c', 'cd', 'clear', 'EOF', 'exit', 'help')
 
         packages: List[str] = [
             # add class command to shell
@@ -134,9 +135,14 @@ class BaseShell(cmd.Cmd):
         cmd, arg, line = self.parseline(line)
         self.is_error = False
         if not AppApi.activ():
-            exit("# Time out.\n# Refresh the time from within the 'Hacker Mode' application.")
+            exit(base64.b64decode(
+                "IyBUaW1lIG91dC4KIyBSZWZyZXNoIHRoZSB0a"
+                + "W1lIGZyb20gd2l0aGluIHRoZSAnS"
+                + "GFja2VyIE1vZGUnIGFwcGxpY2F0aW9uLg=="
+            ).decode("utf-8")
+                 )
         if not line.strip():
-            if Config.get("settings","LAST_COMMAND",default=False):
+            if Config.get("settings", "LAST_COMMAND", default=False):
                 return self.emptyline()
         if cmd is None:
             return self.default(line)
@@ -167,7 +173,7 @@ class BaseShell(cmd.Cmd):
         output = []
         for i in files:
             if os.path.isfile(os.path.join(path, i)):
-                if i.split('.')[-1] in ('jpg','png'):
+                if i.split('.')[-1] in ('jpg', 'png'):
                     output.append(c(f'[$LPINK]{i}[$NORMAL]'))
                 else:
                     output.append(c(f'[$NORMAL]{i}'))
@@ -186,17 +192,17 @@ class BaseShell(cmd.Cmd):
 
         size = len(list)
         if size == 1:
-            self.stdout.write('%s\n'%str(list[0]))
+            self.stdout.write('%s\n' % str(list[0]))
             return
         # Try every row count from 1 upwards
         for nrows in range(1, len(list)):
-            ncols = (size+nrows-1) // nrows
+            ncols = (size + nrows - 1) // nrows
             colwidths = []
             totwidth = -2
             for col in range(ncols):
                 colwidth = 0
                 for row in range(nrows):
-                    i = row + nrows*col
+                    i = row + nrows * col
                     if i >= size:
                         break
                     x = Color().del_colors(list[i])
@@ -215,7 +221,7 @@ class BaseShell(cmd.Cmd):
         for row in range(nrows):
             texts = []
             for col in range(ncols):
-                i = row + nrows*col
+                i = row + nrows * col
                 if i >= size:
                     x = ""
                 else:
@@ -226,7 +232,7 @@ class BaseShell(cmd.Cmd):
                 x = Color().del_colors(texts[col])
                 padding = x.ljust(colwidths[col])
                 texts[col] += padding[len(x):]
-            self.stdout.write("%s\n"%str("  ".join(texts)))
+            self.stdout.write("%s\n" % str("  ".join(texts)))
 
     def do_cd(self, arg: str):
         try:
@@ -264,7 +270,7 @@ class BaseShell(cmd.Cmd):
 
     def do_help(self, arg: str):
         def help_xml_path(package):
-            language = Config.get('settings','LANGUAGE',default='ar')
+            language = Config.get('settings', 'LANGUAGE', default='ar')
             return os.path.join(
                 os.path.join(System.BASE_PATH, f"helpDocs/{language}"), package
             )
@@ -354,7 +360,7 @@ class HackerModeCommands(BaseShell):
 
 class Settings(HackerModeCommands):
     def do_SHOW_SETTINGS(self, arg):
-        max_width: int= 0
+        max_width: int = 0
         with open(Config.file) as file:
             data = json.load(file)
             if arg.strip():
@@ -367,7 +373,7 @@ class Settings(HackerModeCommands):
         for key in data.keys():
             max_width = len(key) if max_width < len(key) else max_width
         for key, value in data.items():
-            print(key+' '*(max_width-len( key )+2), value)
+            print(key + ' ' * (max_width - len(key) + 2), value)
 
     def do_SET_PROMPT(self, arg: str):
         try:
@@ -383,34 +389,33 @@ class Settings(HackerModeCommands):
 
     def do_SET_LANGUAGE(self, arg: str):
         lang_support: List[str] = os.listdir(
-            os.path.join(System.BASE_PATH,"helpDocs")
+            os.path.join(System.BASE_PATH, "helpDocs")
         )
         if arg.strip() in lang_support:
-            Config.set('settings','LANGUAGE',arg.strip())
+            Config.set('settings', 'LANGUAGE', arg.strip())
             print('# DONE')
         else:
             print(f'# support only {lang_support}')
 
     def do_SET_ARABIC_RESHAPER(self, arg: str):
         if arg.title() == 'True':
-            Config.set('settings','ARABIC_RESHAPER',True)
+            Config.set('settings', 'ARABIC_RESHAPER', True)
             print('# DONE')
         elif arg.title() == 'False':
-            Config.set('settings','ARABIC_RESHAPER',False)
+            Config.set('settings', 'ARABIC_RESHAPER', False)
             print('# DONE')
         else:
-            print(f'# support only {[True,False]}')
+            print(f'# support only {[True, False]}')
 
     def do_SET_LAST_COMMAND(self, arg: str):
         if arg.title() == 'True':
-            Config.set('settings','LAST_COMMAND',True)
+            Config.set('settings', 'LAST_COMMAND', True)
             print('# DONE')
         elif arg.title() == 'False':
-            Config.set('settings','LAST_COMMAND',False)
+            Config.set('settings', 'LAST_COMMAND', False)
             print('# DONE')
         else:
-            print(f'# support only {[True,False]}')
-
+            print(f'# support only {[True, False]}')
 
 
 class MainShell(Settings):

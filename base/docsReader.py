@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from N4Tools.Design import Text,Square,Color
+from N4Tools.Design import Text, Square, Color
 from N4Tools.terminal import terminal
 from config import Config
 from rich import print
@@ -10,8 +10,9 @@ Text = Text()
 Square = Square()
 Color = Color()
 
+
 class DocsReader:
-    def __init__(self,file):
+    def __init__(self, file):
         self.file = file
         with open(file, 'r') as f:
             doc = f.read()
@@ -30,15 +31,16 @@ class DocsReader:
         for section in self.soup.find_all('section'):
             data[section['title']] = []
             for command in section.find_all('line'):
-                 data[section['title']] += [[command['command'],command.text]]
+                data[section['title']] += [[command['command'], command.text]]
         return data
 
-    def values_reader(self,text):
-        text = text.replace('{{ TOOL_NAME }}',self.file.split('/')[-1].split('.')[0])
+    def values_reader(self, text):
+        text = text.replace('{{ TOOL_NAME }}', self.file.split('/')[-1].split('.')[0])
         return text
 
     def style(self):
         title = 'HELP MESSAGE'
+
         def terminal_width(width: int) -> int:
             '''controle the ruler width
             max width = 1
@@ -48,8 +50,8 @@ class DocsReader:
             terminal_width = terminal().size['width'] - square_text
             return int(terminal_width * float(width) / float(1))
 
-        #RULER = lambda: '[white]' + '─' * (terminal_width(1))
-        RULER = lambda: f'[bold][white]{"─"*terminal_width(1)}[/bold][/white]'
+        # RULER = lambda: '[white]' + '─' * (terminal_width(1))
+        RULER = lambda: f'[bold][white]{"─" * terminal_width(1)}[/bold][/white]'
 
         if self.title:
             title = f"[bold][green]{self.title.upper()}[/green]"
@@ -69,9 +71,9 @@ class DocsReader:
                 command = tempFixwidth[tempCommands.index(command)]
                 if Config.get('settings', 'ARABIC_RESHAPER'):
                     helpMsg = Text.arabic(helpMsg)
-                sections[temp] += f'  [yellow]{command}[/yellow]  [white]{ helpMsg }\n'
+                sections[temp] += f'  [yellow]{command}[/yellow]  [white]{helpMsg}\n'
 
-            #sections[temp] += RULER() + '\n\n'
+            # sections[temp] += RULER() + '\n\n'
             sections[temp] += '\n\n'
             temp += 1
 
@@ -79,7 +81,7 @@ class DocsReader:
         for section in sections:
             style += section
 
-        print (
+        print(
             Panel(
                 style[:-3],
                 box=box.ROUNDED,
@@ -88,4 +90,3 @@ class DocsReader:
                 border_style='bold green',
             )
         )
-

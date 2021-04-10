@@ -4,10 +4,9 @@ import shutil
 from base.system import System
 from base.config import Config
 
-
 PACKAGES = {
     # -----------------------------------
-    'pip3':{
+    'pip3': {
         'termux': ['pip3 install --upgrade pip'],
         'linux': [
             'sudo apt install python3-pip',
@@ -15,7 +14,7 @@ PACKAGES = {
         ],
     },
     # -----------------------------------
-    'git':{
+    'git': {
         'termux': ['pkg install git'],
         'linux': ['sudo apt install git'],
     },
@@ -39,18 +38,23 @@ PACKAGES = {
             "sudo apt-get update",
             "sudo apt-get install dart",
         ],
-    }
+    },
+    # -----------------------------------
+    'redshift':{
+        'termux': [],
+        'linux': ['sudo apt install redshift'],
 
+    }
 }
 
 PYHTON_MODULES = {
-    'N4Tools==1.7.1':'N4Tools',
-    'rich':'rich',
-    'pyfiglet':'pyfiglet',
-    'python-bidi':'bidi',
-    'arabic_reshaper':'arabic_reshaper',
-    'bs4':'bs4',
-    'pyrebase':'pyrebase',
+    'N4Tools==1.7.1': 'N4Tools',
+    'rich': 'rich',
+    'pyfiglet': 'pyfiglet',
+    'python-bidi': 'bidi',
+    'arabic_reshaper': 'arabic_reshaper',
+    'bs4': 'bs4',
+    'pyrebase': 'pyrebase',
     'pygments': 'pygments',
     'python-nmap': 'nmap',
     'requests': 'requests',
@@ -81,10 +85,10 @@ HACKERMODE_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
 
 class Installer:
     InstalledSuccessfully = {
-        'base':[]
+        'base': []
     }
 
-    def InstalledMsg(self,package,message=False):
+    def InstalledMsg(self, package, message=False):
         DefaultMessage = f'{package} installed successfully.'
         return f'[  {GREEN}OK{NORMAL}  ] {DefaultMessage if not message else message}'
 
@@ -107,11 +111,9 @@ class Installer:
             elif System.PLATFORME == 'termux':
                 os.system(f'pip install {MODULES}')
 
-
-
         # Install tools packages:
-        if Config.get('actions','DEBUG',default=False):
-            print ('# In debug mode can"t run setup.sh')
+        if Config.get('actions', 'DEBUG', default=False):
+            print('# In debug mode can"t run setup.sh')
             return
         tempPath = os.getcwd()
         run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/bin/run.py'))}"
@@ -125,12 +127,10 @@ class Installer:
             os.chdir(tempPath)
 
     def install(self):
-        if System.PLATFORME in ('termux','linux'):
-            pass
-        else:
+        if not System.PLATFORME in ('termux', 'linux'):
             if System.PLATFORME == 'unknown':
-                print ("# The tool could not recognize the system!")
-                print ("# Do You want to continue anyway?")
+                print("# The tool could not recognize the system!")
+                print("# Do You want to continue anyway?")
                 while True:
                     if input('# [Y/N]: ').lower() == 'y':
                         break
@@ -138,8 +138,8 @@ class Installer:
                         print('# good bye :D')
                         return
             else:
-                print (f"# The tool does not support {System.PLATFORME}")
-                print ('# good bye :D')
+                print(f"# The tool does not support {System.PLATFORME}")
+                print('# good bye :D')
                 return
 
         self.installer()
@@ -147,7 +147,7 @@ class Installer:
         # check:
         print('\n# checking:')
         self.check()
-        if Config.get('actions', 'IS_INSTALLED', cast=bool,default=False):
+        if Config.get('actions', 'IS_INSTALLED', cast=bool, default=False):
             return
 
         # Move the tool to "System.TOOL_PATH"
@@ -155,31 +155,31 @@ class Installer:
             print(f'# {RED}Error:{NORMAL} some of the basics package not installed!')
             return
 
-        if Config.get('actions','DEBUG',cast=bool,default=True):
+        if Config.get('actions', 'DEBUG', cast=bool, default=True):
             print('# In DEBUG mode can"t move the tool\n# to "System.TOOL_PATH"!')
             return
 
         if os.path.isdir(System.TOOL_NAME):
-            HackerMode =  '#!/usr/bin/python3\n'
+            HackerMode = '#!/usr/bin/python3\n'
             HackerMode += 'import sys,os\n'
             HackerMode += f'path=os.path.join("{System.TOOL_PATH}","{System.TOOL_NAME}")\n'
             HackerMode += "try:os.system(f'python3 -B {path} '+' '.join(sys.argv[1:]))\n"
             HackerMode += "except:pass"
             try:
-                with open(os.path.join(System.BIN_PATH,System.TOOL_NAME),'w') as f:
+                with open(os.path.join(System.BIN_PATH, System.TOOL_NAME), 'w') as f:
                     f.write(HackerMode)
                 chmod = 'chmod' if System.PLATFORME == 'termux' else 'sudo chmod'
-                os.system(f'{chmod} 777 {os.path.join(System.BIN_PATH,System.TOOL_NAME)}')
+                os.system(f'{chmod} 777 {os.path.join(System.BIN_PATH, System.TOOL_NAME)}')
             except Exception as e:
                 print(e)
-                print ('# installed failed!')
+                print('# installed failed!')
                 return
             Config.set('actions', 'IS_INSTALLED', True)
             try:
-                shutil.move(System.TOOL_NAME,System.TOOL_PATH)
+                shutil.move(System.TOOL_NAME, System.TOOL_PATH)
             except shutil.Error as e:
                 print(e)
-                print ('# installed failed!')
+                print('# installed failed!')
         else:
             print(f'{RED}# Error: the tool path not found!')
             print(f'# try to run tool using\n# {GREEN}"python3 HakcerMode install"{NORMAL}')
@@ -193,12 +193,14 @@ class Installer:
 
         # check packages:
         for package in PACKAGES.keys():
+            if not PACKAGES[package][System.PLATFORME]:
+                continue
             if package in System.SYSTEM_PACKAGES:
-                print (self.InstalledMsg(package))
+                print(self.InstalledMsg(package))
                 if package in BASE_PACKAGES:
                     self.InstalledSuccessfully['base'].append(True)
             else:
-                print (self.NotInstalledMsg(package, is_base=(package in BASE_PACKAGES)))
+                print(self.NotInstalledMsg(package, is_base=(package in BASE_PACKAGES)))
                 if package in BASE_PACKAGES:
                     self.InstalledSuccessfully['base'].append(False)
 
@@ -216,8 +218,9 @@ class Installer:
                     self.InstalledSuccessfully['base'].append(False)
 
     def update(self):
-        if not Config.get('actions','DEBUG',cast=bool,default=False):
-            os.system(f'cd {System.TOOL_PATH} && rm -rif {System.TOOL_NAME} && git clone https://github.com/Arab-developers/{System.TOOL_NAME}')
+        if not Config.get('actions', 'DEBUG', cast=bool, default=False):
+            os.system(
+                f'cd {System.TOOL_PATH} && rm -rif {System.TOOL_NAME} && git clone https://github.com/Arab-developers/{System.TOOL_NAME}')
             tempPath = os.getcwd()
             run = f"python3 {os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/bin/run.py'))}"
             TOOLS_PATH = os.path.abspath(os.path.join(HACKERMODE_PATH, 'base/tools'))
@@ -229,10 +232,11 @@ class Installer:
             finally:
                 os.chdir(tempPath)
         else:
-            print ("# can't update in the DEUBG mode!")
+            print("# can't update in the DEUBG mode!")
+
 
 Installer = Installer()
 
 if __name__ == '__main__':
     # tests:
-    print ('# To install write "python3 HackerMode install"')
+    print('# To install write "python3 HackerMode install"')

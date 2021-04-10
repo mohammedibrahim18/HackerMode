@@ -1,5 +1,7 @@
 import sys
+import base64
 from setup import Installer
+
 
 class HackerMode:
     argv = [
@@ -9,13 +11,13 @@ class HackerMode:
         'check'
     ]
 
-    def start(self,argv):
+    def start(self, argv):
         if argv[1:]:
             for argv in argv[1:]:
                 try:
-                    getattr(self,argv)()
+                    getattr(self, argv)()
                 except AttributeError:
-                    print ('help msg')
+                    print('help msg')
         else:
             from base.shell import MainShell
             from rich.traceback import install
@@ -23,8 +25,12 @@ class HackerMode:
             install()
             Shell = MainShell()
             if not AppApi.activ():
-                print("# Time out.\n# Refresh the time from within the 'Hacker Mode' application.")
-                return
+                exit(base64.b64decode(
+                    "IyBUaW1lIG91dC4KIyBSZWZyZXNoIHRoZSB0"
+                    + "aW1lIGZyb20gd2l0aGluIHRoZSAnSGFja2Vy"
+                    + "IE1vZGUnIGFwcGxpY2F0aW9uLg=="
+                ).decode("utf-8")
+                     )
             while True:
                 try:
                     Shell.cmdloop()
@@ -42,6 +48,7 @@ class HackerMode:
 
     def check(self):
         Installer.check()
+
 
 if __name__ == '__main__':
     HackerMode = HackerMode()
