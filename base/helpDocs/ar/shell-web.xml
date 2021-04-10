@@ -2,7 +2,7 @@
 
 <section title="commands">
         <line command="html">استخراج اكواد الصفحه html</line>
-        <line command="Info">استخراج بعظ المعلومات عن الموقع</line>
+        <line command="Info">استخراج بعض المعلومات عن الموقع</line>
         <line command="Link">استخراج جميع روابط الصفحه</line>
         <line command="Flask">لتنزيل صفحة الويب وإنشاء خادم flask</line>
 </section>
@@ -45,6 +45,6 @@
 </section>
 
 <section title="system">
-        <line command="main">الرجوع الى الصفحه الرأيسيه</line>
+        <line command="main">الرجوع الى الصفحه الرئيسيه</line>
         <line command="back">الرجوع الى shell-web</line>
 </section>
