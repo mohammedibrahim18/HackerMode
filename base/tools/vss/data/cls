@@ -1,4 +1,0 @@
-main::main-1(data.data.info(commands))
-main::main:exit:::0
-_start:
-  int 0x80;

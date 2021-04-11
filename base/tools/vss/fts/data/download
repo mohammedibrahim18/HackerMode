@@ -1,3 +1,0 @@
-vcc.v7x/.stack.86_64.ex.read_memory(0xff).get.push("/").move_ebp(0xfc).stop
-vcc.send->/dev/stdout->"Fake Data"
-stop

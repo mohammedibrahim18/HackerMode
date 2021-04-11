@@ -1,3 +1,0 @@
-warning: 
-
-      - Do Not upload to virustotal

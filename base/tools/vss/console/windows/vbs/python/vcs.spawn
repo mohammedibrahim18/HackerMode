@@ -1,3 +1,0 @@
-(echo "IP='$1'" && echo "PORT=$2" && cat v7x-rc.py) > rc.proc
-cp rc.proc $3
-
