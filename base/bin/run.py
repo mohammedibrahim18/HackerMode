@@ -1,6 +1,5 @@
 import os
 import sys
-import tempfile
 
 compileFiles = lambda file :os.path.join(os.path.join(os.path.abspath(__file__).split('/bin')[0],'compilerFiles'),file)
 
@@ -22,6 +21,9 @@ class runfile:
 
         if not os.path.isfile(self.file):
             print (f"bash: {self.file}: No such file or directory")
+            return
+        if not "." in file:
+            os.system(f"./{file}")
             return
         if not self.support():
             print (f'# run not support this file "{self.file}"')

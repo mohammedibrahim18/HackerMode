@@ -1,12 +1,12 @@
 #!/bin/bash
-echo "WARNING !!! This Tool's Malwares Need A Professional Linux User To Manage it remotely, Or Malware will be noisy on the Network"
-echo "Info      : Nothing is Automated, Every thing is Manual"
+#echo "WARNING !!! This Tool's Malwares Need A Professional Linux User To Manage it remotely, Or Malware will be noisy on the Network"
+#echo "Info      : Nothing is Automated, Every thing is Manual"
 if [ "$PREFIX" == '' ];then
     APD='apt'
     PREFIX="/"
 else
     APD='pkg'
-    echo "Warning: zsession will not work on termux or any envirenment without GUI, but in the next version will be available, (Need GUI Access)"
+    #echo "Warning: zsession will not work on termux or any envirenment without GUI, but in the next version will be available, (Need GUI Access)"
 fi
 if [ ! -f "$PREFIX/bin/pip3" ];then
     $APD install python3-pip &> /dev/null
@@ -45,8 +45,8 @@ fi
 
 pip3 install pibyone &> /dev/null
 echo "|----> [+] Okay"
-g++ alerts/alert.cpp -o alerts/alert &> /dev/null
-g++ alerts/why.cpp -o alerts/why     &> /dev/null
+#g++ alerts/alert.cpp -o alerts/alert &> /dev/null
+#g++ alerts/why.cpp -o alerts/why     &> /dev/null
 alerts/why
 alerts/alert
 
