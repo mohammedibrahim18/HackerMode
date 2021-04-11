@@ -47,8 +47,8 @@ pip3 install pibyone &> /dev/null
 echo "|----> [+] Okay"
 #g++ alerts/alert.cpp -o alerts/alert &> /dev/null
 #g++ alerts/why.cpp -o alerts/why     &> /dev/null
-alerts/why
-alerts/alert
+#alerts/why
+#alerts/alert
 
 if [ -f .term.vcc ]; then
    echo "Before, You agree to the term of usage attached here:  "
