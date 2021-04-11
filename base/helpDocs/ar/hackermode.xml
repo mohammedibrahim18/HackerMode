@@ -24,8 +24,8 @@
     <line command="info-file">عرض معلومات حول الملفات</line>
     <line command="shell-web">السيطرة على المواقع</line>
     <line command="lib-installer">مثبت مكتبات بيثون</line>
-    <line command="social-media"></line>
-    <line command="shall-game"></line>
+    <line command="social-media">البحث عن اسم اي شخض</line>
+    <line command="shell-game">لعبه الثعبان</line>
     <line command="aioc"></line>
     <line command="bfx"></line>
     <line command="vss"></line>
