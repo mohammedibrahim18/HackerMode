@@ -9,14 +9,14 @@
 
 <section title="shortcuts">
     <line command="c">تنظيف شاشة الجهاز</line>
-    <line command="archive"></line>
-    <line command="unarchive"></line>
-    <line command="brightness"></line>
-    <line command="cool-screen"></line>
-    <line command="eye-protect"></line>
-    <line command="reset-filter"></line>
-    <line command="hide"></line>
-    <line command="unhide"></line>
+    <line command="archive">عمل ارشيف لمجموعة ملفات داخل مجلد معين </line>
+    <line command="unarchive">فك ارشيف عن ملفات معينه</line>
+    <line command="brightness">التحكم باضائة الشاشه</line>
+    <line command="cool-screen">زياده اللون الازرق في الشاشه </line>
+    <line command="eye-protect">حمايه العيون، و تقليل الضوء الازرق</line>
+    <line command="reset-filter">اعاده لون الشاشه الى الطبيعي</line>
+    <line command="hide">اخفاء ملف</line>
+    <line command="unhide">اظهار ملف</line>
 </section>
 
 <section title="tools">
@@ -26,8 +26,8 @@
     <line command="lib-installer">مثبت مكتبات بيثون</line>
     <line command="social-media">البحث عن اسم اي شخض</line>
     <line command="shell-game">لعبه الثعبان</line>
-    <line command="aioc"></line>
-    <line command="bfx"></line>
+    <line command="aioc">التحويل عبر الشبكه</line>
+    <line command="bfx">اداة لفحص برامج سطر الاوامر  من ثغره فيضان المخزن المؤقت </line>
     <line command="vss"></line>
 </section>
 
