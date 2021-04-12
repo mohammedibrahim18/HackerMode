@@ -13,7 +13,10 @@ class SocialMedia:
         self.username: str = input('\033[33mUsername\033[32m~\033[31m/\033[0m$ ')
 
     def get_request(self, url: str) -> bool:
-        req = requests.get(url)
+        try:
+            req = requests.get(url, timeout=5)
+        except:
+            return False
         if req.status_code == 200:
             return True
         return False
