@@ -12,7 +12,7 @@
     <line command="archive">عمل ارشيف لمجموعة ملفات داخل مجلد معين </line>
     <line command="unarchive">فك ارشيف عن ملفات معينه</line>
     <line command="brightness">التحكم باضائة الشاشه</line>
-    <line command="cool-screen">زياده اللون الازرق في الشاشه </line>
+    <line command="cool-screen">زياده اللون الازرق في الشاشه</line>
     <line command="eye-protect">حمايه العيون، و تقليل الضوء الازرق</line>
     <line command="reset-filter">اعاده لون الشاشه الى الطبيعي</line>
     <line command="hide">اخفاء ملف</line>
