@@ -27,7 +27,8 @@
     <line command="social-media">البحث عن اسم اي شخض</line>
     <line command="shell-game">لعبه الثعبان</line>
     <line command="aioc">التحويل عبر الشبكه</line>
-    <line command="bfx">اداة لفحص برامج سطر الاوامر  من ثغره فيضان المخزن المؤقت </line>
+    <line command="bfx">اداة لفحص برامج سطر الاوامر من</line>
+    <line command="">.ثغره فيضان المخزن المؤقت</line>
     <line command="vss"></line>
 </section>
 
