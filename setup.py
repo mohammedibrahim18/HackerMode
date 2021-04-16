@@ -7,7 +7,10 @@ from base.config import Config
 PACKAGES = {
     # -----------------------------------
     'pip3': {
-        'termux': ['pip3 install --upgrade pip'],
+        'termux': [
+            'pkg install openssl',
+            'pip3 install --upgrade pip',
+        ],
         'linux': [
             'sudo apt install python3-pip',
             'pip3 install --upgrade pip',
