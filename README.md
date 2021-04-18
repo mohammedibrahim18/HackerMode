@@ -10,6 +10,9 @@ ___
 - kali
 - ubuntu
 - termux
+- BackBox
+- Frdora
+- Parrot
 
 <div id="install"></div>
 
