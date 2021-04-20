@@ -11,7 +11,7 @@ ___
 - ubuntu
 - termux
 - BackBox
-- Frdora
+- Fedora
 - Parrot
 
 <div id="install"></div>
