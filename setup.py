@@ -93,11 +93,11 @@ class Installer:
 
     def InstalledMsg(self, package, message=False):
         DefaultMessage = f'{package} installed successfully.'
-        return f'[  {GREEN}OK{NORMAL}  ] {DefaultMessage if not message else message}'
+        return f'{NORMAL}[  {GREEN}OK{NORMAL}  ] {DefaultMessage if not message else message}'
 
     def NotInstalledMsg(self, package, message=False, is_base=False):
         DefaultMessage = f' not able to install "{package}".'
-        return f'[ {RED if is_base else YELLOW}{"error" if is_base else "warning"}{NORMAL} ] {DefaultMessage if not message else message}'
+        return f'{NORMAL}[ {RED if is_base else YELLOW}{"error" if is_base else "warning"}{NORMAL} ] {DefaultMessage if not message else message}'
 
     def installer(self):
         '''Install all HackerMode packages and modules'''
@@ -187,6 +187,7 @@ class Installer:
             Config.set('actions', 'IS_INSTALLED', True)
             try:
                 shutil.move(System.TOOL_NAME, System.TOOL_PATH)
+                print(f'# {GREEN}HackerMode installed successfully...{NORMAL}')
             except shutil.Error as e:
                 print(e)
                 print('# installed failed!')
