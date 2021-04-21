@@ -345,6 +345,8 @@ class MainShell(BaseShell):  # Main Shell
     def do_Info(self, arg):
         if type(value) == str:
             print("Not info...!")
+        elif len((f := [x for x in re.findall("[\W]*",arg.strip()) if x])) > 0:
+            print(f"Not {f}...!")
         else:
             try:
                 temp = eval(f'value.{arg}')
