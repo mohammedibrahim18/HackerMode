@@ -376,8 +376,9 @@ class MainShell(BaseShell):  # Main Shell
         return [x for x in all if x.startswith(line)] if line else all
 
     def do_Link(self, arg):  # Links-Urls
-        for x in (self.Names[arg]):
-            print(f'\033[1;31m-> \033[1;37m{x}\033[0m')
+        if arg:
+            for x in (self.Names[arg]):
+                print(f'\033[1;31m-> \033[1;37m{x}\033[0m')
 
     def complete_Link(self, line, *args):
         all = list(self.Names.keys()) + ["rest"]
