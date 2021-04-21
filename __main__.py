@@ -21,16 +21,10 @@ class HackerMode:
         else:
             from base.shell import MainShell
             from rich.traceback import install
-            from base.system import AppApi
+
             install()
             Shell = MainShell()
-            if not AppApi.activ():
-                exit(base64.b64decode(
-                    "IyBUaW1lIG91dC4KIyBSZWZyZXNoIHRoZSB0"
-                    + "aW1lIGZyb20gd2l0aGluIHRoZSAnSGFja2Vy"
-                    + "IE1vZGUnIGFwcGxpY2F0aW9uLg=="
-                ).decode("utf-8")
-                     )
+            
             while True:
                 try:
                     Shell.cmdloop()

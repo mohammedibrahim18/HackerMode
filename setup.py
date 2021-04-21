@@ -150,6 +150,13 @@ class Installer:
         # check:
         print('\n# checking:')
         self.check()
+
+        if System.PLATFORME == "termux":
+            try:
+                os.listdir("/sdcard")
+            except PermissionError:
+                os.system("termux-setup-storage")
+
         if Config.get('actions', 'IS_INSTALLED', cast=bool, default=False):
             return
 
