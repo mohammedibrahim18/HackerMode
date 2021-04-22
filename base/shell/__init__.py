@@ -244,6 +244,8 @@ class BaseShell(cmd.Cmd):
             print(e)
         except NotADirectoryError as e:
             print(e)
+        except PermissionError as e:
+            print(e)
 
     def do_c(self, line: str):
         os.system('clear')
