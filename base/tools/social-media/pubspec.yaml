@@ -2,8 +2,7 @@ name: social_media
 description: social-media packages
 
 dependencies:
-  http:
-  sprintf:
+  http: 0.13.1
 
 environment:
   sdk: '>=2.10.0 <3.0.0'

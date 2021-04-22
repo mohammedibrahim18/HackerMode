@@ -62,6 +62,7 @@ PYHTON_MODULES = {
     'python-nmap': 'nmap',
     'requests': 'requests',
     'getmac': 'getmac',
+    'pibyone': 'pibyone',
 }
 
 BASE_PYHTON_MODULES = (
