@@ -20,15 +20,15 @@ ___
 - kali & ubuntu
 ```shell
 # Install tool packags
-$ apt install python3
-$ apt install git
-$ apt install python3-pip
+$ sudo apt install python3
+$ sudo apt install git
+$ sudo apt install python3-pip
 
 # Download tool
 $ git clone https://github.com/Arab-developers/HackerMode
 
 # Install
-$ python3 -B HackerMode/ install
+$ sudo python3 -B HackerMode/ install
 ```
 - termux
 ```shell
