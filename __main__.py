@@ -1,3 +1,4 @@
+import os
 import sys
 import base64
 from setup import Installer
