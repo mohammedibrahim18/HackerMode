@@ -5,6 +5,10 @@ from base.system import System
 from base.config import Config
 
 PACKAGES = {
+    'apt': {
+        'termux':['apt --fix-broken install'],
+        'linux':['apt --fix-broken install'],
+    },
     # -----------------------------------
     'pip3': {
         'termux': [
