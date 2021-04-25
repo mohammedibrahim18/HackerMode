@@ -53,9 +53,9 @@ class HackerMode:
             if os.path.exists(root_path):
                 root = "sudo"
             if os.path.exists(bin_path):
-                os.system(f"{root} rm {bin_path}"
+                os.system(f"{root} rm {bin_path}")
             if os.path.exists(tool_path):
-                os.system(f"{root} rm -rif {tool_path}"
+                os.system(f"{root} rm -rif {tool_path}")
             if not os.path.exists(tool_path) and not os.path.exists(bin_path):
                 print("# The deletion was successful...")
             else:
