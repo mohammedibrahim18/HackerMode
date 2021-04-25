@@ -45,8 +45,8 @@ class HackerMode:
         Installer.check()
     
     def delete(self):
-        root_path = os.path.join(os.environ["_"].split("/bin/")[0]+"/bin/","sudo")
-        bin_path = os.path.join(os.environ["_"].split("/bin/")[0]+"/bin/","HackerMode")
+        root_path = os.path.join(os.environ["SHELL"].split("/bin/")[0]+"/bin/","sudo")
+        bin_path = os.path.join(os.environ["SHELL"].split("/bin/")[0]+"/bin/","HackerMode")
         tool_path = os.path.join(os.environ["HOME"],".HackerMode")
         status = input("# Do you really want to delete the tool?\n [n/y]: ").lower()
         if status in ("y","yes","ok","yep"):
